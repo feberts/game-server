@@ -9,14 +9,14 @@ def print_board():
           f' {board[3]} | {board[4]} | {board[5]}', f'---+---+---',
           f' {board[6]} | {board[7]} | {board[8]}', sep='\n')
 
-def read_position():
+def user_input():
     while True:
         try:
             pos = int(input(f'Player {players[current]}: '))
             if move_valid(pos):
                 return pos
             else:
-                print('Move illegal!')
+                print('Illegal move!')
         except KeyboardInterrupt:
             exit()
         except:
@@ -29,14 +29,17 @@ def update_board(pos):
     board[pos] = players[current]
 
 def check_win():
-    for x, y, z in ((0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6)):
-        if board[x] == board[y] == board[z] == players[current]:
+    for i, j, k in ((0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6)):
+        if board[i] == board[j] == board[k] == players[current]:
             print_board()
             print(f'Player {players[current]} wins!')
             exit()
 
-while True:
+for _ in range(9):
     print_board()
-    update_board(read_position())
+    update_board(user_input())
     check_win()
     current ^= 1
+
+print_board()
+print('No winner!')

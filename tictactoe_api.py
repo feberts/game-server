@@ -19,9 +19,13 @@ class Game:
         if this.__move_valid(pos):
             this.__update_board(pos)
             this.__check_win()
+            this.__check_gameover()
             this.__state.current ^= 1
             return True
         return False
+    def __check_gameover(this):
+        if -1 not in this.__state.board:
+            this.__state.gameover = True
     
     def __check_win(this):
         for i, j, k in ((0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6)):
@@ -29,15 +33,21 @@ class Game:
                 this.__state.winner = this.__state.current
                 this.__state.gameover = True
                 
+    def opponent_move(this):
+        this.move(this.__state.board.index(-1))
+
     def __move_valid(this, pos):
         try:
             return pos >= 0 and this.__state.board[pos] == -1
         except:
             return False
+    def join(this):
+        return 0
+
+        
 
 
 players = ('x', 'o')
-me = 0
 
 def print_board(board):
     board = [i if board[i] == -1 else players[board[i]] for i in range(9)]
@@ -48,26 +58,39 @@ def print_board(board):
 def user_input(current):
     while True:
         try:
-            return int(input(f'Player {players[current]}: '))
+            return int(input(f'Your turn {players[current]}: '))
         except KeyboardInterrupt:
             exit()
         except:
             print('Integers only!')
 
+import time
+
 game = Game()
+me = game.join()
+
 state = game.state()
 
 while not state.gameover:
     print_board(state.board)
     if state.current == me:
-        pos = user_input(state.current)
-        ok = game.move(pos)
-        if not ok:
-            print('Illegal move!')
-        else
-            
+        while True:
+            pos = user_input(state.current)
+            ok = game.move(pos)
+            if ok:
+                break
+            else:
+                print('Illegal move!')
+    else:
+        print(f'Opponents turn {players[state.current]} ...')
+        time.sleep(1)
+        game.opponent_move() # behelfsmäßig
     state = game.state()
+    
+print_board(state.board)
+if state.winner != None:
+    print(f'Player {players[state.winner]} wins!')
+else:
+    print('No winner!')
 
-
-
-
+#15368

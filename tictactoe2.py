@@ -2,7 +2,7 @@
 
 # object oriented version; class Game acts as a pseudo server
 
-class State():
+class State:
     board = [-1] * 9
     current = 0
     gameover = False
@@ -11,42 +11,43 @@ class State():
 class Game:
     __state = State()
 
-    def start(this):
+    def start(self):
         return 0 # player id
 
-    def state(this):
-        return this.__state
+    def state(self):
+        return self.__state
 
-    def move(this, pos):
-        if this.__move_valid(pos):
-            this.__update_board(pos)
-            this.__check_win()
-            this.__check_gameover()
-            this.__state.current ^= 1 # rotate players
+    def move(self, pos):
+        if self.__move_valid(pos):
+            self.__update_board(pos)
+            self.__check_win()
+            self.__check_gameover()
+            self.__state.current ^= 1 # rotate players
             return True
         return False
 
-    def __move_valid(this, pos):
+    def __move_valid(self, pos):
         try:
-            return pos >= 0 and this.__state.board[pos] == -1
+            return pos >= 0 and self.__state.board[pos] == -1
         except:
             return False
 
-    def __update_board(this, pos):
-        this.__state.board[pos] = this.__state.current
+    def __update_board(self, pos):
+        self.__state.board[pos] = self.__state.current
 
-    def __check_win(this):
+    def __check_win(self):
         for i, j, k in ((0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6)):
-            if this.__state.board[i] == this.__state.board[j] == this.__state.board[k] == this.__state.current:
-                this.__state.winner = this.__state.current
-                this.__state.gameover = True
+            if self.__state.board[i] == self.__state.board[j] == self.__state.board[k] == self.__state.current:
+                self.__state.winner = self.__state.current
+                self.__state.gameover = True
                 
-    def __check_gameover(this):
-        if -1 not in this.__state.board:
-            this.__state.gameover = True
+    def __check_gameover(self):
+        if -1 not in self.__state.board:
+            self.__state.gameover = True
     
-    def opponent_move(this):
-        this.move(this.__state.board.index(-1))
+    def opponent_move(self):
+        """makeshift method to simulate an opponents move"""
+        self.move(self.__state.board.index(-1))
 
 
         
@@ -89,7 +90,7 @@ while not state.gameover:
     else:
         print(f'Opponents turn {players[state.current]} ...')
         time.sleep(1)
-        game.opponent_move() # behelfsmäßig
+        game.opponent_move() # trigger opponents move
 
     state = game.state()
     

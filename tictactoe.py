@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# a straightforward tic-tac-toe implementation
+
 board = list(range(9))
 players = ('x', 'o')
 current = 0
@@ -39,7 +41,7 @@ for _ in range(9):
     print_board()
     update_board(user_input())
     check_win()
-    current ^= 1
+    current ^= 1 # rotate players
 
 print_board()
 print('No winner!')

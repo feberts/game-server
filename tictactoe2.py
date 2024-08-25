@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# object oriented version; class Game acts as a pseudo server
+
 class State():
     board = [-1] * 9
     current = 0
@@ -9,40 +11,43 @@ class State():
 class Game:
     __state = State()
 
+    def start(this):
+        return 0 # player id
+
     def state(this):
         return this.__state
-
-    def __update_board(this, pos):
-        this.__state.board[pos] = this.__state.current
 
     def move(this, pos):
         if this.__move_valid(pos):
             this.__update_board(pos)
             this.__check_win()
             this.__check_gameover()
-            this.__state.current ^= 1
+            this.__state.current ^= 1 # rotate players
             return True
         return False
-    def __check_gameover(this):
-        if -1 not in this.__state.board:
-            this.__state.gameover = True
-    
-    def __check_win(this):
-        for i, j, k in ((0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6)):
-            if this.__state.board[i] == this.__state.board[j] == this.__state.board[k] == this.__state.current:
-                this.__state.winner = this.__state.current
-                this.__state.gameover = True
-                
-    def opponent_move(this):
-        this.move(this.__state.board.index(-1))
 
     def __move_valid(this, pos):
         try:
             return pos >= 0 and this.__state.board[pos] == -1
         except:
             return False
-    def join(this):
-        return 0
+
+    def __update_board(this, pos):
+        this.__state.board[pos] = this.__state.current
+
+    def __check_win(this):
+        for i, j, k in ((0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6)):
+            if this.__state.board[i] == this.__state.board[j] == this.__state.board[k] == this.__state.current:
+                this.__state.winner = this.__state.current
+                this.__state.gameover = True
+                
+    def __check_gameover(this):
+        if -1 not in this.__state.board:
+            this.__state.gameover = True
+    
+    def opponent_move(this):
+        this.move(this.__state.board.index(-1))
+
 
         
 
@@ -67,13 +72,13 @@ def user_input(current):
 import time
 
 game = Game()
-me = game.join()
-
+my_id = game.start()
 state = game.state()
 
 while not state.gameover:
     print_board(state.board)
-    if state.current == me:
+
+    if state.current == my_id: # my turn
         while True:
             pos = user_input(state.current)
             ok = game.move(pos)
@@ -85,12 +90,14 @@ while not state.gameover:
         print(f'Opponents turn {players[state.current]} ...')
         time.sleep(1)
         game.opponent_move() # behelfsmäßig
+
     state = game.state()
     
 print_board(state.board)
-if state.winner != None:
-    print(f'Player {players[state.winner]} wins!')
-else:
+
+if state.winner == None:
     print('No winner!')
+else:
+    print(f'Player {players[state.winner]} wins!')
 
 #15368

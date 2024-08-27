@@ -11,8 +11,6 @@ if my_id == None:
     print('failed to join game:', msg)
     exit()
 
-exit()# TODO weg
-
 players = ('x', 'o')
 
 def print_board(board):
@@ -30,9 +28,8 @@ def user_input(current):
         except:
             print('Integers only!')
 
-game = tictactoe.Game()
-my_id = game.start()
-state = game.state()
+
+state = api.state()
 
 while not state.gameover:
     print_board(state.board)
@@ -40,7 +37,7 @@ while not state.gameover:
     if state.current == my_id: # my turn
         while True:
             pos = user_input(state.current)
-            ok = game.move(pos)
+            ok = api.move(pos)
             if ok:
                 break
             else:
@@ -48,9 +45,8 @@ while not state.gameover:
     else:
         print(f'Opponents turn {players[state.current]} ...')
         time.sleep(1)
-        game.opponent_move() # trigger opponents move
 
-    state = game.state()
+    state = api.state()
 
 print_board(state.board)
 

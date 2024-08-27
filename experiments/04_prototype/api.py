@@ -10,6 +10,13 @@ BUFFER_SIZE = 1024
 
 player_id = None
 
+class State:
+    board = [-1] * 9
+    current = 0
+    gameover = False
+    winner = None
+
+
 def join_game():
     print(f"Connecting to {IP}:{PORT} ...")
     sd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -30,7 +37,22 @@ def join_game():
         print(f"Received message: {read}")
         return None, read
 
-
+def move(pos):
+    print(f"Connecting to {IP}:{PORT} ...")
+    sd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sd.connect((IP, PORT))
+    
+    print(f"Sending move")
+    write = bytes(f'move,{player_id},{pos}', 'utf-8')
+    sd.sendall(write)
+    
+    read = sd.recv(BUFFER_SIZE)
+    read = str(read, 'utf-8').strip()
+    return read == 'ok'
+    
+    
+def state():
+    return None
 
 '''
 

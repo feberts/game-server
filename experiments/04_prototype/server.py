@@ -48,27 +48,47 @@ handle_join_request(1)
 
 
 
-exit()# TODO weg
-
 game = game.Game()
 
 while True:
     conn, client = sd.accept()
     ip, port = client
     print(f'Accepted connection from {ip}:{port}')
+    read = conn.recv(BUFFER_SIZE)
+    print(f"Received data from {ip}:{port}: {read}")
 
-    while True:
-        read = conn.recv(BUFFER_SIZE)
-        print(f"Received data from {ip}:{port}: {read}")
+    request = str(read, 'utf-8').split(',')
+    print(request)
+    
+    if 'move' in request:
+        _, player_id, pos = request
+        player_id = int(player_id)
+        pos = int(pos)
+        print(f'Received move request (player id: {player_id}, position: {pos})')
+        if game.state().current == player_id:
+            ok = game.move(pos)
+            if ok:
+                print('move valid')
+                conn.sendall(bytes('ok', 'utf-8'))
+            else:
+                print('move not valid')
+                conn.sendall(bytes('err', 'utf-8'))
+        else:
+            print('wrong player')
+            conn.sendall(bytes('err', 'utf-8'))
+    elif 'state' in request:
+        pass
+        #TODO
+    else:
+        print('HALLO')
+        #TODO
 
-        if not read:
-            conn.close()
-            print(f"Closed connection to {ip}:{port}")
-            break
 
-        write = read
-        print(f"Sending data to {ip}:{port}: {write}")
-        conn.sendall(write)
+    
+    
+    
+    conn.close()
+    print(f"Closed connection to {ip}:{port}")
 
 sd.close() # never executed
 print('Server shut down')

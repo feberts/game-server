@@ -42,7 +42,3 @@ class Game:
     def __check_gameover(self):
         if -1 not in self.__state.board:
             self.__state.gameover = True
-
-    def opponent_move(self):
-        """makeshift method to simulate an opponents move"""
-        self.move(self.__state.board.index(-1))

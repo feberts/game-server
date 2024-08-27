@@ -5,7 +5,12 @@
 #!/usr/bin/env python3
 
 import api
-import time
+import time # TODO weg?
+
+my_id, msg = join_game()
+print(my_id, msg)
+
+exit()# TODO weg
 
 players = ('x', 'o')
 

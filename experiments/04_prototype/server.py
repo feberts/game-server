@@ -35,8 +35,6 @@ def handle_join_request(player_id):
         conn.close()
         print(f"Closed connection to {ip}:{port}")
 
-game = game.Game()
-players = {}
 
 sd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sd.bind((IP, PORT))
@@ -45,7 +43,12 @@ print(f'Listening on {IP}:{PORT}')
 
 handle_join_request(0)
 handle_join_request(1)
+
 exit()# TODO weg
+
+game = game.Game()
+players = {}
+
 while True:
     conn, client = sd.accept()
     ip, port = client

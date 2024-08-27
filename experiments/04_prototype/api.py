@@ -29,8 +29,7 @@ def join_game():
         print(f"Received message: {read}")
         return None, read
 
-my_id, msg = join_game()
-print(my_id, msg)
+
 
 '''
 

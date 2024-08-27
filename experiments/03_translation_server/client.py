@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# client that sends words to the server and receives a translation
+
 import socket
 
 IP = '127.0.0.1'

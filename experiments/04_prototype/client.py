@@ -2,13 +2,14 @@
 
 # client for game server prototype
 
-#!/usr/bin/env python3
-
 import api
-import time # TODO weg?
+import time
 
 my_id, msg = api.join_game()
-print(my_id, msg)
+
+if my_id == None:
+    print('failed to join game:', msg)
+    exit()
 
 exit()# TODO weg
 

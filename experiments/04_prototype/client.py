@@ -7,7 +7,7 @@
 import api
 import time # TODO weg?
 
-my_id, msg = join_game()
+my_id, msg = api.join_game()
 print(my_id, msg)
 
 exit()# TODO weg

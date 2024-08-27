@@ -12,6 +12,7 @@ BUFFER_SIZE = 1024
 def handle_join_request(player_id):
     print('Waiting for join request ...')
     joined = False
+    ip, port = None, None
 
     while not joined:
         conn, client = sd.accept()
@@ -35,6 +36,7 @@ def handle_join_request(player_id):
         conn.close()
         print(f"Closed connection to {ip}:{port}")
 
+    return ip, port
 
 sd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sd.bind((IP, PORT))
@@ -44,10 +46,11 @@ print(f'Listening on {IP}:{PORT}')
 handle_join_request(0)
 handle_join_request(1)
 
+
+
 exit()# TODO weg
 
 game = game.Game()
-players = {}
 
 while True:
     conn, client = sd.accept()

@@ -8,7 +8,7 @@ IP = '127.0.0.1'
 PORT = 4711
 BUFFER_SIZE = 1024
 
-
+player_id = None
 
 def join_game():
     print(f"Connecting to {IP}:{PORT} ...")
@@ -22,6 +22,7 @@ def join_game():
     read = sd.recv(BUFFER_SIZE)
     read = str(read, 'utf-8').strip()
     try:
+        global player_id
         player_id = int(read)
         print(f"Received player id: {str(player_id)}")
         return player_id, None

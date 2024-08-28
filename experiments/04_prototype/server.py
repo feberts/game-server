@@ -41,6 +41,7 @@ def wait_for_player(player_id):
 
 try:
     sd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sd.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sd.bind((IP, PORT))
     sd.listen()
     print(f'Listening on {IP}:{PORT}')

@@ -1,4 +1,4 @@
-# api for game server prototype
+# api for game server prototype used by the client
 
 import socket
 import pickle

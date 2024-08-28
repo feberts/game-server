@@ -1,4 +1,4 @@
-# this module implements a tic-tac-toe game class prototype
+# this module implements a tic-tac-toe game class prototype used by the server
 
 class State:
     board = []

@@ -77,11 +77,9 @@ try:
                 print('wrong player')
                 conn.sendall(bytes('err', 'utf-8'))
         elif 'state' in request:
-            print('Player requesting state')
-            print('Sending state')
+            print('Player requesting state, sending state')
             state = pickle.dumps(game.state())
             conn.sendall(state)
-            print('größe', len(state))
         else:
             print('Bad request')
 

@@ -10,7 +10,7 @@ IP = '127.0.0.1'
 PORT = 4711
 BUFFER_SIZE = 1024
 
-def handle_join_request(player_id):
+def wait_for_player(player_id):
     print('Waiting for join request ...')
     joined = False
     ip, port = None, None
@@ -44,10 +44,10 @@ sd.bind((IP, PORT))
 sd.listen()
 print(f'Listening on {IP}:{PORT}')
 
-game = game.Game()
+wait_for_player(0)
+wait_for_player(1)
 
-handle_join_request(0)
-handle_join_request(1)
+game = game.Game()
 
 while True:
     conn, client = sd.accept()

@@ -5,15 +5,11 @@
 import api
 import time
 
-my_id, msg = api.join_game()
-
-if my_id == None:
-    print('failed joining game:', msg)
-    exit()
-
 players = ('x', 'o')
 
 def print_board(board):
+    print('\n' * 100)
+    print(f'Player {players[my_id]}')
     board = [i if board[i] == -1 else players[board[i]] for i in range(9)]
     print(f' {board[0]} | {board[1]} | {board[2]}', f'---+---+---',
           f' {board[3]} | {board[4]} | {board[5]}', f'---+---+---',
@@ -22,11 +18,19 @@ def print_board(board):
 def user_input(current):
     while True:
         try:
-            return int(input(f'Your turn {players[current]}: '))
+            return int(input(f'Your turn: '))
         except KeyboardInterrupt:
             exit()
         except:
             print('Integers only!')
+
+my_id, msg = api.join_game()
+
+if my_id == None:
+    print('failed joining game:', msg)
+    exit()
+
+state = None
 
 while True:
     try:
@@ -34,7 +38,7 @@ while True:
         break
     except:
         print('Waiting for game to start ...')
-        time.sleep(3)
+        time.sleep(1)
 
 while not state.gameover:
     print_board(state.board)
@@ -48,7 +52,7 @@ while not state.gameover:
             else:
                 print('Illegal move!')
     else:
-        print(f'Opponents turn {players[state.current]} ...')
+        print('Opponents turn ...')
         time.sleep(1)
 
     state = api.state()

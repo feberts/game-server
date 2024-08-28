@@ -39,55 +39,59 @@ def wait_for_player(player_id):
 
     return ip, port
 
-sd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sd.bind((IP, PORT))
-sd.listen()
-print(f'Listening on {IP}:{PORT}')
+try:
+    sd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sd.bind((IP, PORT))
+    sd.listen()
+    print(f'Listening on {IP}:{PORT}')
 
-wait_for_player(0)
-wait_for_player(1)
+    wait_for_player(0)
+    wait_for_player(1)
 
-game = game.Game()
+    game = game.Game()
 
-while True:
-    conn, client = sd.accept()
-    ip, port = client
-    print(f'Accepted connection from {ip}:{port}')
-    read = conn.recv(BUFFER_SIZE)
-    print(f"Received data from {ip}:{port}: {read}")
+    while True:
+        conn, client = sd.accept()
+        ip, port = client
+        print(f'Accepted connection from {ip}:{port}')
+        read = conn.recv(BUFFER_SIZE)
+        print(f"Received data from {ip}:{port}: {read}")
 
-    request = str(read, 'utf-8').split(',')
+        request = str(read, 'utf-8').split(',')
 
-    if 'move' in request:
-        _, player_id, pos = request
-        player_id = int(player_id)
-        pos = int(pos)
-        print(f'Received move request (player id: {player_id}, position: {pos})')
-        if game.state().current == player_id:
-            ok = game.move(pos)
-            if ok:
-                print('move valid')
-                conn.sendall(bytes('ok', 'utf-8'))
+        if 'move' in request:
+            _, player_id, pos = request
+            player_id = int(player_id)
+            pos = int(pos)
+            print(f'Received move request (player id: {player_id}, position: {pos})')
+            if game.state().current == player_id:
+                ok = game.move(pos)
+                if ok:
+                    print('move valid')
+                    conn.sendall(bytes('ok', 'utf-8'))
+                else:
+                    print('move not valid')
+                    conn.sendall(bytes('err', 'utf-8'))
             else:
-                print('move not valid')
+                print('wrong player')
                 conn.sendall(bytes('err', 'utf-8'))
+        elif 'state' in request:
+            print('Player requesting state')
+            print('Sending state')
+            state = pickle.dumps(game.state())
+            conn.sendall(state)
+            print('größe', len(state))
         else:
-            print('wrong player')
-            conn.sendall(bytes('err', 'utf-8'))
-    elif 'state' in request:
-        print('Player requesting state')
-        print('Sending state')
-        state = pickle.dumps(game.state())
-        conn.sendall(state)
-        print('größe', len(state))
-    else:
-        print('Bad request')
+            print('Bad request')
 
-    conn.close()
-    print(f"Closed connection to {ip}:{port}")
+        conn.close()
+        print(f"Closed connection to {ip}:{port}")
 
-    s = game.state()
-    print(f'State: board: {s.board}, current: {s.current}, gameover: {s.gameover}, winner: {s.winner}')
-
-sd.close() # never executed TODO
-print('Server shut down')
+        s = game.state()
+        print(f'State: board: {s.board}, current: {s.current}, gameover: {s.gameover}, winner: {s.winner}')
+except KeyboardInterrupt:
+    try: conn.close()
+    except: pass
+finally:
+    sd.close()
+    print('\nServer shut down')

@@ -6,7 +6,6 @@ import api
 import time
 
 my_id, msg = api.join_game()
-time.sleep(3) # TODO
 
 if my_id == None:
     print('failed joining game:', msg)
@@ -29,7 +28,13 @@ def user_input(current):
         except:
             print('Integers only!')
 
-state = api.state()
+while True:
+    try:
+        state = api.state()
+        break
+    except:
+        print('Waiting for game to start ...')
+        time.sleep(3)
 
 while not state.gameover:
     print_board(state.board)

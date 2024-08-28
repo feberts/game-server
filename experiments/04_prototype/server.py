@@ -8,7 +8,7 @@ import pickle
 
 IP = '127.0.0.1'
 PORT = 4711
-BUFFER_SIZE = 1000000
+BUFFER_SIZE = 1024
 
 def handle_join_request(player_id):
     print('Waiting for join request ...')
@@ -19,11 +19,11 @@ def handle_join_request(player_id):
         conn, client = sd.accept()
         ip, port = client
         print(f'Accepted connection from {ip}:{port}')
-        
+
         read = conn.recv(BUFFER_SIZE)
         request = str(read, 'utf-8')
         print(f"Received data from {ip}:{port}: {request}")
-        
+
         if request == 'join':
             print(f'Received join request from {ip}:{port}')
             print(f"Sending player id to {ip}:{port}: {player_id}")
@@ -33,7 +33,7 @@ def handle_join_request(player_id):
             print(f'Received invalid request from {ip}:{port}')
             print(f"Sending error message to {ip}:{port}")
             conn.sendall(bytes('error: invalid request', 'utf-8'))
-        
+
         conn.close()
         print(f"Closed connection to {ip}:{port}")
 
@@ -49,9 +49,6 @@ game = game.Game()
 handle_join_request(0)
 handle_join_request(1)
 
-
-
-
 while True:
     conn, client = sd.accept()
     ip, port = client
@@ -60,7 +57,7 @@ while True:
     print(f"Received data from {ip}:{port}: {read}")
 
     request = str(read, 'utf-8').split(',')
-    
+
     if 'move' in request:
         _, player_id, pos = request
         player_id = int(player_id)
@@ -82,14 +79,15 @@ while True:
         print('Sending state')
         state = pickle.dumps(game.state())
         conn.sendall(state)
+        print('größe', len(state))
     else:
         print('Bad request')
-    
+
     conn.close()
     print(f"Closed connection to {ip}:{port}")
-    
-    s = game.state()
-    print(f'State: Board: {s.board}, current: {s.current}, gameover: {s.gameover}, winner: {s.winner}')
 
-sd.close() # never executed
+    s = game.state()
+    print(f'State: board: {s.board}, current: {s.current}, gameover: {s.gameover}, winner: {s.winner}')
+
+sd.close() # never executed TODO
 print('Server shut down')

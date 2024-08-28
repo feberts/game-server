@@ -36,8 +36,9 @@ class Game:
         self.__state.board[pos] = self.__state.current
 
     def __check_win(self):
+        b = self.__state.board
         for i, j, k in ((0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6)):
-            if self.__state.board[i] == self.__state.board[j] == self.__state.board[k] == self.__state.current:
+            if b[i] == b[j] == b[k] == self.__state.current:
                 self.__state.winner = self.__state.current
                 self.__state.gameover = True
 

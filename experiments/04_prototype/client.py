@@ -6,17 +6,10 @@ import api
 import time
 
 my_id, msg = api.join_game()
-time.sleep(3)
-#my_id, msg = api.join_game()
-#s = api.state()
-#print(s.board)
-#print(s.current)
-#print(s.gameover)
-#print(s.winner)
-#exit()
+time.sleep(3) # TODO
 
 if my_id == None:
-    print('failed to join game:', msg)
+    print('failed joining game:', msg)
     exit()
 
 players = ('x', 'o')
@@ -36,7 +29,6 @@ def user_input(current):
         except:
             print('Integers only!')
 
-
 state = api.state()
 
 while not state.gameover:
@@ -55,7 +47,6 @@ while not state.gameover:
         time.sleep(1)
 
     state = api.state()
-    #print(f'Board: {state.board}, Current: {state.current}, Gameover: {state.gameover}, Winner: {state.winner}')
 
 print_board(state.board)
 

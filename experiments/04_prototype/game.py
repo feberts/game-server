@@ -1,10 +1,12 @@
 # this module implements a tic-tac-toe game class prototype
 
 class State:
-    board = [-1] * 9
+    board = []
     current = 0
     gameover = False
     winner = None
+    def __init__(self):
+        self.board = [-1] * 9
 
 class Game:
     __state = State()

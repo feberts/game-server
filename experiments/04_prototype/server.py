@@ -4,10 +4,11 @@
 
 import game
 import socket
+import pickle
 
 IP = '127.0.0.1'
 PORT = 4711
-BUFFER_SIZE = 1024
+BUFFER_SIZE = 1000000
 
 def handle_join_request(player_id):
     print('Waiting for join request ...')
@@ -43,12 +44,13 @@ sd.bind((IP, PORT))
 sd.listen()
 print(f'Listening on {IP}:{PORT}')
 
+game = game.Game()
+
 handle_join_request(0)
 handle_join_request(1)
 
 
 
-game = game.Game()
 
 while True:
     conn, client = sd.accept()
@@ -58,7 +60,6 @@ while True:
     print(f"Received data from {ip}:{port}: {read}")
 
     request = str(read, 'utf-8').split(',')
-    print(request)
     
     if 'move' in request:
         _, player_id, pos = request
@@ -77,18 +78,18 @@ while True:
             print('wrong player')
             conn.sendall(bytes('err', 'utf-8'))
     elif 'state' in request:
-        pass
-        #TODO
+        print('Player requesting state')
+        print('Sending state')
+        state = pickle.dumps(game.state())
+        conn.sendall(state)
     else:
-        print('HALLO')
-        #TODO
-
-
-    
-    
+        print('Bad request')
     
     conn.close()
     print(f"Closed connection to {ip}:{port}")
+    
+    s = game.state()
+    print(f'State: Board: {s.board}, current: {s.current}, gameover: {s.gameover}, winner: {s.winner}')
 
 sd.close() # never executed
 print('Server shut down')

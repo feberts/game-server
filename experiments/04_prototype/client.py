@@ -6,6 +6,14 @@ import api
 import time
 
 my_id, msg = api.join_game()
+time.sleep(3)
+#my_id, msg = api.join_game()
+#s = api.state()
+#print(s.board)
+#print(s.current)
+#print(s.gameover)
+#print(s.winner)
+#exit()
 
 if my_id == None:
     print('failed to join game:', msg)
@@ -47,6 +55,7 @@ while not state.gameover:
         time.sleep(1)
 
     state = api.state()
+    #print(f'Board: {state.board}, Current: {state.current}, Gameover: {state.gameover}, Winner: {state.winner}')
 
 print_board(state.board)
 

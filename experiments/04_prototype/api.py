@@ -3,19 +3,13 @@
 # api for game server prototype
 
 import socket
+import pickle
 
 IP = '127.0.0.1'
 PORT = 4711
-BUFFER_SIZE = 1024
+BUFFER_SIZE = 1000000
 
 player_id = None
-
-class State:
-    board = [-1] * 9
-    current = 0
-    gameover = False
-    winner = None
-
 
 def join_game():
     print(f"Connecting to {IP}:{PORT} ...")
@@ -50,9 +44,27 @@ def move(pos):
     read = str(read, 'utf-8').strip()
     return read == 'ok'
     
+# TODO nicht nötig?
+#class State:
+    #board = [-1] * 9
+    #current = 0
+    #gameover = False
+    #winner = None
     
 def state():
-    return None
+    print(f"Connecting to {IP}:{PORT} ...")
+    sd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sd.connect((IP, PORT))
+    
+    print(f"Requesting state")
+    write = bytes(f'state', 'utf-8')
+    sd.sendall(write)
+    
+    read = sd.recv(BUFFER_SIZE)
+    state = pickle.loads(read)
+    print(f'Board: {state.board}, Type = {type(state.board)}')
+    return state
+    
 
 '''
 

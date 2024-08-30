@@ -1,1 +1,1 @@
-Echo server that handles repeated connections and translates words.
+Echo server that can handle repeated connections and translates words.

@@ -6,7 +6,7 @@
 import socket
 
 HOST = '127.0.0.1'
-PORT = 4711
+PORT = 65432
 
 with socket.socket(socket.AF_INET, # address family: IPv4
                    socket.SOCK_STREAM # socket type: TCP

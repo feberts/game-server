@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+# testing the python threading module after reading https://realpython.com/intro-to-python-threading/
 
 import threading
 import time

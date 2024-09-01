@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# client that sends words to the server and receives a translation
+# client that sends words to the server and receives translations
 
 import socket
 

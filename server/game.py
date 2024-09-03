@@ -11,9 +11,6 @@ class State:
 class Game:
     __state = State()
 
-    def start(self):
-        return 0 # player id
-
     def state(self):
         return self.__state
 

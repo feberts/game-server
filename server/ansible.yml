@@ -1,0 +1,16 @@
+---
+- name: Server deployment
+  hosts: gameserver
+  remote_user: ansible
+  become: yes
+  become_method: sudo
+
+  tasks:
+
+  - name: Test
+    shell: echo hello > test.txt
+    register: result
+  - debug:
+      var: result.stdout_lines
+    when: result.stdout_lines is defined
+  #- meta: end_play # exit playbook immediately

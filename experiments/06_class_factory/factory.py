@@ -1,31 +1,28 @@
 #!/usr/bin/env python3
 
+# implementing a method that creates objects by class name
+
 class Base:
-    def name(self):
-        return 'Base'
     def override_me(self):
         raise NotImplementedError
 
 class DerivedA(Base):
-    def name(self):
-        return 'DerivedA'
     def override_me(self):
-        print('overwritten A')
+        print('overridden by A')
 
 class DerivedB(Base):
-    def name(self):
-        return 'DerivedB'
     def override_me(self):
-        print('overwritten B')
+        print('overridden by B')
 
 classes = [DerivedA, DerivedB]
-class_names = {}
+classes_by_name = {}
 
 for cl in classes:
-    class_names[cl().name()] = cl
+    classes_by_name[type(cl()).__name__] = cl
 
-def class_factory(name):
-    return class_names[name]()
+def instantiate(name):
+    return classes_by_name[name]()
 
-derived_a = class_factory('DerivedA')
-print(derived_a.name())
+cl = instantiate('DerivedA')
+print(type(cl))
+cl.override_me()

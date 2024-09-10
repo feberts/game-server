@@ -1,8 +1,8 @@
 # this module implements a tic-tac-toe game class used by the server
 
-import abstract_game
+from abstract_game import AbstractGame
 
-class State(abstract_game.AbstractGame):
+class State:
     board = []
     current = 0
     gameover = False
@@ -10,7 +10,7 @@ class State(abstract_game.AbstractGame):
     def __init__(self):
         self.board = [-1] * 9
 
-class Game:
+class Game(AbstractGame):
     __state = State()
 
     def state(self):

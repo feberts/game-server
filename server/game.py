@@ -13,6 +13,9 @@ class State:
 class Game(AbstractGame):
     __state = State()
 
+    def state_json(self):
+        return {'board':self.__state.board, 'current':self.__state.current, 'gameover':self.__state.gameover, 'winner':self.__state.winner}
+
     def state(self):
         return self.__state
 

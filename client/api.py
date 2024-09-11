@@ -1,11 +1,20 @@
 # api for game server used by the client
 
 import socket
-import pickle
+#import pickle
+import json
 
 IP = '127.0.0.1'
 PORT = 4711
 BUFFER_SIZE = 1024
+
+class State:
+    board = []
+    current = 0
+    gameover = False
+    winner = None
+    def __init__(self):
+        self.board = [-1] * 9
 
 player_id = None
 
@@ -53,6 +62,13 @@ def state():
     sd.sendall(write)
 
     read = sd.recv(BUFFER_SIZE)
-    state = pickle.loads(read)
+    read = str(read, 'utf-8')
+    #state = pickle.loads(read)
+    read = json.loads(read)
+    state = State()
+    state.board = read['board']
+    state.current = read['current']
+    state.gameover = read['gameover']
+    state.winner = read['winner']
     #print(f'Board: {state.board}, Type = {type(state.board)}')
     return state

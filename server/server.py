@@ -4,7 +4,8 @@
 
 import game
 import socket
-import pickle
+#import pickle
+import json
 
 IP = '127.0.0.1'
 PORT = 4711
@@ -78,8 +79,9 @@ try:
                 conn.sendall(bytes('err', 'utf-8'))
         elif 'state' in request:
             print('Player requesting state, sending state')
-            state = pickle.dumps(game.state())
-            conn.sendall(state)
+            #state = pickle.dumps(game.state())
+            state = json.dumps(game.state_json())
+            conn.sendall(bytes(state, 'utf-8'))
         else:
             print('Bad request')
 

@@ -1,7 +1,6 @@
 # api for game server used by the client
 
 import socket
-#import pickle
 import json
 
 IP = '127.0.0.1'
@@ -63,7 +62,6 @@ def state():
 
     read = sd.recv(BUFFER_SIZE)
     read = str(read, 'utf-8')
-    #state = pickle.loads(read)
     read = json.loads(read)
     state = State()
     state.board = read['board']

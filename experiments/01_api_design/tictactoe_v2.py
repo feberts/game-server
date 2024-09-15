@@ -2,7 +2,7 @@
 
 # object oriented version; class Game acts as a pseudo server
 
-import tictactoe2_lib as tictactoe
+from tictactoe_v2_lib import Game
 import time
 
 players = ('x', 'o')
@@ -22,7 +22,7 @@ def user_input(current):
         except:
             print('Integers only!')
 
-game = tictactoe.Game()
+game = Game()
 my_id = game.start()
 state = game.state()
 
@@ -39,7 +39,7 @@ while not state.gameover:
                 print('Illegal move!')
     else:
         print(f'Opponents turn {players[state.current]} ...')
-        time.sleep(1)
+        time.sleep(2)
         game.opponent_move() # trigger opponents move
 
     state = game.state()

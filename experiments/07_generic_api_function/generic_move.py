@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# The goal is to reduce the amount of code required for the client API. Instead of providing a separate move-function for each game, a generic function could be used, that accepts the arguments as named args. The move could then be sent to the server as a dictionary/json.
+# The goal is to reduce the amount of code required for the client API. Instead of providing a separate move-function for each game, a generic function could be used, that accepts the arguments as keyword args. The move could then be sent to the server as a dictionary/json.
 
 import json
 

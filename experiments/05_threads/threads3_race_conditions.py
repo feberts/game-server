@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # forcing a race condition between two threads;
-# modification of an implementation found here: https://realpython.com/intro-to-python-threading/
+# modification of an example found here: https://realpython.com/intro-to-python-threading/
 
 import threading
 import time

@@ -1,3 +1,6 @@
 # Game server
 
-<!-- TODO -->
+<!-- TODO
+- INSTALL and MANUAL
+- remove experiments
+-->

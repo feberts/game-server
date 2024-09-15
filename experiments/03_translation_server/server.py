@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# echo server that can handle repeated connections and translates words
+# echo server that can handle repeated connections; it sends back translated words
 
 def german(word):
     translations = {'cat':'Katze', 'dog':'Hund'}

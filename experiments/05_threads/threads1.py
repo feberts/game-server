@@ -12,8 +12,9 @@ def thread_function(arg):
 
 print('Main programm starts')
 
-t1 = threading.Thread(target=thread_function, args=('Thread 1',)) # args as list
+t1 = threading.Thread(target=thread_function, args=('Thread 1',)) # args: list or tuple
 t2 = threading.Thread(target=thread_function, args=('Thread 2',)) # daemon=True for daemon thread
+# Thread(group=None, target=None, name=None, args=(), kwargs={}, *, daemon=None)
 
 print('Starting thread 1')
 t1.start()

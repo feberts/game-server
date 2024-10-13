@@ -1,3 +1,9 @@
+"""
+TODO Kurzbeschreibung des Moduls.
+
+TODO Ausfuehrliche Beschreibung des Moduls, ggf. ueber mehrere Zeilen.
+"""
+
 # api for game server used by the client
 
 import socket

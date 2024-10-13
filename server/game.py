@@ -1,3 +1,9 @@
+"""
+TODO Kurzbeschreibung des Moduls.
+
+TODO Ausfuehrliche Beschreibung des Moduls, ggf. ueber mehrere Zeilen.
+"""
+
 # this module implements a tic-tac-toe game class used by the server
 
 from abstract_game import AbstractGame
@@ -11,39 +17,39 @@ class State:
         self.board = [-1] * 9
 
 class Game(AbstractGame):
-    __state = State()
+    _state = State()
 
     def state_json(self):
-        return {'board':self.__state.board, 'current':self.__state.current, 'gameover':self.__state.gameover, 'winner':self.__state.winner}
+        return {'board':self._state.board, 'current':self._state.current, 'gameover':self._state.gameover, 'winner':self._state.winner}
 
     def state(self):
-        return self.__state
+        return self._state
 
     def move(self, pos):
-        if self.__move_valid(pos):
-            self.__update_board(pos)
-            self.__check_win()
-            self.__check_gameover()
-            self.__state.current ^= 1 # rotate players
+        if self._move_valid(pos):
+            self._update_board(pos)
+            self._check_win()
+            self._check_gameover()
+            self._state.current ^= 1 # rotate players
             return True
         return False
 
-    def __move_valid(self, pos):
+    def _move_valid(self, pos):
         try:
-            return pos >= 0 and self.__state.board[pos] == -1
+            return pos >= 0 and self._state.board[pos] == -1
         except:
             return False
 
-    def __update_board(self, pos):
-        self.__state.board[pos] = self.__state.current
+    def _update_board(self, pos):
+        self._state.board[pos] = self._state.current
 
-    def __check_win(self):
-        b = self.__state.board
+    def _check_win(self):
+        b = self._state.board
         for i, j, k in ((0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6)):
-            if b[i] == b[j] == b[k] == self.__state.current:
-                self.__state.winner = self.__state.current
-                self.__state.gameover = True
+            if b[i] == b[j] == b[k] == self._state.current:
+                self._state.winner = self._state.current
+                self._state.gameover = True
 
-    def __check_gameover(self):
-        if -1 not in self.__state.board:
-            self.__state.gameover = True
+    def _check_gameover(self):
+        if -1 not in self._state.board:
+            self._state.gameover = True

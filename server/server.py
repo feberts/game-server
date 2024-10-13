@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+TODO Kurzbeschreibung des Moduls.
+
+TODO Ausfuehrliche Beschreibung des Moduls, ggf. ueber mehrere Zeilen.
+"""
 
 # game server
 

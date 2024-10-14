@@ -8,7 +8,7 @@ class AbstractGame:
 
     This class serves as an abstract base class for games. Every new game must be derived from this class and implement all its methods. These methods will be called by the framework. Furthermore, every new game must be added to the list of available games. See the documentation for details on how to add new games.
 
-    None of the methods may raise exceptions. Instead, flags and error messages must be returned to respond to invalid arguments. The flags and messages are then sent back to the client, where they are returned from an API function. So make sure to return meaningful messages.
+    None of the methods may raise exceptions. Instead, flags and error messages must be returned to respond to invalid arguments. The flags and messages are then sent back to the client, where they are returned from an API function. So make sure to return meaningful messages. If one of the methods unexpectedly raises an exception, the framework will catch it and the server won't crash, but it can only report a generic error message back to the client.
 
     In some cases, the framework performs checks before it calls a method. In such a case, you can assume, that the argument passed is valid. Refer to the method descriptions to see which parameters this may apply to.
     """
@@ -53,7 +53,7 @@ class AbstractGame:
         This class must keep track of which player must perform the next move. This function reports this player's ID to the framework. The framework makes sure, that no other player can submit a move.
 
         Returns:
-        int: current players ID
+        int: current player's ID
         """
         raise NotImplementedError
 
@@ -61,14 +61,12 @@ class AbstractGame:
         """
         Submit a move.
 
-        A player's move is passed as a dictionary. The content of this dictionary entirely depends on the needs of the game. The API function to submit a move on the client side accepts the data as keyword arguments. Those keyword arguments are then converted to a dictionary.
+        A player's move is passed as a dictionary. The content of this dictionary entirely depends on the needs of the game. The API function to submit a move on the client side accepts the data as keyword arguments. Those keyword arguments are then converted to a dictionary. It is important to let the user of the API know about the names of these keywords and their data types. See the documentation on how to add new games for more details.
 
-        It is important to let the user of the API know about the names of these keywords and their data types. See the documentation on how to add new games for more details.
-
-        The framework makes sure, that only the current player can submit a move.
+        The framework makes sure, that only the current player can submit a move. The framework also guaranties, that the argument is of type dictionary, but the validity of the contained data must be checked thoroughly by the implementer of the game class.
 
         Parameters:
-        move (dict): the current players move
+        move (dict): the current player's move (must be checked)
 
         Returns:
         tuple(bool, str):

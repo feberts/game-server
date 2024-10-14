@@ -7,12 +7,17 @@ This module implements a tic-tac-toe game class.
 from abstract_game import AbstractGame
 
 class TicTacToe(AbstractGame):
-    def __init__(self, players):
+    """
+    Class TicTacToe.
+    
+    This class implements a tic-tac-toe game.
+    """
+    def __init__(self, players): # override
         """
         Constructor.
 
         Parameters:
-        players (int): number of players
+        players (int): number of players (unused)
         """
         pass
 
@@ -24,46 +29,47 @@ class TicTacToe(AbstractGame):
 
     _state = State()
 
-    def state(self, player_id):
+    def state(self, player_id): # override
         """
         Returns the game state as a dictionary.
 
         Dictionary keys and values:
-        'board'    : integer list (values: -1 = empty; 0 or 1 = player)
-        'gameover' : game has ended (values: True/False)
+        'board'    : integer list of size 9, values: -1 = empty; 0 or 1 = player
+        'gameover' : True if game has ended, else False
         'winner'   : player ID, or None if there is no winner
 
         Parameters:
-        player_id (int): player ID
+        player_id (int): player ID (unused)
 
         Returns:
         dict: game state
         """
         return {'board':self._state.board, 'gameover':self._state.gameover, 'winner':self._state.winner}
 
-    def current_player(self):
+    def current_player(self): # override
         """
         Returns the current player's ID.
 
         Returns:
-        int: current players ID
+        int: current player's ID
         """
         return self._state.current
 
-    def move(self, move):
+    def move(self, move): # override
         """
         Submit a move.
 
         The move is passed as a dictionary containing the key 'position' with a board position (0-8) as its value.
 
         Parameters:
-        move (dict): the current players move
+        move (dict): the current player's move
 
         Returns:
         tuple(bool, str):
             bool: to inform the client whether the move was valid or not
             str: error message in case the move was illegal, an empty string otherwise
         """
+        # TODO param checks
         pos = int(move['position'])
         if self._move_valid(pos):
             self._update_board(pos)
@@ -93,20 +99,8 @@ class TicTacToe(AbstractGame):
         if -1 not in self._state.board:
             self._state.gameover = True
 
-    def min_players(self):
-        """
-        Returns the minimal number of players required to play the game.
-
-        Returns:
-        int: minimal number of players
-        """
+    def min_players(self): # override
         return 2
 
-    def max_players(self):
-        """
-        Returns the maximal number of players allowed in the game.
-
-        Returns:
-        int: maximal number of players
-        """
+    def max_players(self): # override
         return 2

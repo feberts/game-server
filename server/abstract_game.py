@@ -58,6 +58,7 @@ class AbstractGame:
         raise NotImplementedError
 
     def move(self, move):
+        # TODO kann man der Funktion nicht besser kwargs übergeben? Das Framework könnte das JSON/Dictionary als kwargs übergeben. So wäre möglicherweise keine Typumwandlung (z.B. int()) mehr nötig. (https://stackoverflow.com/questions/51751929/how-can-i-pass-a-defined-dictionary-to-kwargs-in-python)
         """
         Submit a move.
 

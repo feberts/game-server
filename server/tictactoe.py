@@ -69,7 +69,16 @@ class TicTacToe(AbstractGame):
             bool: to inform the client whether the move was valid or not
             str: error message in case the move was illegal, an empty string otherwise
         """
-        # TODO param checks
+        if type(move) != dict: # TODO in Framework auslagern
+            return False, 'argument must be of type dict'
+        if 'position' not in move:
+            return False, "argument 'position' missing, please supply argument 'position=<int>'"
+        if type(move['position']) != int:
+            return False, "argument 'position' must be of type int"
+        
+        # TODO Parameterprüfung testen
+        # TODO statt _move_valid() eine feinkörnigere Überprüfung: out of range; schon belegt
+
         pos = int(move['position'])
         if self._move_valid(pos):
             self._update_board(pos)

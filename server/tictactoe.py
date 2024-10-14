@@ -21,25 +21,57 @@ class TicTacToe(AbstractGame):
         current = 0
         gameover = False
         winner = None
-        #def __init__(self):
-            #self.board = [-1] * 9
 
     _state = State()
 
-    def state_json(self):
-        return {'board':self._state.board, 'current':self._state.current, 'gameover':self._state.gameover, 'winner':self._state.winner}
+    def state(self, player_id):
+        """
+        Returns the game state as a dictionary.
+ 
+        Dictionary keys and values:
+        'board'    : integer list (values: -1 = empty; 0 or 1 = player)
+        'gameover' : game has ended (values: True/False)
+        'winner'   : player ID, or None if there is no winner
+ 
+        Parameters:
+        player_id (int): player ID
+ 
+        Returns:
+        dict: game state
+        """
+        return {'board':self._state.board, 'gameover':self._state.gameover, 'winner':self._state.winner}
 
-    def state(self):
-        return self._state
+    def current_player(self):
+        """
+        Returns the current player's ID.
 
-    def move(self, pos):
+        Returns:
+        int: current players ID
+        """
+        return self._state.current
+
+    def move(self, move):
+        """
+        Submit a move.
+
+        The move is passed as a dictionary containing the key 'position' with a board position (0-8) as its value.
+
+        Parameters:
+        move (dict): the current players move
+
+        Returns:
+        tuple(bool, str):
+            bool: to inform the client whether the move was valid or not
+            str: error message in case the move was illegal, an empty string otherwise
+        """
+        pos = int(move['position'])
         if self._move_valid(pos):
             self._update_board(pos)
             self._check_win()
             self._check_gameover()
             self._state.current ^= 1 # rotate players
-            return True
-        return False
+            return True, ''
+        return False, 'position already occupied'
 
     def _move_valid(self, pos):
         try:

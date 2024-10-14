@@ -46,49 +46,49 @@ class AbstractGame:
 #        """
 #        raise NotImplementedError
 #
-#    def current_player(self):
-#        """
-#        Returns the current player's ID.
-#
-#        This class must keep track of which player must perform the next move. This function reports this player's ID to the framework. The framework makes sure, that no other player can submit a move.
-#
-#        Returns:
-#        int: current players ID
-#        """
-#        raise NotImplementedError
-#
-#    def move(self, move):
-#        """
-#        Submit a move.
-#
-#        A player's move is passed as a dictionary. The content of this dictionary entirely depends on the needs of the game. The API function to submit a move on the client side accepts the data as keyword arguments. Those keyword arguments are then converted to a dictionary.
-#
-#        It is important to let the user of the API know about the names of these keywords and their data types. See the documentation on how to add new games for more details.
-#
-#        The framework makes sure, that only the current player can submit a move.
-#
-#        Parameters:
-#        move (dict): the current players move
-#
-#        Returns:
-#        tuple(bool, str):
-#            bool: to inform the client whether the move was valid or not
-#            str: error message in case the move was illegal, an empty string otherwise
-#        """
-#        raise NotImplementedError
-#
-#    def state(self, player_id):
-#        """
-#        Returns the game state as a dictionary.
-#
-#        This can be the complete state of the game, or just specific information for a specific player. What information is returned depends entirely on the game. In some games all information is available to all players, in other games players can possess information that is hidden from the others.
-#
-#        It is important to let the user of the API know how the dictionary is structured so he can access its content. See the documentation on how to add new games for more details.
-#
-#        Parameters:
-#        player_id (int): player ID (no parameter check needed)
-#
-#        Returns:
-#        dict: game state
-#        """
-#        raise NotImplementedError
+    def current_player(self):
+        """
+        Returns the current player's ID.
+
+        This class must keep track of which player must perform the next move. This function reports this player's ID to the framework. The framework makes sure, that no other player can submit a move.
+
+        Returns:
+        int: current players ID
+        """
+        raise NotImplementedError
+
+    def move(self, move):
+        """
+        Submit a move.
+
+        A player's move is passed as a dictionary. The content of this dictionary entirely depends on the needs of the game. The API function to submit a move on the client side accepts the data as keyword arguments. Those keyword arguments are then converted to a dictionary.
+
+        It is important to let the user of the API know about the names of these keywords and their data types. See the documentation on how to add new games for more details.
+
+        The framework makes sure, that only the current player can submit a move.
+
+        Parameters:
+        move (dict): the current players move
+
+        Returns:
+        tuple(bool, str):
+            bool: to inform the client whether the move was valid or not
+            str: error message in case the move was illegal, an empty string otherwise
+        """
+        raise NotImplementedError
+
+    def state(self, player_id):
+        """
+        Returns the game state as a dictionary.
+ 
+        This can be the complete state of the game, or just specific information for a specific player. What information is returned depends entirely on the game. In some games all information is available to all players, in other games players can possess information that is hidden from the others.
+ 
+        It is important to let the user of the API know how the dictionary is structured so he can access its content. See the documentation on how to add new games for more details.
+ 
+        Parameters:
+        player_id (int): player ID (no parameter check needed)
+ 
+        Returns:
+        dict: game state
+        """
+        raise NotImplementedError

@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
-
-# object oriented version; class Game acts as a pseudo server
+"""
+Testing class TicTacToe
+"""
 
 from tictactoe import TicTacToe
-#import time
-
-game = TicTacToe(2)
-
-"""
-players = ('x', 'o')
 
 def print_board(board):
     board = [i if board[i] == -1 else players[board[i]] for i in range(9)]
@@ -25,31 +20,30 @@ def user_input(current):
         except:
             print('Integers only!')
 
-my_id = game.start()
-state = game.state()
 
-while not state.gameover:
-    print_board(state.board)
+players = ('x', 'o')
+game = TicTacToe(2)
+current = game.current_player()
+state = game.state(current)
 
-    if state.current == my_id: # my turn
-        while True:
-            pos = user_input(state.current)
-            ok = game.move(pos)
-            if ok:
-                break
-            else:
-                print('Illegal move!')
-    else:
-        print(f'Opponents turn {players[state.current]} ...')
-        time.sleep(2)
-        game.opponent_move() # trigger opponents move
+while not state['gameover']:
+    print_board(state['board'])
 
-    state = game.state()
+    while True:
+        pos = user_input(current)
+        ok, msg = game.move({'position' : pos})
+        if ok:
+            break
+        else:
+            print(msg)
 
-print_board(state.board)
+    state = game.state(current)
+    current = game.current_player()
 
-if state.winner == None:
+print_board(state['board'])
+winner = state['winner']
+
+if winner == None:
     print('No winner!')
 else:
-    print(f'Player {players[state.winner]} wins!')
-"""
+    print(f'Player {players[int(winner)]} wins!')

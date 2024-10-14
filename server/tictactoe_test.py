@@ -20,7 +20,6 @@ def user_input(current):
         except:
             print('Integers only!')
 
-
 players = ('x', 'o')
 game = TicTacToe(2)
 current = game.current_player()

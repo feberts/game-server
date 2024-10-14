@@ -24,28 +24,28 @@ class AbstractGame:
         """
         raise NotImplementedError
 
-#    def min_players(self):
-#        """
-#        Returns the minimal number of players.
-#
-#        This function reports the minimal number of players required to play the game to the framework.
-#
-#        Returns:
-#        int: minimal number of players
-#        """
-#        raise NotImplementedError
-#
-#    def max_players(self):
-#        """
-#        Returns the maximal number of players.
-#
-#        This function reports the maximal number of players allowed in the game to the framework.
-#
-#        Returns:
-#        int: maximal number of players
-#        """
-#        raise NotImplementedError
-#
+    def min_players(self):
+        """
+        Returns the minimal number of players.
+
+        This function reports the minimal number of players required to play the game to the framework.
+
+        Returns:
+        int: minimal number of players
+        """
+        raise NotImplementedError
+
+    def max_players(self):
+        """
+        Returns the maximal number of players.
+
+        This function reports the maximal number of players allowed in the game to the framework.
+
+        Returns:
+        int: maximal number of players
+        """
+        raise NotImplementedError
+
     def current_player(self):
         """
         Returns the current player's ID.
@@ -80,14 +80,14 @@ class AbstractGame:
     def state(self, player_id):
         """
         Returns the game state as a dictionary.
- 
+
         This can be the complete state of the game, or just specific information for a specific player. What information is returned depends entirely on the game. In some games all information is available to all players, in other games players can possess information that is hidden from the others.
- 
+
         It is important to let the user of the API know how the dictionary is structured so he can access its content. See the documentation on how to add new games for more details.
- 
+
         Parameters:
         player_id (int): player ID (no parameter check needed)
- 
+
         Returns:
         dict: game state
         """

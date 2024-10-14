@@ -27,15 +27,15 @@ class TicTacToe(AbstractGame):
     def state(self, player_id):
         """
         Returns the game state as a dictionary.
- 
+
         Dictionary keys and values:
         'board'    : integer list (values: -1 = empty; 0 or 1 = player)
         'gameover' : game has ended (values: True/False)
         'winner'   : player ID, or None if there is no winner
- 
+
         Parameters:
         player_id (int): player ID
- 
+
         Returns:
         dict: game state
         """
@@ -92,3 +92,21 @@ class TicTacToe(AbstractGame):
     def _check_gameover(self):
         if -1 not in self._state.board:
             self._state.gameover = True
+
+    def min_players(self):
+        """
+        Returns the minimal number of players required to play the game.
+
+        Returns:
+        int: minimal number of players
+        """
+        return 2
+
+    def max_players(self):
+        """
+        Returns the maximal number of players allowed in the game.
+
+        Returns:
+        int: maximal number of players
+        """
+        return 2

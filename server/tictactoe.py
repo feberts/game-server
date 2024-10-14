@@ -9,7 +9,7 @@ from abstract_game import AbstractGame
 class TicTacToe(AbstractGame):
     """
     Class TicTacToe.
-    
+
     This class implements a tic-tac-toe game.
     """
     def __init__(self, players): # override

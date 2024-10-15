@@ -61,12 +61,10 @@ class TicTacToe(AbstractGame):
             bool: to inform the client whether the move was valid or not
             str: error message in case the move was illegal, an empty string otherwise
         """
-        if type(args) != dict: # TODO in Framework auslagern
-            return False, 'argument must be of type dict'
         if 'position' not in args:
-            return False, "argument 'position' missing, please supply argument 'position=<int>'"
+            return False, "keyword argument 'position' of type int missing"
         if type(args['position']) != int:
-            return False, "argument 'position' must be of type int"
+            return False, "data type of argument 'position' must be int"
 
         pos = int(args['position'])
         valid, msg = self._check_move(pos)
@@ -80,7 +78,7 @@ class TicTacToe(AbstractGame):
 
     def _check_move(self, pos):
         if pos < 0 or pos > 8:
-            return False, "argument 'position' must be 0..8"
+            return False, 'value must be 0..8'
         if self._state.board[pos] != -1:
             return False, 'position already occupied'
         return True, ''

@@ -33,7 +33,7 @@ while not state['gameover']:
 
     while True:
         pos = user_input(current)
-        ok, msg = game.move(position=pos)
+        ok, msg = game.move({'position':pos})
         if ok:
             break
         else:

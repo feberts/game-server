@@ -12,14 +12,6 @@ class TicTacToe(AbstractGame):
 
     This class implements a tic-tac-toe game.
     """
-    def __init__(self, players): # override
-        """
-        Constructor.
-
-        Parameters:
-        players (int): number of players (unused)
-        """
-        pass
 
     class State:
         board = [-1] * 9
@@ -75,24 +67,23 @@ class TicTacToe(AbstractGame):
             return False, "argument 'position' missing, please supply argument 'position=<int>'"
         if type(move['position']) != int:
             return False, "argument 'position' must be of type int"
-        
-        # TODO Parameterprüfung testen
-        # TODO statt _move_valid() eine feinkörnigere Überprüfung: out of range; schon belegt
 
         pos = int(move['position'])
-        if self._move_valid(pos):
-            self._update_board(pos)
-            self._check_win()
-            self._check_gameover()
-            self._state.current ^= 1 # rotate players
-            return True, ''
-        return False, 'position already occupied'
+        valid, msg = self._check_move(pos)
+        if not valid: return False, msg
 
-    def _move_valid(self, pos):
-        try:
-            return pos >= 0 and self._state.board[pos] == -1
-        except:
-            return False
+        self._update_board(pos)
+        self._check_win()
+        self._check_gameover()
+        self._state.current ^= 1 # rotate players
+        return True, ''
+
+    def _check_move(self, pos):
+        if pos < 0 or pos > 8:
+            return False, "argument 'position' must be 0..8"
+        if self._state.board[pos] != -1:
+            return False, 'position already occupied'
+        return True, ''
 
     def _update_board(self, pos):
         self._state.board[pos] = self._state.current
@@ -107,6 +98,15 @@ class TicTacToe(AbstractGame):
     def _check_gameover(self):
         if -1 not in self._state.board:
             self._state.gameover = True
+
+    def __init__(self, players): # override
+        """
+        Constructor.
+
+        Parameters:
+        players (int): number of players (unused)
+        """
+        pass
 
     def min_players(self): # override
         return 2

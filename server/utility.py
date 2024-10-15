@@ -1,7 +1,7 @@
 """
 Utility functions.
 
-This module provides utility functions for different purposes.
+This module provides utility functions for various purposes.
 """
 
 def check_dict(d, expected):

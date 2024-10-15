@@ -57,17 +57,16 @@ class AbstractGame:
         """
         raise NotImplementedError
 
-    def move(self, move):
-        # TODO kann man der Funktion nicht besser kwargs übergeben? Das Framework könnte das JSON/Dictionary als kwargs übergeben. So wäre möglicherweise keine Typumwandlung (z.B. int()) mehr nötig. (https://stackoverflow.com/questions/51751929/how-can-i-pass-a-defined-dictionary-to-kwargs-in-python)
+    def move(self, args):
         """
         Submit a move.
 
-        A player's move is passed as a dictionary. The content of this dictionary entirely depends on the needs of the game. The API function to submit a move on the client side accepts the data as keyword arguments. Those keyword arguments are then converted to a dictionary. It is important to let the user of the API know about the names of these keywords and the data type of their values. See the documentation on how to add new games for more details.
+        A player's move is passed as a dictionary. The content of this dictionary entirely depends on the needs of the game. The API function to submit a move on the client side accepts the data as keyword arguments. Those keyword arguments are then converted to a dictionary. It is important to let the user of the API know about the names of these keywords and the expected data type of their values. See the documentation on how to add new games for more details.
 
         The framework makes sure, that only the current player can submit a move. The framework also guaranties, that the argument is of type dictionary, but the validity of the contained data must be checked thoroughly by the implementer of the game class.
 
         Parameters:
-        move (dict): the current player's move (must be checked)
+        args (dict): the current player's move (must be checked)
 
         Returns:
         tuple(bool, str):

@@ -47,28 +47,28 @@ class TicTacToe(AbstractGame):
         """
         return self._state.current
 
-    def move(self, move): # override
+    def move(self, args): # override
         """
         Submit a move.
 
         The move is passed as a dictionary containing the key 'position' with a board position (0-8) as its value.
 
         Parameters:
-        move (dict): the current player's move
+        args (dict): the current player's move
 
         Returns:
         tuple(bool, str):
             bool: to inform the client whether the move was valid or not
             str: error message in case the move was illegal, an empty string otherwise
         """
-        if type(move) != dict: # TODO in Framework auslagern
+        if type(args) != dict: # TODO in Framework auslagern
             return False, 'argument must be of type dict'
-        if 'position' not in move:
+        if 'position' not in args:
             return False, "argument 'position' missing, please supply argument 'position=<int>'"
-        if type(move['position']) != int:
+        if type(args['position']) != int:
             return False, "argument 'position' must be of type int"
 
-        pos = int(move['position'])
+        pos = int(args['position'])
         valid, msg = self._check_move(pos)
         if not valid: return False, msg
 

@@ -6,21 +6,21 @@ class AbstractGame:
     """
     Base class for games.
 
-    This class serves as an abstract base class for games. Every new game must be derived from this class and implement all its methods. These methods will be called by the framework. Furthermore, every new game must be added to the list of available games. See the documentation for details on how to add new games.
+    This class serves as a base class for games. Every new game must be derived from this class and implement all its methods. These methods will be called by the framework. Furthermore, every new game must be added to the list of available games. See the documentation for details on how to add new games.
 
-    None of the methods may raise exceptions. Instead, flags and error messages must be returned to respond to invalid arguments. The flags and messages are then sent back to the client, where they are returned from an API function. So make sure to return meaningful messages. If one of the methods unexpectedly raises an exception, the framework will catch it to prevent the server from crashing, but it will only report a generic error message back to the client.
+    In some cases, the framework performs checks before it calls a method. In such a case, it can be assumed, that the argument passed is valid. Refer to the method descriptions to see which parameters this may apply to.
 
-    In some cases, the framework performs checks before it calls a method. In such a case, you can assume, that the argument passed is valid. Refer to the method descriptions to see which parameters this may apply to.
+    None of the methods may raise exceptions. If this happens anyway, the framework will catch the exception to prevent the server from crashing, log this event and report a generic error message back to the client, but it will also stop the execution of that game.
     """
 
     def __init__(self, players):
         """
         Constructor.
 
-        The framework assigns IDs in the range 0..n-1 to all players that join a game. It then passes the total number of players to the constructor.
+        The framework assigns IDs in the range 0..n-1 to all players that join a game. It then passes the total number of players to the constructor. The framework makes sure, that only a defined number of players can join the game.
 
         Parameters:
-        players (int): number of players (no parameter check needed)
+        players (int): number of players (no parameter check required)
         """
         raise NotImplementedError
 
@@ -39,10 +39,10 @@ class AbstractGame:
         """
         Returns the maximal number of players.
 
-        This function reports the maximal number of players allowed in the game to the framework.
+        This function reports the highest allowed number of players in the game to the framework.
 
         Returns:
-        int: maximal number of players
+        int: highest number of players
         """
         raise NotImplementedError
 
@@ -65,6 +65,8 @@ class AbstractGame:
 
         The framework makes sure, that only the current player can submit a move. The framework also guaranties, that the argument is of type dictionary, but the validity of the contained data must be checked thoroughly by the implementer of the game class.
 
+        In order to respond to invalid moves, flags and error messages must be returned. These are then sent back to the client, where they are returned from an API function. So make sure to return meaningful messages.
+
         Parameters:
         args (dict): the current player's move (must be checked)
 
@@ -84,7 +86,7 @@ class AbstractGame:
         It is important to let the user of the API know how the dictionary is structured so he can access its content. See the documentation on how to add new games for more details.
 
         Parameters:
-        player_id (int): player ID (no parameter check needed)
+        player_id (int): player ID (no parameter check required)
 
         Returns:
         dict: game state

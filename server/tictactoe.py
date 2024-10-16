@@ -64,7 +64,7 @@ class TicTacToe(AbstractGame):
         if 'position' not in args:
             return False, "keyword argument 'position' of type int missing"
         if type(args['position']) != int:
-            return False, "data type of argument 'position' must be int"
+            return False, "type of argument 'position' must be int"
 
         pos = int(args['position'])
         valid, msg = self._check_move(pos)

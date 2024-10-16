@@ -1,4 +1,6 @@
 """
+Game base class.
+
 This module provides a base class for games.
 """
 

@@ -1,7 +1,7 @@
 """
 Tic-tac-toe game.
 
-This module implements a tic-tac-toe game class.
+This module provides a tic-tac-toe implementation.
 """
 
 from abstract_game import AbstractGame
@@ -72,7 +72,7 @@ class TicTacToe(AbstractGame):
 
         self._update_board(pos)
         self._check_win()
-        self._check_gameover()
+        self._check_board_full()
         self._state.current ^= 1 # rotate players
         return True, ''
 
@@ -93,17 +93,11 @@ class TicTacToe(AbstractGame):
                 self._state.winner = self._state.current
                 self._state.gameover = True
 
-    def _check_gameover(self):
+    def _check_board_full(self):
         if -1 not in self._state.board:
             self._state.gameover = True
 
-    def __init__(self, players): # override
-        """
-        Constructor.
-
-        Parameters:
-        players (int): number of players (unused)
-        """
+    def __init__(self, _): # override
         pass
 
     def min_players(self): # override

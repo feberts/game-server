@@ -1,7 +1,7 @@
 """
 Tic-tac-toe game.
 
-This module provides a tic-tac-toe implementation.
+This module provides a tic-tac-toe implementation to be executed by the framework.
 """
 
 from abstract_game import AbstractGame

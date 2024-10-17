@@ -16,22 +16,36 @@ class GameServerAPI:
     This class provides API functions to communicate with the game server.
     """
     
-    def start_game(self, server, port, game, token, players):
+    def start_game(self, server, port, game, players, token):
         """
         Start a game.
 
-        This function asks the server to start a game. Other clients can use the join-function to join that game. To be able to join, they need to know the chosen token. The token is used, to identify the game session. It can be any string. This is a blocking function; the game starts as soon as the specified number of clients has joined the game.
+        This function asks the server to start a game. Other clients can use the join-function to join that game. To be able to join, they need to know the chosen token. The token is used, to identify the game session. It can be any string. This is a blocking function; the game starts as soon as the specified number of clients has joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
 
         Parameters:
         server (str): Server IP
         port (int): port number
         game (str): name of the game
-        token (str): name of the game session
         players (int): total number of players
+        token (str): name of the game session
 
         Returns:
-        tuple(bool, str):
-            bool: True, if the game was successfully started, else False
-            str: error message, if there is a problem, an empty string otherwise
+        tuple(int, str):
+            int: player ID, if the game was successfully started, else None
+            str: error message, if a problem occurred, an empty string otherwise
         """
-        pass
+        self._server = server
+        self._port = port
+        self._game = game
+        self._players = players 
+        self._token = token
+
+
+
+
+    _server = None # TODO funktioniert auch mit Domainnamen???
+    _port = None
+    _game = None
+    _players = None
+    _token = None
+    _player_id = None

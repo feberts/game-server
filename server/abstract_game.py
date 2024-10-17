@@ -19,7 +19,7 @@ class AbstractGame:
         """
         Constructor.
 
-        The framework assigns IDs in the range 0..n-1 to all players that join a game. It then passes the total number of players to the constructor. The framework makes sure, that only a defined number of players can join the game.
+        The framework assigns IDs in the range 0..players-1 to all players that join a game. It then passes the total number of players to the constructor. The framework makes sure, that only a defined number of players can join the game.
 
         Parameters:
         players (int): number of players (no parameter check required)

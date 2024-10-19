@@ -28,7 +28,7 @@ class GameServerAPI:
         This is a blocking function. The game starts as soon as the specified number of clients has joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
 
         Parameters:
-        server (str): server IP/domain
+        server (str): server IP
         port (int): port number
         game (str): name of the game
         players (int): total number of players
@@ -48,7 +48,7 @@ class GameServerAPI:
         #TODO parameterprüfung
         
         reply, msg = self._send({'Vom Client':123})
-        print(reply, msg)
+        print('Data:', reply, '\nMessage:', msg)
         return 42, 'ok'
 
     def _send(self, data):
@@ -67,23 +67,44 @@ class GameServerAPI:
         """
         BUFFER_SIZE = 1024
         
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
-            # connect to server:
-            sd.connect((self._server, self._port))
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
+                # connect to server:
+                self._server, self._port = '127.0.0.1', 4711
+                sd.connect((self._server, self._port))
 
-            # send data to server:
-            write = json.dumps(data)
-            write = bytes(write, 'utf-8')
-            sd.sendall(write)
-    
-            # receive data from server:
-            read = sd.recv(BUFFER_SIZE)
-            read = str(read, 'utf-8')
-            read = json.loads(read)
+                # send data to server:
+                write = json.dumps(data)
+                write = bytes(write, 'utf-8')
+                sd.sendall(write)
+        
+                # receive data from server:
+                read = sd.recv(BUFFER_SIZE)
+                read = str(read, 'utf-8')
+                read = json.loads(read)
+
+        except ConnectionRefusedError:
+            return None, f'could not connect to server {self._server}:{self._port}'
+        except socket.gaierror:
+            return None, f'not a valid ip {self._server}'
+        except OverflowError:
+            return None, f'not a valid port {self._port}'
+        except ConnectionResetError:
+            return None, f'internal server error: connection disrupted by server'
+        except json.decoder.JSONDecodeError:
+            return None, f'internal server error: server response missing'
 
         return read, ''
-        # TODO Fehlerfälle
-
+        # TODO Fehlerfälle:
+        # - [x] falsche ip bzw. server nicht erreichbar
+        # - [x] ungültige ip
+        # - [x] falscher port
+        # - [x] ungültiger port
+        # - [x] server stürzt während kommunikation ab
+        # - [ ] buffer size überschritten, weil server zu viel sendet?
+        # - [ ] buffer size überschritten, weil client zu viel sendet?
+        # - [ ] zeitüberschreitung
+        # - [x] server sendet kein gültiges json
 
     _server = None
     _port = None

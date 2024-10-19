@@ -76,14 +76,14 @@ class GameServerAPI:
                 sd.connect((self._server, self._port))
 
                 # send data to server:
-                write = json.dumps(data)
-                write = bytes(write, 'utf-8')
-                sd.sendall(write)
+                request = json.dumps(data)
+                request = bytes(request, 'utf-8')
+                sd.sendall(request)
         
                 # receive data from server:
-                read = sd.recv(BUFFER_SIZE)
-                read = str(read, 'utf-8')
-                read = json.loads(read)
+                response = sd.recv(BUFFER_SIZE)
+                response = str(response, 'utf-8')
+                response = json.loads(response)
                 
         except ConnectionRefusedError:
             return None, f'could not connect to server {self._server}:{self._port}'
@@ -98,17 +98,18 @@ class GameServerAPI:
         except socket.timeout:
             return None, f'internal server error: connection timed out'
 
-        return read, ''
+        return response, ''
         # TODO Fehlerfälle:
-        # - [x] falsche ip bzw. server nicht erreichbar
-        # - [x] ungültige ip
-        # - [x] falscher port
-        # - [x] ungültiger port
-        # - [x] server stürzt während kommunikation ab
+        # - [ ] falsche ip bzw. server nicht erreichbar
+        # - [ ] ungültige ip
+        # - [ ] falscher port
+        # - [ ] ungültiger port
+        # - [ ] server stürzt während kommunikation ab
+        # - [ ] zeitüberschreitung
+        # - [ ] server sendet kein gültiges json
+
         # - [ ] buffer size überschritten, weil server zu viel sendet?
         # - [ ] buffer size überschritten, weil client zu viel sendet?
-        # - [x] zeitüberschreitung
-        # - [x] server sendet kein gültiges json
 
     _server = None
     _port = None

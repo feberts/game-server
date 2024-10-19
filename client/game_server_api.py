@@ -65,8 +65,6 @@ class GameServerAPI:
             dict: data returned by server, None in case of an error
             str: error message, if a problem occurred, an empty string otherwise
         """
-        BUFFER_SIZE = 1024
-        TIME_OUT = 5
         
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
             try:
@@ -83,10 +81,13 @@ class GameServerAPI:
                 sd.sendall(request)
 
                 # receive data from server:
-                response = sd.recv(BUFFER_SIZE)
+                response = bytearray()
+                while True:
+                    data = sd.recv(4096)
+                    if not data: break
+                    response += data
                 response = str(response, 'utf-8')
                 response = json.loads(response)
-                
                 return response, ''
             except: # TODO more detailed error handling?
                 return None, f'failed exchanging data with server'

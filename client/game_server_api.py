@@ -9,8 +9,8 @@ This module provides an API for communicating with the game server. The API can 
 - request the game state
 """
 
-import socket
 import json
+import socket
 
 class GameServerAPI:
     """
@@ -23,7 +23,9 @@ class GameServerAPI:
         """
         Start a game.
 
-        This function asks the server to start a game. Other clients can use the join-function to join that game. To be able to join, they need to know the chosen token. The token is used, to identify the game session. It can be any string. This is a blocking function; the game starts as soon as the specified number of clients has joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
+        This function asks the server to start a game. Other clients can use the join-function to join that game. To be able to join, they need to know the chosen token. The token is used, to identify the game session. It can be any string. A repeated call of this function with the same values for parameters 'game' and 'token' will end the previous session.
+        
+        This is a blocking function. The game starts as soon as the specified number of clients has joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
 
         Parameters:
         server (str): Server IP
@@ -45,36 +47,41 @@ class GameServerAPI:
         
         #TODO parameterprüfung
         
-        self._send({'Gesendet':123})
+        self._send({'Vom Client':123})
         return 42, 'ok'
 
     def _send(self, data):
         """
-        Send data to server and receive reply.
+        Send data to server and receive a reply.
         
-        This function sends data to the server and returns the data sent back from the server. There will not 
+        This function sends data to the server and returns the data sent back by the server. No permanent connection is established. The data is sent in JSON format. Make sure, that the passed dictionary's content is compatible with JSON.
 
         Parameters:
-        data (dict): data sent to server
+        data (dict): data to be sent to the server
 
         Returns:
-        tuple(bool, dict):
-            bool: TODO True, if connection could be established, else False
-            dict: data returned from server
+        tuple(dict, str):
+            dict: data returned from server, None in case of an error
+            str: error message, if a problem occurred, an empty string otherwise
         """
         BUFFER_SIZE = 1024
         
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
+            # connect to server:
             sd.connect((self._server, self._port))
 
-            data = json.dumps(data)
-            write = bytes(data, 'utf-8')
+            # send data to server:
+            write = json.dumps(data)
+            write = bytes(write, 'utf-8')
             sd.sendall(write)
-
+    
+            # receive data from server:
             read = sd.recv(BUFFER_SIZE)
-            read = str(read, 'utf-8') # received.decode("utf-8")
+            read = str(read, 'utf-8')
             read = json.loads(read)
-            print(read)
+
+        return read, ''
+        # TODO Fehlerfälle
 
 
     _server = None # TODO funktioniert auch mit Domainnamen???

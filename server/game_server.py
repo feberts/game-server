@@ -12,18 +12,24 @@ IP = '127.0.0.1'
 PORT = 4711
 BUFFER_SIZE = 1024
 
+def framework_function(data):
+    return {'Vom Sever':456}
+
 def request_handler(conn):
     with conn:
         # receive data from client:
-        read = conn.recv(BUFFER_SIZE)
-        read = str(read, 'utf-8')
-        read = json.loads(read)
-        print(f"Received data from {ip}:{port}: {read}")
+        request = conn.recv(BUFFER_SIZE)
+        request = str(request, 'utf-8')
+        request = json.loads(request)
+        print(f"Received data from {ip}:{port}: {request}")
+        
+        # pass data to the framework:
+        response = framework_function(request)
 
-        # send data to client:
-        reply = {'Vom Sever':456}
-        state = json.dumps(reply)
-        conn.sendall(bytes(state, 'utf-8'))
+        # send response to client:
+        #reply = {'Vom Sever':456}
+        response = json.dumps(response)
+        conn.sendall(bytes(response, 'utf-8'))
 
         # close connection:
         #conn.close() # TODO weg
@@ -44,6 +50,7 @@ try:
             ip, port = client
             print(f'Accepted connection from {ip}:{port}')
 
+            # handle request in seperate thread:
             t = threading.Thread(target=request_handler, args=(conn,), daemon=True)
             t.start()
             #request_handler(conn)

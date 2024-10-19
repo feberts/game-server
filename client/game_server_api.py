@@ -68,46 +68,30 @@ class GameServerAPI:
         BUFFER_SIZE = 1024
         TIME_OUT = 5
         
-        try:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
+            try:
                 # connect to server:
-                self._server, self._port = '127.0.0.1', 4711 # TODO weg
-                sd.settimeout(TIME_OUT) # TODO auch auf Server ???
+                self._server, self._port = '127.0.1', 4711 # TODO weg
                 sd.connect((self._server, self._port))
+            except:
+                return None, f'unable to connect to {self._server}:{self._port}'
 
+            try:
                 # send data to server:
                 request = json.dumps(data)
                 request = bytes(request, 'utf-8')
                 sd.sendall(request)
-        
+
                 # receive data from server:
                 response = sd.recv(BUFFER_SIZE)
                 response = str(response, 'utf-8')
                 response = json.loads(response)
                 
-        except ConnectionRefusedError:
-            return None, f'could not connect to server {self._server}:{self._port}'
-        except socket.gaierror:
-            return None, f'not a valid ip {self._server}'
-        except OverflowError:
-            return None, f'not a valid port {self._port}'
-        except ConnectionResetError:
-            return None, f'internal server error: connection disrupted by server'
-        except json.decoder.JSONDecodeError:
-            return None, f'internal server error: server response missing'
-        except socket.timeout:
-            return None, f'internal server error: connection timed out'
+                return response, ''
+            except: # TODO more detailed error handling?
+                return None, f'failed exchanging data with server'
 
-        return response, ''
         # TODO Fehlerfälle:
-        # - [ ] falsche ip bzw. server nicht erreichbar
-        # - [ ] ungültige ip
-        # - [ ] falscher port
-        # - [ ] ungültiger port
-        # - [ ] server stürzt während kommunikation ab
-        # - [ ] zeitüberschreitung
-        # - [ ] server sendet kein gültiges json
-
         # - [ ] buffer size überschritten, weil server zu viel sendet?
         # - [ ] buffer size überschritten, weil client zu viel sendet?
 

@@ -9,6 +9,9 @@ This module provides an API for communicating with the game server. The API can 
 - request the game state
 """
 
+import socket
+import json
+
 class GameServerAPI:
     """
     Class GameServerAPI.
@@ -39,8 +42,39 @@ class GameServerAPI:
         self._game = game
         self._players = players 
         self._token = token
+        
+        #TODO parameterprüfung
+        
+        self._send({'Gesendet':123})
+        return 42, 'ok'
 
+    def _send(self, data):
+        """
+        Send data to server and receive reply.
+        
+        This function sends data to the server and returns the data sent back from the server. There will not 
 
+        Parameters:
+        data (dict): data sent to server
+
+        Returns:
+        tuple(bool, dict):
+            bool: TODO True, if connection could be established, else False
+            dict: data returned from server
+        """
+        BUFFER_SIZE = 1024
+        
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
+            sd.connect((self._server, self._port))
+
+            data = json.dumps(data)
+            write = bytes(data, 'utf-8')
+            sd.sendall(write)
+
+            read = sd.recv(BUFFER_SIZE)
+            read = str(read, 'utf-8') # received.decode("utf-8")
+            read = json.loads(read)
+            print(read)
 
 
     _server = None # TODO funktioniert auch mit Domainnamen???

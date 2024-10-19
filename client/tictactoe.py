@@ -9,4 +9,6 @@ from game_server_api import GameServerAPI
 
 api = GameServerAPI()
 
-api.start_game(server='127.0.0.1', port=4711, game='TicTacToe', players=2, token='mygame')
+player_id, msg = api.start_game(server='127.0.0.1', port=4711, game='TicTacToe', players=2, token='mygame')
+
+print(player_id, msg)

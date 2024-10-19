@@ -66,7 +66,7 @@ class GameServerAPI:
             str: error message, if a problem occurred, an empty string otherwise
         """
         BUFFER_SIZE = 1024
-        TIME_OUT = 3
+        TIME_OUT = 5
         
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:

@@ -66,11 +66,13 @@ class GameServerAPI:
             str: error message, if a problem occurred, an empty string otherwise
         """
         BUFFER_SIZE = 1024
+        TIME_OUT = 3
         
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
                 # connect to server:
-                self._server, self._port = '127.0.0.1', 4711
+                self._server, self._port = '127.0.0.1', 4711 # TODO weg
+                sd.settimeout(TIME_OUT)
                 sd.connect((self._server, self._port))
 
                 # send data to server:
@@ -93,6 +95,8 @@ class GameServerAPI:
             return None, f'internal server error: connection disrupted by server'
         except json.decoder.JSONDecodeError:
             return None, f'internal server error: server response missing'
+        except socket.timeout:
+            return None, f'internal server error: connection timed out'
 
         return read, ''
         # TODO Fehlerfälle:
@@ -103,7 +107,7 @@ class GameServerAPI:
         # - [x] server stürzt während kommunikation ab
         # - [ ] buffer size überschritten, weil server zu viel sendet?
         # - [ ] buffer size überschritten, weil client zu viel sendet?
-        # - [ ] zeitüberschreitung
+        # - [x] zeitüberschreitung
         # - [x] server sendet kein gültiges json
 
     _server = None

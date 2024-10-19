@@ -5,11 +5,11 @@ TODO
 
 import json
 import socket
+import time # TODO weg
 
 IP = '127.0.0.1'
 PORT = 4711
 BUFFER_SIZE = 1024
-
 try:
     # open listening socket:
     sd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -34,6 +34,7 @@ try:
         reply = {'Vom Sever':456}
         state = json.dumps(reply)
         conn.sendall(bytes(state, 'utf-8'))
+        #time.sleep(1000) # TODO weg
 
         # close connection:
         conn.close()

@@ -28,7 +28,7 @@ class GameServerAPI:
         This is a blocking function. The game starts as soon as the specified number of clients has joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
 
         Parameters:
-        server (str): Server IP
+        server (str): server IP/domain
         port (int): port number
         game (str): name of the game
         players (int): total number of players
@@ -47,21 +47,22 @@ class GameServerAPI:
         
         #TODO parameterprüfung
         
-        self._send({'Vom Client':123})
+        reply, msg = self._send({'Vom Client':123})
+        print(reply, msg)
         return 42, 'ok'
 
     def _send(self, data):
         """
         Send data to server and receive a reply.
         
-        This function sends data to the server and returns the data sent back by the server. No permanent connection is established. The data is sent in JSON format. Make sure, that the passed dictionary's content is compatible with JSON.
+        This function sends data to the server and returns the data sent back by the server. The data is sent in JSON format. Make sure, that the passed dictionary's content is compatible with JSON.
 
         Parameters:
         data (dict): data to be sent to the server
 
         Returns:
         tuple(dict, str):
-            dict: data returned from server, None in case of an error
+            dict: data returned by server, None in case of an error
             str: error message, if a problem occurred, an empty string otherwise
         """
         BUFFER_SIZE = 1024
@@ -84,7 +85,7 @@ class GameServerAPI:
         # TODO Fehlerfälle
 
 
-    _server = None # TODO funktioniert auch mit Domainnamen???
+    _server = None
     _port = None
     _game = None
     _players = None

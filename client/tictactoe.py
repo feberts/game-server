@@ -11,4 +11,4 @@ api = GameServerAPI()
 
 player_id, msg = api.start_game(server='127.0.0.1', port=4711, game='TicTacToe', players=2, token='mygame')
 
-print(player_id, msg)
+#print(player_id, msg)

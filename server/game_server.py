@@ -10,39 +10,39 @@ import time # TODO weg
 IP = '127.0.0.1'
 PORT = 4711
 BUFFER_SIZE = 1024
+
 try:
     # open listening socket:
-    sd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sd.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sd.bind((IP, PORT))
-    sd.listen()
-    print(f'Listening on {IP}:{PORT}')
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
+        sd.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        sd.bind((IP, PORT))
+        sd.listen()
+        print(f'Listening on {IP}:{PORT}')
 
-    while True:
-        # accept a connection:
-        conn, client = sd.accept()
-        ip, port = client
-        print(f'Accepted connection from {ip}:{port}')
+        while True:
+            # accept a connection:
+            conn, client = sd.accept()
+            ip, port = client
+            print(f'Accepted connection from {ip}:{port}')
 
-        # receive data from client:
-        read = conn.recv(BUFFER_SIZE)
-        read = str(read, 'utf-8')
-        read = json.loads(read)
-        print(f"Received data from {ip}:{port}: {read}")
+            with conn:
+                # receive data from client:
+                read = conn.recv(BUFFER_SIZE)
+                read = str(read, 'utf-8')
+                read = json.loads(read)
+                print(f"Received data from {ip}:{port}: {read}")
 
-        # send data to client:
-        reply = {'Vom Sever':456}
-        state = json.dumps(reply)
-        conn.sendall(bytes(state, 'utf-8'))
-        #time.sleep(1000) # TODO weg
+                # send data to client:
+                reply = {'Vom Sever':456}
+                state = json.dumps(reply)
+                conn.sendall(bytes(state, 'utf-8'))
+                #time.sleep(1000) # TODO weg
 
-        # close connection:
-        conn.close()
-        print(f"Closed connection to {ip}:{port}")
+                # close connection:
+                #conn.close() # TODO weg
+                print(f"Closed connection to {ip}:{port}")
 
 except KeyboardInterrupt:
-    try: conn.close()
-    except: pass
-finally:
-    sd.close()
-    print('\nServer shut down')
+    pass
+
+print('\nServer shut down')

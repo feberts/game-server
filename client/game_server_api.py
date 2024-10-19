@@ -48,7 +48,7 @@ class GameServerAPI:
         #TODO parameterprüfung
         
         reply, msg = self._send({'Vom Client':123})
-        print('Data:', reply, '\nMessage:', msg)
+        print('Data:', reply, '\nError message:', msg)
         return 42, 'ok'
 
     def _send(self, data):
@@ -72,7 +72,7 @@ class GameServerAPI:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
                 # connect to server:
                 self._server, self._port = '127.0.0.1', 4711 # TODO weg
-                sd.settimeout(TIME_OUT)
+                sd.settimeout(TIME_OUT) # TODO auch auf Server ???
                 sd.connect((self._server, self._port))
 
                 # send data to server:
@@ -84,7 +84,7 @@ class GameServerAPI:
                 read = sd.recv(BUFFER_SIZE)
                 read = str(read, 'utf-8')
                 read = json.loads(read)
-
+                
         except ConnectionRefusedError:
             return None, f'could not connect to server {self._server}:{self._port}'
         except socket.gaierror:

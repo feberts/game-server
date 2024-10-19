@@ -47,7 +47,7 @@ class GameServerAPI:
         
         #TODO parameterprüfung
         
-        reply, msg = self._send({'Vom Client':123})
+        reply, msg = self._send({'Vom Client':'X'*3, 'ENDE':42})
         print('Data:', reply, '\nError message:', msg)
         return 42, 'ok'
 
@@ -79,6 +79,8 @@ class GameServerAPI:
                 request = json.dumps(data)
                 request = bytes(request, 'utf-8')
                 sd.sendall(request)
+                sd.sendall(b'EOF')
+                
 
                 # receive data from server:
                 response = bytearray()

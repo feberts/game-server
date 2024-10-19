@@ -18,7 +18,14 @@ def framework_function(data):
 def request_handler(conn):
     with conn:
         # receive data from client:
-        request = conn.recv(4096)
+        #request = conn.recv(4096)
+        
+        request = bytearray()
+        while True:
+            data = conn.recv(4096)
+            request += data
+            if data[-3:] == b'EOF': break
+        request = request[:-3]
         request = str(request, 'utf-8')
         request = json.loads(request)
         print(f"Received data from {ip}:{port}: {request}")
@@ -27,9 +34,7 @@ def request_handler(conn):
         response = framework_function(request)
 
         # send response to client:
-        #reply = {'Vom Sever':456}
         response = json.dumps(response)
-        print(len(response))
         conn.sendall(bytes(response, 'utf-8'))
 
         # close connection:

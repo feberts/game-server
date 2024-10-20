@@ -53,11 +53,7 @@ class GameServerAPI:
 
         response, msg = self._send({'request':'join', 'game':game, 'players':players, 'token':token})
         
-        if not response: # communication with server failed
-            return None, msg
-
-        if response['status'] == 'error': # server responded with error
-            return None, response['message']
+        if not response: return None, msg
         
         self._player_id = response['player_id']
         return self._player_id, ''
@@ -98,7 +94,9 @@ class GameServerAPI:
                 response = str(response, 'utf-8')
                 response = json.loads(response)
 
-                return response, ''
+                if response['status'] == 'error': # server responded with error
+                    return None, response['message']
+                return response['data'], ''
             except:
                 return None, 'api: communication with server failed'
 

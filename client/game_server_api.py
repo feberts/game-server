@@ -39,16 +39,20 @@ class GameServerAPI:
             int: player ID, if the game was successfully started, else None
             str: error message, if a problem occurred, an empty string otherwise
         """
+        assert type(server) == str and len(server) > 0
+        assert type(port) == int and port >= 0
+        assert type(game) == str and len(game) > 0
+        assert type(players) == int and players > 0
+        assert type(token) == str and len(token) > 0
+        
         self._server = server
         self._port = port
         self._game = game
         self._players = players 
         self._token = token
-        
-        #TODO parameterprüfung
-        
-        reply, msg = self._send({'Vom Client':'X'*5, 'ENDE':42})
-        print('Data:', reply, '\nError message:', msg)
+               
+        reply, msg = self._send({'game':game, 'players':players, 'token':token})
+
         return 42, 'ok' # TODO
 
     def _send(self, data):

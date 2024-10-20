@@ -16,6 +16,7 @@ def framework_function(data): # TODO dummy
 def request_handler(conn):
     with conn:
         # receive data from client:
+        # TODO Groessenbeschraenkung
         request = bytearray()
         while True:
             data = conn.recv(4096)

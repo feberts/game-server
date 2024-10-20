@@ -27,8 +27,8 @@ def request_handler(conn):
             data = conn.recv(4096)
             if not data: raise ClientDisconnect
             request += data
+            if len(request) > 1e6: raise DataSizeExceeded
             if request[-5:] == b'_EOF_': break
-            if len(request) > 1000: raise DataSizeExceeded
         
         # prepare data:
         request = request[:-5] # strip EOF

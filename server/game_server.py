@@ -12,6 +12,7 @@ IP = '127.0.0.1'
 PORT = 4711
 
 class ClientDisconnect(Exception): pass
+class DataSizeExceeded(Exception): pass
 
 
 def framework_function(data): # TODO dummy
@@ -27,6 +28,7 @@ def request_handler(conn):
             if not data: raise ClientDisconnect
             request += data
             if request[-5:] == b'_EOF_': break
+            if len(request) > 1000: raise DataSizeExceeded
         
         # prepare data:
         request = request[:-5] # strip EOF
@@ -44,6 +46,8 @@ def request_handler(conn):
 
     except ClientDisconnect:
         print(f'Disconnect by client {ip}:{port}')
+    except DataSizeExceeded:
+        print(f'Data size exceeded by client {ip}:{port}')
     except:
         print(f'Unexpected exception:')
         print(traceback.format_exc())

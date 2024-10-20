@@ -11,7 +11,7 @@ IP = '127.0.0.1'
 PORT = 4711
 
 def framework_function(data): # TODO dummy
-    return {'Vom Sever':'y'*5, 'ENDE':43}
+    return {'player_id':None, 'message':'No such game'}
 
 def request_handler(conn):
     with conn:

@@ -15,16 +15,16 @@ import socket
 class GameServerAPI:
     """
     Class GameServerAPI.
-    
+
     This class provides API functions to communicate with the game server.
     """
-    
+
     def start_game(self, server, port, game, players, token):
         """
         Start a game.
 
         This function asks the server to start a game. Other clients can use the join-function to join that game. To be able to join, they need to know the chosen token. The token is used, to identify the game session. It can be any string. A repeated call of this function with the same values for 'game' and 'token' will end the previous session.
-        
+
         This is a blocking function. The game starts as soon as the specified number of clients has joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
 
         Parameters:
@@ -44,21 +44,23 @@ class GameServerAPI:
         assert type(game) == str and len(game) > 0
         assert type(players) == int and players > 0
         assert type(token) == str and len(token) > 0
-        
+
         self._server = server
         self._port = port
         self._game = game
-        self._players = players 
+        self._players = players
         self._token = token
-               
-        reply, msg = self._send({'game':game, 'players':players, 'token':token})
 
-        return 42, 'ok' # TODO
+        response, msg = self._send({'api_request':'join', 'api_game':game, 'api_players':players, 'api_token':token})
+        if not response: return None, msg
+        self._player_id = response['player_id']
+
+        return self._player_id, response['message']
 
     def _send(self, data):
         """
-        Send data to server and receive a reply.
-        
+        Send data to server and receive a response.
+
         This function sends data to the server and returns the data sent back by the server. The data is sent in JSON format. Make sure, that the passed dictionary's content is compatible with JSON.
 
         Parameters:
@@ -69,7 +71,7 @@ class GameServerAPI:
             dict: data returned by server, None in case of an error
             str: error message, if a problem occurred, an empty string otherwise
         """
-        
+
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
             try:
                 # connect to server:

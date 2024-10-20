@@ -6,21 +6,29 @@ TODO
 import json
 import socket
 import threading
+import traceback
 
 IP = '127.0.0.1'
 PORT = 4711
+
+class ClientDisconnect(Exception): pass
+
 
 def framework_function(data): # TODO dummy
     return {'status':'ok', 'message':'framework: no such game', 'data':{'player_id':13}}
 
 def request_handler(conn):
-    with conn:
+    try:
         # receive data from client:
         request = bytearray()
+        
         while True:
             data = conn.recv(4096)
+            if not data: raise ClientDisconnect
             request += data
             if request[-5:] == b'_EOF_': break
+        
+        # prepare data:
         request = request[:-5] # strip EOF
         request = str(request, 'utf-8')
         request = json.loads(request)
@@ -34,7 +42,16 @@ def request_handler(conn):
         response = json.dumps(response)
         conn.sendall(bytes(response, 'utf-8'))
 
+    except ClientDisconnect:
+        print(f"Client disconnected {ip}:{port}")
+    except:
+        print('Unexpected exception >>>>>')
+        print(traceback.format_exc())
+        print('<<<<< Unexpected exception')
+    finally:
+        conn.close()
         print(f"Closed connection to {ip}:{port}")
+
 try:
     # open listening socket:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:

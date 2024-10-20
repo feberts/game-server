@@ -90,7 +90,7 @@ class GameServerAPI:
                 request = json.dumps(data)
                 request = bytes(request, 'utf-8')
                 sd.sendall(request + b'_EOF_')
-                exit()
+
                 # receive data from server:
                 response = bytearray()
                 while True:

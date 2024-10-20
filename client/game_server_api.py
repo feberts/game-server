@@ -56,12 +56,11 @@ class GameServerAPI:
         if not response: # communication with server failed
             return None, msg
 
-        if response['status'] == 'error': # server responded, but with error
+        if response['status'] == 'error': # server responded with error
             return None, response['message']
         
         self._player_id = response['player_id']
-
-        return self._player_id, response['message']
+        return self._player_id, ''
 
     def _send(self, data):
         """
@@ -77,7 +76,6 @@ class GameServerAPI:
             dict: data returned by server, None in case of an error
             str: error message, if a problem occurred, an empty string otherwise
         """
-
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
             try:
                 # connect to server:
@@ -89,6 +87,7 @@ class GameServerAPI:
                 # send data to server:
                 request = json.dumps(data)
                 request = bytes(request, 'utf-8')
+                #if len(request) > 1000: return None, f'api: data size limit exceeded'
                 sd.sendall(request + b'_EOF_')
 
                 # receive data from server:
@@ -99,9 +98,10 @@ class GameServerAPI:
                     response += data
                 response = str(response, 'utf-8')
                 response = json.loads(response)
+
                 return response, ''
             except:
-                return None, f'api: exchange of data with server failed'
+                return None, 'api: communication with server failed'
 
     _server = None
     _port = None

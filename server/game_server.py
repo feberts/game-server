@@ -11,7 +11,7 @@ IP = '127.0.0.1'
 PORT = 4711
 
 def framework_function(data): # TODO dummy
-    return {'Vom Sever':'y'*50000, 'ENDE':43}
+    return {'Vom Sever':'y'*5, 'ENDE':43}
 
 def request_handler(conn):
     with conn:
@@ -24,12 +24,13 @@ def request_handler(conn):
         request = request[:-5] # strip EOF
         request = str(request, 'utf-8')
         request = json.loads(request)
-        print(f"Received data from {ip}:{port}: {request}")
+        print(f"Received from {ip}:{port}: {request}")
         
-        # pass data to the framework:
+        # pass request to the framework:
         response = framework_function(request)
 
         # send response to client:
+        print(f"Responding to {ip}:{port}: {response}")
         response = json.dumps(response)
         conn.sendall(bytes(response, 'utf-8'))
 
@@ -48,7 +49,7 @@ try:
             ip, port = client
             print(f'Accepted connection from {ip}:{port}')
 
-            # handle request in seperate thread:
+            # handle request in a seperate thread:
             t = threading.Thread(target=request_handler, args=(conn,), daemon=True)
             t.start()
 

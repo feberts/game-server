@@ -11,7 +11,7 @@ IP = '127.0.0.1'
 PORT = 4711
 
 def framework_function(data): # TODO dummy
-    return {'status':'ok', 'message':'framework: No such game', 'player_id':13}
+    return {'status':'ok', 'message':'framework: no such game', 'player_id':13}
 
 def request_handler(conn):
     with conn:
@@ -49,11 +49,8 @@ try:
             ip, port = client
             print(f'Accepted connection from {ip}:{port}')
 
-            # handle request in a seperate thread:
+            # handle request in seperate thread:
             t = threading.Thread(target=request_handler, args=(conn,), daemon=True)
             t.start()
-
 except KeyboardInterrupt:
     pass
-
-print('\nServer shut down')

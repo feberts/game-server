@@ -87,7 +87,6 @@ class GameServerAPI:
                 # send data to server:
                 request = json.dumps(data)
                 request = bytes(request, 'utf-8')
-                #if len(request) > 1000: return None, f'api: data size limit exceeded'
                 sd.sendall(request + b'_EOF_')
 
                 # receive data from server:

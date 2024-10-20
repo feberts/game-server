@@ -32,25 +32,24 @@ def request_handler(conn):
         request = request[:-5] # strip EOF
         request = str(request, 'utf-8')
         request = json.loads(request)
-        print(f"Received from {ip}:{port}: {request}")
+        print(f'Received from {ip}:{port}: {request}')
 
         # pass request to the framework:
         response = framework_function(request)
 
         # send response to client:
-        print(f"Responding to {ip}:{port}: {response}")
+        print(f'Responding to {ip}:{port}: {response}')
         response = json.dumps(response)
         conn.sendall(bytes(response, 'utf-8'))
 
     except ClientDisconnect:
-        print(f"Client disconnected {ip}:{port}")
+        print(f'Disconnect by client {ip}:{port}')
     except:
-        print('Unexpected exception >>>>>')
+        print(f'Unexpected exception:')
         print(traceback.format_exc())
-        print('<<<<< Unexpected exception')
     finally:
         conn.close()
-        print(f"Closed connection to {ip}:{port}")
+        print(f'Closed connection to {ip}:{port}')
 
 try:
     # open listening socket:

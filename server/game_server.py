@@ -11,12 +11,11 @@ IP = '127.0.0.1'
 PORT = 4711
 
 def framework_function(data): # TODO dummy
-    return {'player_id':None, 'message':'No such game'}
+    return {'status':'error', 'message':'No such game', 'player_id':13}
 
 def request_handler(conn):
     with conn:
         # receive data from client:
-        # TODO Groessenbeschraenkung
         request = bytearray()
         while True:
             data = conn.recv(4096)
@@ -26,7 +25,7 @@ def request_handler(conn):
         request = str(request, 'utf-8')
         request = json.loads(request)
         print(f"Received from {ip}:{port}: {request}")
-        
+
         # pass request to the framework:
         response = framework_function(request)
 

@@ -51,8 +51,14 @@ class GameServerAPI:
         self._players = players
         self._token = token
 
-        response, msg = self._send({'api_request':'join', 'api_game':game, 'api_players':players, 'api_token':token})
-        if not response: return None, msg
+        response, msg = self._send({'request':'join', 'game':game, 'players':players, 'token':token})
+        
+        if not response: # communication with server failed
+            return None, msg
+
+        if response['status'] == 'error': # server responded, but with error
+            return None, response['message']
+        
         self._player_id = response['player_id']
 
         return self._player_id, response['message']

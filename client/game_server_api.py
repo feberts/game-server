@@ -23,7 +23,7 @@ class GameServerAPI:
         """
         Start a game.
 
-        This function asks the server to start a game. Other clients can use the join-function to join that game. To be able to join, they need to know the chosen token. The token is used, to identify the game session. It can be any string. A repeated call of this function with the same values for parameters 'game' and 'token' will end the previous session.
+        This function asks the server to start a game. Other clients can use the join-function to join that game. To be able to join, they need to know the chosen token. The token is used, to identify the game session. It can be any string. A repeated call of this function with the same values for 'game' and 'token' will end the previous session.
         
         This is a blocking function. The game starts as soon as the specified number of clients has joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
 
@@ -47,9 +47,9 @@ class GameServerAPI:
         
         #TODO parameterprüfung
         
-        reply, msg = self._send({'Vom Client':'X'*3, 'ENDE':42})
+        reply, msg = self._send({'Vom Client':'X'*5, 'ENDE':42})
         print('Data:', reply, '\nError message:', msg)
-        return 42, 'ok'
+        return 42, 'ok' # TODO
 
     def _send(self, data):
         """
@@ -69,7 +69,6 @@ class GameServerAPI:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
             try:
                 # connect to server:
-                self._server, self._port = '127.0.1', 4711 # TODO weg
                 sd.connect((self._server, self._port))
             except:
                 return None, f'unable to connect to {self._server}:{self._port}'
@@ -78,9 +77,7 @@ class GameServerAPI:
                 # send data to server:
                 request = json.dumps(data)
                 request = bytes(request, 'utf-8')
-                sd.sendall(request)
-                sd.sendall(b'EOF')
-                
+                sd.sendall(request + b'_EOF_')
 
                 # receive data from server:
                 response = bytearray()
@@ -91,12 +88,8 @@ class GameServerAPI:
                 response = str(response, 'utf-8')
                 response = json.loads(response)
                 return response, ''
-            except: # TODO more detailed error handling?
+            except:
                 return None, f'failed exchanging data with server'
-
-        # TODO Fehlerfälle:
-        # - [ ] buffer size überschritten, weil server zu viel sendet?
-        # - [ ] buffer size überschritten, weil client zu viel sendet?
 
     _server = None
     _port = None

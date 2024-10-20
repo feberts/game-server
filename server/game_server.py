@@ -5,27 +5,23 @@ TODO
 
 import json
 import socket
-import time # TODO weg
-#time.sleep(5) # TODO weg
 import threading
 
 IP = '127.0.0.1'
 PORT = 4711
 
-def framework_function(data):
-    return {'Vom Sever':'x'*10, 'ENDE':42}
+def framework_function(data): # TODO dummy
+    return {'Vom Sever':'y'*50000, 'ENDE':43}
 
 def request_handler(conn):
     with conn:
         # receive data from client:
-        #request = conn.recv(4096)
-        
         request = bytearray()
         while True:
             data = conn.recv(4096)
             request += data
-            if data[-3:] == b'EOF': break
-        request = request[:-3]
+            if request[-5:] == b'_EOF_': break
+        request = request[:-5] # strip EOF
         request = str(request, 'utf-8')
         request = json.loads(request)
         print(f"Received data from {ip}:{port}: {request}")
@@ -37,9 +33,7 @@ def request_handler(conn):
         response = json.dumps(response)
         conn.sendall(bytes(response, 'utf-8'))
 
-        # close connection:
         print(f"Closed connection to {ip}:{port}")
-
 try:
     # open listening socket:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:

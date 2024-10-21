@@ -17,7 +17,8 @@ class MessageSizeExceeded(Exception): pass
 
 
 def framework_function(data): # TODO dummy
-    #time.sleep(3)
+    #time.sleep(30)
+    #exit()
     return {'status':'ok', 'message':'framework: no such game', 'data':{'player_id':13}}
 
 def request_handler(conn, ip, port):
@@ -42,13 +43,13 @@ def request_handler(conn, ip, port):
 
         except MessageSizeExceeded:
             print(f'Message size exceeded by client {ip}:{port}')
-            response = utility.error_msg('too much data sent')
+            response = utility.server_error('too much data sent')
         except json.decoder.JSONDecodeError:
             print(f'Corrupt data received from {ip}:{port}')
-            response = utility.error_msg('received corrupt json data')
+            response = utility.server_error('received corrupt json data')
         except:
             print(f'Unexpected exception:\n' + traceback.format_exc())
-            response = utility.error_msg('internal server error')
+            response = utility.server_error('internal error')
         
         # send response to client:
         print(f'Responding to {ip}:{port}: {response}')

@@ -4,20 +4,30 @@ Utility functions.
 This module provides various utility functions.
 """
 
-def error_msg(message):
+def error_message(sender, message):
     """
     Create an error message.
 
-    The message is embedded into a dictionary, to be sent back to a client.
+    The message is embedded into a dictionary, to be sent back to the client.
 
     Parameters:
+    sender (str): to let the client know, where the error occurred
     message (str): error message
 
     Returns:
-    dict: containing the message
+    dict: contains the message
     """
-    assert type(message) == str
-    return {'status':'error', 'message':message}
+    assert type(sender) == str and len(sender) > 0
+    assert type(message) == str and len(message) > 0
+    return {'status':'error', 'message':sender + ' error: ' + message}
+
+def server_error(message):
+    """
+    Server error.
+    
+    See function error_message for details.
+    """
+    return error_message('server', message)
 
 def check_dict(d, expected):
     """

@@ -77,7 +77,7 @@ class GameServerAPI:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
             try:
                 # connect to server:
-                sd.settimeout(1.0)
+                sd.settimeout(1)
                 sd.connect((self._server, self._port))
             except:
                 return self._api_err(f'unable to connect to {self._server}:{self._port}')

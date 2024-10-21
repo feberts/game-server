@@ -104,7 +104,7 @@ class GameServerAPI:
             except socket.timeout:
                 return None, 'api: connection timed out'
             except:
-                return None, f'api: nexpected exception:\n{traceback.format_exc()'
+                return None, f'api: unexpected exception:\n{traceback.format_exc()}'
 
     _server = None
     _port = None

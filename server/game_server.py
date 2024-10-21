@@ -29,7 +29,7 @@ def request_handler(conn, ip, port):
             # receive data from client:
             request = bytearray()
             
-            #return
+            return
             while True:
                 data = conn.recv(4096)
                 request += data

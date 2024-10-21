@@ -14,6 +14,7 @@ IP = '127.0.0.1'
 PORT = 4711
 
 class MessageSizeExceeded(Exception): pass
+class ClientDisconnect(Exception): pass
 
 
 def framework_function(data): # TODO dummy
@@ -36,6 +37,8 @@ def request_handler(conn, ip, port):
                 if len(request) > 1000: raise MessageSizeExceeded
                 # TODO leer lesen falls mehr daten als erlaubt UND mehr daten als buffer size
             
+            if not len(request): raise ClientDisconnect
+
             # prepare data:
             request = str(request, 'utf-8')
             request = json.loads(request)
@@ -49,6 +52,9 @@ def request_handler(conn, ip, port):
             response = utility.server_error('too much data sent')
         except socket.timeout:
             print(f'Connection timed out {ip}:{port}')
+            response = None
+        except ClientDisconnect:
+            print(f'Disconnect by client {ip}:{port}')
             response = None
         except json.decoder.JSONDecodeError:
             print(f'Corrupt data received from {ip}:{port}')

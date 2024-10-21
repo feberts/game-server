@@ -22,6 +22,8 @@ def framework_function(data): # TODO dummy
     return {'status':'ok', 'message':'framework: no such game', 'data':{'player_id':13}}
 
 def request_handler(conn, ip, port):
+    conn.settimeout(5)
+
     try:
         try:
             # receive data from client:
@@ -45,6 +47,9 @@ def request_handler(conn, ip, port):
         except MessageSizeExceeded:
             print(f'Message size exceeded by client {ip}:{port}')
             response = utility.server_error('too much data sent')
+        except socket.timeout:
+            print(f'Connection timed out {ip}:{port}')
+            response = None
         except json.decoder.JSONDecodeError:
             print(f'Corrupt data received from {ip}:{port}')
             response = utility.server_error('received corrupt json data')
@@ -53,9 +58,10 @@ def request_handler(conn, ip, port):
             response = utility.server_error('internal error')
 
         # send response to client:
-        print(f'Responding to {ip}:{port}: {response}')
-        response = json.dumps(response)
-        conn.sendall(bytes(response, 'utf-8'))
+        if response:
+            print(f'Responding to {ip}:{port}: {response}')
+            response = json.dumps(response)
+            conn.sendall(bytes(response, 'utf-8'))
 
     finally:
         conn.close()

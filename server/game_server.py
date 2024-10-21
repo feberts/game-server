@@ -8,7 +8,7 @@ import socket
 import threading
 import traceback
 import utility
-import time
+import time # TODO rm after testing
 
 IP = '127.0.0.1'
 PORT = 4711
@@ -16,11 +16,13 @@ PORT = 4711
 class MessageSizeExceeded(Exception): pass
 class ClientDisconnect(Exception): pass
 
-
 def framework_function(data): # TODO dummy
     return {'status':'ok', 'message':'framework: no such game', 'data':{'player_id':13}}
 
 def request_handler(conn, ip, port):
+    """
+    TODO
+    """
     conn.settimeout(5)
 
     try:
@@ -33,14 +35,12 @@ def request_handler(conn, ip, port):
                 request += data
                 if not data: break
                 if len(request) > 1000: raise MessageSizeExceeded
-                # TODO leer lesen falls mehr daten als erlaubt UND mehr daten als buffer size
             
             if not len(request): raise ClientDisconnect
 
-            # prepare data:
             request = str(request, 'utf-8')
             request = json.loads(request)
-            print(f'Received from {ip}:{port}: {request}')
+            print(f'Received {len(request)} bytes from {ip}:{port}: {request}') # TODO rm inhalt ???
 
             # pass request to the framework:
             response = framework_function(request)
@@ -56,7 +56,7 @@ def request_handler(conn, ip, port):
             response = None
         except json.decoder.JSONDecodeError:
             print(f'Corrupt data received from {ip}:{port}')
-            response = utility.server_error('received corrupt json data')
+            response = utility.server_error('received corrupt data')
         except:
             print(f'Unexpected exception:\n' + traceback.format_exc())
             response = utility.server_error('internal error')
@@ -71,6 +71,7 @@ def request_handler(conn, ip, port):
         conn.close()
         print(f'Closed connection to {ip}:{port}')
 
+# start server:
 try:
     # create listening socket:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
@@ -85,7 +86,7 @@ try:
             ip, port = client
             print(f'Accepted connection from {ip}:{port}')
 
-            # handle request in seperate thread:
+            # handle request in separate thread:
             t = threading.Thread(target=request_handler, args=(conn, ip, port), daemon=True)
             t.start()
 except KeyboardInterrupt:

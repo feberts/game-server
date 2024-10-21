@@ -111,8 +111,8 @@ class GameServerAPI:
                 return self._api_err('connection timed out')
             except MissingResponse:
                 return self._api_err('empty or no response received from server')
-            except ConnectionResetError:
-                return self._api_err('connection unexpectedly closed by sever')
+            except (ConnectionResetError, BrokenPipeError):
+                return self._api_err('connection closed by sever')
             except json.decoder.JSONDecodeError:
                 return self._api_err('received corrupt json data')
             except:

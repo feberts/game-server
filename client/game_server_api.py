@@ -11,6 +11,7 @@ This module provides an API for communicating with the game server. The API can 
 
 import json
 import socket
+import time
 
 class GameServerAPI:
     """

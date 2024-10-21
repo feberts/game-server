@@ -18,6 +18,7 @@ class MessageSizeExceeded(Exception): pass
 
 def framework_function(data): # TODO dummy
     #time.sleep(3)
+    #exit()
     return {'status':'ok', 'message':'framework: no such game', 'data':{'player_id':13}}
 
 def request_handler(conn, ip, port):

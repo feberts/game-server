@@ -12,6 +12,7 @@ This module provides an API for communicating with the game server. The API can 
 import json
 import socket
 import time
+import traceback
 
 class GameServerAPI:
     """
@@ -103,7 +104,7 @@ class GameServerAPI:
             except socket.timeout:
                 return None, 'api: connection timed out'
             except:
-                return None, 'api: communication with server failed'
+                return None, f'api: nexpected exception:\n{traceback.format_exc()'
 
     _server = None
     _port = None

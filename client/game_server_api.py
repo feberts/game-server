@@ -72,6 +72,7 @@ class GameServerAPI:
             str: error message, if a problem occurred, an empty string otherwise
         """
         class MissingResponse(Exception): pass
+
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
             try:
                 # connect to server:
@@ -79,6 +80,7 @@ class GameServerAPI:
                 sd.connect((self._server, self._port))
             except:
                 return self._api_err(f'unable to connect to {self._server}:{self._port}')
+
             try:
                 # send data to server:
                 request = json.dumps(data)
@@ -95,7 +97,6 @@ class GameServerAPI:
                 if not len(response): raise MissingResponse
                 response = str(response, 'utf-8')
                 response = json.loads(response)
-                
 
                 if response['status'] == 'error': # server responded with error
                     return None, response['message']

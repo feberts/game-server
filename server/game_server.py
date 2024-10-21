@@ -57,8 +57,6 @@ def request_handler(conn, ip, port):
         response = json.dumps(response)
         conn.sendall(bytes(response, 'utf-8'))
 
-    except ClientDisconnect:
-        print(f'Disconnect by client {ip}:{port}')
     finally:
         conn.close()
         print(f'Closed connection to {ip}:{port}')

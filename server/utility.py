@@ -6,9 +6,9 @@ This module provides various utility functions.
 
 def error_msg(message):
     """
-    Create error message.
+    Create an error message.
 
-    The message is embedded into a dictionary, which can be sent back to a client.
+    The message is embedded into a dictionary, to be sent back to a client.
 
     Parameters:
     message (str): error message

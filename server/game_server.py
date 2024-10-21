@@ -8,6 +8,7 @@ import socket
 import threading
 import traceback
 import utility
+import time
 
 IP = '127.0.0.1'
 PORT = 4711
@@ -16,6 +17,7 @@ class MessageSizeExceeded(Exception): pass
 
 
 def framework_function(data): # TODO dummy
+    time.sleep(3)
     return {'status':'ok', 'message':'framework: no such game', 'data':{'player_id':13}}
 
 def request_handler(conn, ip, port):

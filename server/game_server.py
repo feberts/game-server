@@ -31,7 +31,8 @@ def request_handler(conn, ip, port):
                 data = conn.recv(4096)
                 request += data
                 if not data: break
-                if len(request) > 1e6: raise MessageSizeExceeded
+                if len(request) > 1000: raise MessageSizeExceeded
+                # TODO leer lesen falls mehr daten als erlaubt UND mehr daten als buffer size
             
             # prepare data:
             request = str(request, 'utf-8')

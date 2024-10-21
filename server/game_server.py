@@ -50,7 +50,7 @@ def request_handler(conn, ip, port):
         except:
             print(f'Unexpected exception:\n' + traceback.format_exc())
             response = utility.server_error('internal error')
-        
+
         # send response to client:
         print(f'Responding to {ip}:{port}: {response}')
         response = json.dumps(response)

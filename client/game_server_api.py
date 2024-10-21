@@ -105,6 +105,8 @@ class GameServerAPI:
 
             except socket.timeout:
                 return self._api_err('connection timed out')
+            except json.decoder.JSONDecodeError:
+                return self._api_err('received corrupt json data')
             except:
                 return self._api_err('unexpected exception:\n' + traceback.format_exc())
 

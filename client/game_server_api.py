@@ -42,7 +42,7 @@ class GameServerAPI:
             str: error message, if a problem occurred, an empty string otherwise
         """
         assert type(server) == str and len(server) > 0
-        assert type(port) == int and port >= 0
+        assert type(port) == int and port >= 0 and port <= 65535
         assert type(game) == str and len(game) > 0
         assert type(players) == int and players > 0
         assert type(token) == str and len(token) > 0

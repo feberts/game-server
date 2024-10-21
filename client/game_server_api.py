@@ -81,7 +81,7 @@ class GameServerAPI:
                 sd.connect((self._server, self._port))
             except:
                 return self._api_err(f'unable to connect to {self._server}:{self._port}')
-            exit()
+            #exit()
             try:
                 # send data to server:
                 request = json.dumps(data)

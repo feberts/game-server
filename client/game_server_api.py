@@ -13,6 +13,7 @@ import json
 import socket
 import time
 import traceback
+class MissingResponse(Exception): pass
 
 class GameServerAPI:
     """
@@ -95,9 +96,10 @@ class GameServerAPI:
                     data = sd.recv(4096)
                     if not data: break
                     response += data
+                if not len(response): raise MissingResponse
                 response = str(response, 'utf-8')
                 response = json.loads(response)
-
+                
 
                 if response['status'] == 'error': # server responded with error
                     return None, response['message']
@@ -106,6 +108,8 @@ class GameServerAPI:
 
             except socket.timeout:
                 return self._api_err('connection timed out')
+            except MissingResponse:
+                return self._api_err('empty or no response received from server')
             except ConnectionResetError:
                 return self._api_err('connection unexpectedly closed by sever')
             except json.decoder.JSONDecodeError:

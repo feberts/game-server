@@ -80,7 +80,7 @@ class GameServerAPI:
                 sd.settimeout(1.0)
                 sd.connect((self._server, self._port))
             except:
-                return self._err(f'unable to connect to {self._server}:{self._port}')
+                return self._api_err(f'unable to connect to {self._server}:{self._port}')
 
             try:
                 # send data to server:
@@ -100,14 +100,16 @@ class GameServerAPI:
 
                 if response['status'] == 'error': # server responded with error
                     return None, response['message']
-                return response['data'], ''
-            except socket.timeout:
-                return self._err('connection timed out')
-            except:
-                return self._err('unexpected exception:\n' + traceback.format_exc())
 
-    def _err(self, message):
-        return None, 'api: ' + message
+                return response['data'], ''
+
+            except socket.timeout:
+                return self._api_err('connection timed out')
+            except:
+                return self._api_err('unexpected exception:\n' + traceback.format_exc())
+
+    def _api_err(self, message):
+        return None, 'api error: ' + message
     _server = None
     _port = None
     _game = None

@@ -18,8 +18,9 @@ class DataSizeExceeded(Exception): pass
 def framework_function(data): # TODO dummy
     return {'status':'ok', 'message':'framework: no such game', 'data':{'player_id':13}}
 
-def request_handler(conn):
+def request_handler(conn, ip, port):
     try:
+        
         # receive data from client:
         request = bytearray()
         
@@ -56,7 +57,7 @@ def request_handler(conn):
         print(f'Closed connection to {ip}:{port}')
 
 try:
-    # open listening socket:
+    # create listening socket:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
         sd.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sd.bind((IP, PORT))
@@ -70,7 +71,7 @@ try:
             print(f'Accepted connection from {ip}:{port}')
 
             # handle request in seperate thread:
-            t = threading.Thread(target=request_handler, args=(conn,), daemon=True)
+            t = threading.Thread(target=request_handler, args=(conn, ip, port), daemon=True)
             t.start()
 except KeyboardInterrupt:
     pass

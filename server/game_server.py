@@ -47,8 +47,7 @@ def request_handler(conn, ip, port):
             print(f'Corrupt data received from {ip}:{port}')
             response = utility.error_msg('received corrupt json data')
         except:
-            print(f'Unexpected exception:')
-            print(traceback.format_exc())
+            print(f'Unexpected exception:\n' + traceback.format_exc())
             response = utility.error_msg('internal server error')
         
         # send response to client:

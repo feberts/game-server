@@ -12,7 +12,8 @@ api = GameServerAPI()
 player_id, msg = api.start_game(server='127.0.0.1', port=4711, game='TicTacToe', players=2, token='mygame')
 
 if not player_id:
-    print('Error:', msg)
+    print(msg)
+    print('end')
     exit()
 
 print('Player ID:', player_id)

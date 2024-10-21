@@ -7,6 +7,7 @@ import json
 import socket
 import threading
 import traceback
+import utility
 
 IP = '127.0.0.1'
 PORT = 4711
@@ -20,26 +21,36 @@ def framework_function(data): # TODO dummy
 
 def request_handler(conn, ip, port):
     try:
-        
-        # receive data from client:
-        request = bytearray()
-        
-        while True:
-            data = conn.recv(4096)
-            if not data: raise ClientDisconnect
-            request += data
-            if len(request) > 1e6: raise DataSizeExceeded
-            if request[-5:] == b'_EOF_': break
-        
-        # prepare data:
-        request = request[:-5] # strip EOF
-        request = str(request, 'utf-8')
-        request = json.loads(request)
-        print(f'Received from {ip}:{port}: {request}')
+        try:
+            # receive data from client:
+            request = bytearray()
+            
+            while True:
+                data = conn.recv(4096)
+                if not data: raise ClientDisconnect
+                request += data
+                if len(request) > 1e6: raise DataSizeExceeded
+                if request[-5:] == b'_EOF_': break
+            
+            # prepare data:
+            request = request[:-5] # strip EOF
+            request = str(request, 'utf-8')
+            request = json.loads(request)
+            print(f'Received from {ip}:{port}: {request}')
 
-        # pass request to the framework:
-        response = framework_function(request)
+            # pass request to the framework:
+            response = framework_function(request)
 
+        except DataSizeExceeded:
+            print(f'Data size exceeded by client {ip}:{port}')
+            response = utility.error_msg('too much data sent')
+        except ClientDisconnect:
+            raise ClientDisconnect
+        except:
+            print(f'Unexpected exception:')
+            print(traceback.format_exc())
+            response = utility.error_msg('internal server error')
+        
         # send response to client:
         print(f'Responding to {ip}:{port}: {response}')
         response = json.dumps(response)
@@ -47,11 +58,6 @@ def request_handler(conn, ip, port):
 
     except ClientDisconnect:
         print(f'Disconnect by client {ip}:{port}')
-    except DataSizeExceeded:
-        print(f'Data size exceeded by client {ip}:{port}')
-    except:
-        print(f'Unexpected exception:')
-        print(traceback.format_exc())
     finally:
         conn.close()
         print(f'Closed connection to {ip}:{port}')

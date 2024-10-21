@@ -18,7 +18,6 @@ class ClientDisconnect(Exception): pass
 
 
 def framework_function(data): # TODO dummy
-    #time.sleep(30)
     return {'status':'ok', 'message':'framework: no such game', 'data':{'player_id':13}}
 
 def request_handler(conn, ip, port):

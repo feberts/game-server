@@ -22,7 +22,7 @@ class GameServerAPI:
     This class provides API functions to communicate with the game server.
     """
 
-    def start_game(self, server, port, game, players, token):
+    def start_game(self, server, port, game, token, players):
         """
         Start a game.
 
@@ -34,19 +34,15 @@ class GameServerAPI:
         server (str): server IP
         port (int): port number
         game (str): name of the game
-        players (int): total number of players
         token (str): name of the game session
+        players (int): total number of players
 
         Returns:
         tuple(int, str):
             int: player ID, if the game was successfully started, else None
             str: error message, if a problem occurred, an empty string otherwise
         """
-        assert type(server) == str and len(server) > 0
-        assert type(port) == int and port >= 0 and port <= 65535
-        assert type(game) == str and len(game) > 0
-        assert type(players) == int and players > 0
-        assert type(token) == str and len(token) > 0
+        self._check_args(server, port, game, token, players)
 
         self._server = server
         self._port = port
@@ -83,7 +79,6 @@ class GameServerAPI:
                 sd.connect((self._server, self._port))
             except:
                 return self._api_err(f'unable to connect to {self._server}:{self._port}')
-            
             try:
                 # send data to server:
                 request = json.dumps(data)
@@ -120,6 +115,14 @@ class GameServerAPI:
 
     def _api_err(self, message):
         return None, 'api error: ' + message
+    
+    def _check_args(self, server, port, game, token, players=1):
+        assert type(server) == str and len(server) > 0
+        assert type(port) == int and port >= 0 and port <= 65535
+        assert type(game) == str and len(game) > 0
+        assert type(token) == str and len(token) > 0
+        assert type(players) == int and players > 0
+ 
     _server = None
     _port = None
     _game = None

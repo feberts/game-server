@@ -71,8 +71,6 @@ class GameServerAPI:
             dict: data returned by server, None in case of an error
             str: error message, if a problem occurred, an empty string otherwise
         """
-        class MissingResponse(Exception): pass
-
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
             try:
                 # connect to server:
@@ -101,11 +99,12 @@ class GameServerAPI:
                 if response['status'] == 'error': # server responded with error
                     return None, response['message']
 
+                raise self.MissingResponse
                 return response['data'], ''
 
             except socket.timeout:
                 return self._api_err('connection timed out')
-            except MissingResponse:
+            except self.MissingResponse:
                 return self._api_err('empty or no response received from server')
             except (ConnectionResetError, BrokenPipeError):
                 return self._api_err('connection closed by sever')
@@ -124,6 +123,8 @@ class GameServerAPI:
         assert type(token) == str and len(token) > 0
         assert type(players) == int and players > 0
  
+    class MissingResponse(Exception): pass
+
     _server = None
     _port = None
     _game = None

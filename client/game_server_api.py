@@ -81,7 +81,7 @@ class GameServerAPI:
                 sd.connect((self._server, self._port))
             except:
                 return self._api_err(f'unable to connect to {self._server}:{self._port}')
-            #exit()
+            
             try:
                 # send data to server:
                 request = json.dumps(data)
@@ -106,6 +106,8 @@ class GameServerAPI:
 
             except socket.timeout:
                 return self._api_err('connection timed out')
+            except ConnectionResetError:
+                return self._api_err('connection unexpectedly closed by sever')
             except json.decoder.JSONDecodeError:
                 return self._api_err('received corrupt json data')
             except:

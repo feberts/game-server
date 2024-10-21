@@ -19,7 +19,6 @@ class ClientDisconnect(Exception): pass
 
 def framework_function(data): # TODO dummy
     #time.sleep(30)
-    #exit()
     return {'status':'ok', 'message':'framework: no such game', 'data':{'player_id':13}}
 
 def request_handler(conn, ip, port):
@@ -30,6 +29,7 @@ def request_handler(conn, ip, port):
             # receive data from client:
             request = bytearray()
             
+            #return
             while True:
                 data = conn.recv(4096)
                 request += data

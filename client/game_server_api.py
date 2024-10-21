@@ -98,6 +98,7 @@ class GameServerAPI:
                 response = str(response, 'utf-8')
                 response = json.loads(response)
 
+                # return data:
                 if response['status'] == 'error': # server responded with error
                     return None, response['message']
 

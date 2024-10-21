@@ -37,7 +37,6 @@ def request_handler(conn, ip, port):
                 # TODO leer lesen falls mehr daten als erlaubt UND mehr daten als buffer size
             
             if not len(request): raise ClientDisconnect
-            return
 
             # prepare data:
             request = str(request, 'utf-8')

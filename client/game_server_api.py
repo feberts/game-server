@@ -13,7 +13,7 @@ import json
 import socket
 import time
 import traceback
-class MissingResponse(Exception): pass
+
 
 class GameServerAPI:
     """
@@ -75,6 +75,7 @@ class GameServerAPI:
             dict: data returned by server, None in case of an error
             str: error message, if a problem occurred, an empty string otherwise
         """
+        class MissingResponse(Exception): pass
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
             try:
                 # connect to server:

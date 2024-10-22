@@ -22,6 +22,7 @@ def request_handler(conn, ip, port):
     TODO
     """
     conn.settimeout(config.TIMEOUT)
+    client = f'{ip}:{port}'
 
     try:
         try:
@@ -36,40 +37,40 @@ def request_handler(conn, ip, port):
             
             if not len(request): raise ClientDisconnect
 
-            print(f'Received {len(request)} bytes from {ip}:{port}')
+            print(f'Received {len(request)} bytes from {client}')
             request = str(request, 'utf-8')
             request = json.loads(request)
-            print(f'Received from {ip}:{port}:\n  {request}')
+            print(f'Received from {client}:\n  {request}')
 
             # pass request to the framework:
             response = framework_function(request)
 
         except MessageSizeExceeded:
-            print(f'Message size exceeded by client {ip}:{port}')
+            print(f'Message size exceeded by client {client}')
             response = utility.server_error('too much data sent')
         except socket.timeout:
-            print(f'Connection timed out {ip}:{port}')
+            print(f'Connection timed out {client}')
             response = None
         except ClientDisconnect:
-            print(f'Disconnect by client {ip}:{port}')
+            print(f'Disconnect by client {client}')
             response = None
         except json.decoder.JSONDecodeError:
-            print(f'Corrupt data received from {ip}:{port}')
+            print(f'Corrupt data received from {client}')
             response = utility.server_error('received corrupt data')
         except:
-            print(f'Unexpected exception {ip}:{port}:\n' + traceback.format_exc())
+            print(f'Unexpected exception {client}:\n' + traceback.format_exc())
             response = utility.server_error('internal error')
 
         # send response to client:
         if response:
-            print(f'Responding to {ip}:{port}:\n  {response}')
+            print(f'Responding to {client}:\n  {response}')
             response = json.dumps(response)
             response = bytes(response, 'utf-8')
             conn.sendall(response)
 
     finally:
         conn.close()
-        print(f'Closed connection to {ip}:{port}')
+        print(f'Closed connection to {client}')
 
 # start server:
 try:

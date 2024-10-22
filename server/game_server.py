@@ -36,10 +36,10 @@ def request_handler(conn, ip, port):
             
             if not len(request): raise ClientDisconnect
 
+            print(f'Received {len(request)} bytes from {ip}:{port}')
             request = str(request, 'utf-8')
             request = json.loads(request)
-            print(f'Received {len(request)} bytes from {ip}:{port}')
-            print(f'  {request}')
+            print(f'Received from {ip}:{port}:\n  {request}')
 
             # pass request to the framework:
             response = framework_function(request)
@@ -57,12 +57,12 @@ def request_handler(conn, ip, port):
             print(f'Corrupt data received from {ip}:{port}')
             response = utility.server_error('received corrupt data')
         except:
-            print(f'Unexpected exception:\n' + traceback.format_exc())
+            print(f'Unexpected exception {ip}:{port}:\n' + traceback.format_exc())
             response = utility.server_error('internal error')
 
         # send response to client:
         if response:
-            print(f'Responding to {ip}:{port}: {response}')
+            print(f'Responding to {ip}:{port}:\n  {response}')
             response = json.dumps(response)
             response = bytes(response, 'utf-8')
             conn.sendall(response)
@@ -84,7 +84,7 @@ try:
             # accept a connection:
             conn, client = sd.accept()
             ip, port = client
-            print(f'Accepted connection from {ip}:{port}')
+            print(f'\nAccepted connection from {ip}:{port}')
 
             # handle request in separate thread:
             t = threading.Thread(target=request_handler, args=(conn, ip, port), daemon=True)

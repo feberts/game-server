@@ -3,15 +3,13 @@
 TODO
 """
 
+import config
 import json
 import socket
 import threading
 import traceback
 import utility
 import time # TODO rm after testing
-
-IP = '127.0.0.1'
-PORT = 4711
 
 class MessageSizeExceeded(Exception): pass
 class ClientDisconnect(Exception): pass
@@ -23,7 +21,7 @@ def request_handler(conn, ip, port):
     """
     TODO
     """
-    conn.settimeout(5)
+    conn.settimeout(config.TIMEOUT)
 
     try:
         try:
@@ -31,16 +29,17 @@ def request_handler(conn, ip, port):
             request = bytearray()
             
             while True:
-                data = conn.recv(4096)
+                data = conn.recv(config.BUFFER_SIZE)
                 request += data
                 if not data: break
-                if len(request) > 1000: raise MessageSizeExceeded
+                if len(request) > config.MESSAGE_SIZE_MAX: raise MessageSizeExceeded
             
             if not len(request): raise ClientDisconnect
 
             request = str(request, 'utf-8')
             request = json.loads(request)
-            print(f'Received {len(request)} bytes from {ip}:{port}: {request}') # TODO rm inhalt ???
+            print(f'Received {len(request)} bytes from {ip}:{port}')
+            print(f'  {request}')
 
             # pass request to the framework:
             response = framework_function(request)
@@ -77,9 +76,9 @@ try:
     # create listening socket:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
         sd.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sd.bind((IP, PORT))
+        sd.bind((config.IP, config.PORT))
         sd.listen()
-        print(f'Listening on {IP}:{PORT}')
+        print(f'Listening on {config.IP}:{config.PORT}')
 
         while True:
             # accept a connection:

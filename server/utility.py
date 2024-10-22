@@ -24,7 +24,7 @@ def error_message(sender, message):
 def server_error(message):
     """
     Server error.
-    
+
     See function error_message for details.
     """
     return error_message('server', message)

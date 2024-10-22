@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
-TODO
+Game server.
+
+This program opens a port and handles client connections in separate threads. It passes the data received from a client to the game framework and sends the framework's reply back to the client. Then the connection is closed again. Parameters like IP or port number are defines in the config module.
 """
 
 import config
@@ -16,19 +18,32 @@ class MessageSizeExceeded(Exception): pass
 
 def framework_function(data): # TODO rm dummy
     return {'status':'ok', 'message':'framework: no such game', 'data':{'player_id':13}}
-    
+
 class Logger:
     """
-    Logging.
+    Logging server output.
     """
     def __init__(self, ip, port):
         self._ip, self._port = ip, port
     def log(self, message, prefix=''):
-        print(f'{prefix}[{ip}:{port}] {message}')
+        print(f'{prefix}[{ip}:{port}] {message}') # comment out to disable logging
 
 def request_handler(conn, ip, port):
     """
-    TODO
+    Handling a request.
+
+    This function handles a single request. It
+    - receives data from the client
+    - passes that data to the framework
+    - sends the data returned by the framework back to the client
+    - then closes the connection
+
+    Data is expected to be received in JSON format, and it is sent back to the client in the same format. The connection has a server side timeout, and the amount of data accepted in a single request is limited by the server. The corresponding parameters are defined in the config module. Whenever possible, error messages are sent back to the client.
+
+    Parameters:
+    conn (socket): connection socket
+    client (str): client ip
+    port (int): client port
     """
     conn.settimeout(config.timeout)
     l = Logger(ip, port)
@@ -37,14 +52,14 @@ def request_handler(conn, ip, port):
         try:
             # receive data from client:
             request = bytearray()
-            
+
             while True:
                 data = conn.recv(config.buffer_size)
                 request += data
                 if not data: break
                 if len(request) > config.message_size_max:
                     raise MessageSizeExceeded
-            
+
             if not len(request): raise ClientDisconnect
 
             l.log(f'received {len(request)} bytes from client')

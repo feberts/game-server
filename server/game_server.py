@@ -11,8 +11,8 @@ import traceback
 import utility
 import time # TODO rm after testing
 
-class MessageSizeExceeded(Exception): pass
 class ClientDisconnect(Exception): pass
+class MessageSizeExceeded(Exception): pass
 
 def framework_function(data): # TODO dummy
     return {'status':'ok', 'message':'framework: no such game', 'data':{'player_id':13}}
@@ -40,7 +40,7 @@ def request_handler(conn, ip, port):
             print(f'Received {len(request)} bytes from {client}')
             request = str(request, 'utf-8')
             request = json.loads(request)
-            print(f'Received from {client}:\n  {request}')
+            print(f'Data received from {client}:\n  {request}')
 
             # pass request to the framework:
             response = framework_function(request)

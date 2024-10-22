@@ -21,7 +21,7 @@ def request_handler(conn, ip, port):
     """
     TODO
     """
-    conn.settimeout(config.TIMEOUT)
+    conn.settimeout(config.timeout)
     client = f'{ip}:{port}'
 
     try:
@@ -30,10 +30,10 @@ def request_handler(conn, ip, port):
             request = bytearray()
             
             while True:
-                data = conn.recv(config.BUFFER_SIZE)
+                data = conn.recv(config.buffer_size)
                 request += data
                 if not data: break
-                if len(request) > config.MESSAGE_SIZE_MAX: raise MessageSizeExceeded
+                if len(request) > config.message_size_max: raise MessageSizeExceeded
             
             if not len(request): raise ClientDisconnect
 
@@ -77,9 +77,9 @@ try:
     # create listening socket:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
         sd.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sd.bind((config.IP, config.PORT))
+        sd.bind((config.ip, config.port))
         sd.listen()
-        print(f'Listening on {config.IP}:{config.PORT}')
+        print(f'Listening on {config.ip}:{config.port}')
 
         while True:
             # accept a connection:

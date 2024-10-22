@@ -94,7 +94,7 @@ class GameServerAPI:
                     if not data: break
                     response += data
 
-                if not len(response): raise MissingResponse
+                if not response: raise self.MissingResponse
                 response = str(response, 'utf-8')
                 response = json.loads(response)
 

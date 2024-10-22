@@ -65,7 +65,8 @@ def request_handler(conn, ip, port):
         if response:
             print(f'Responding to {ip}:{port}: {response}')
             response = json.dumps(response)
-            conn.sendall(bytes(response, 'utf-8'))
+            response = bytes(response, 'utf-8')
+            conn.sendall(response)
 
     finally:
         conn.close()

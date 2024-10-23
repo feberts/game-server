@@ -119,11 +119,12 @@ class GameServerAPI:
         return None, 'api: ' + message
 
     def _check_args(self, server, port, game, token, players=1):
-        assert type(server) == str and len(server) > 0
-        assert type(port) == int and port >= 0 and port <= 65535
-        assert type(game) == str and len(game) > 0
-        assert type(token) == str and len(token) > 0
-        assert type(players) == int and players > 0
+        msg = '\n\nInvalid argument'
+        assert type(server) == str and len(server) > 0, msg
+        assert type(port) == int and port >= 0 and port <= 65535, msg
+        assert type(game) == str and len(game) > 0, msg
+        assert type(token) == str and len(token) > 0, msg
+        assert type(players) == int and players > 0, msg
 
     class MissingResponse(Exception): pass
 

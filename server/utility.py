@@ -19,7 +19,7 @@ def error_message(sender, message):
     """
     assert type(sender) == str and len(sender) > 0
     assert type(message) == str and len(message) > 0
-    return {'status':'error', 'message':sender + ' error: ' + message}
+    return {'status':'error', 'message':sender + ': ' + message}
 
 def server_error(message):
     """

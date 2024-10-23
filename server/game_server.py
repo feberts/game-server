@@ -75,7 +75,7 @@ def request_handler(conn, ip, port):
             response = utility.server_error('too much data sent')
         except socket.timeout:
             l.log(f'connection timed out on server')
-            response = None
+            response = utility.server_error('connection timed out')
         except ClientDisconnect:
             l.log(f'disconnect by client')
             response = None

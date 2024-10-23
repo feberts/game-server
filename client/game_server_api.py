@@ -43,7 +43,7 @@ class GameServerAPI:
             str: error message, if a problem occurred, an empty string otherwise
 
         Raises:
-        AssertionError: when invalid arguments are passed
+        AssertionError: for invalid arguments
         """
         self._process_args(server, port, game, token, players)
 
@@ -71,7 +71,7 @@ class GameServerAPI:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
             try:
                 # connect to server:
-                sd.settimeout(5) # TODO entfernen, damit Funktion blockierend genutzt werden kann ???
+                sd.settimeout(self._timeout) # TODO entfernen, damit Funktion blockierend genutzt werden kann ???
                 sd.connect((self._server, self._port))
             except:
                 return self._api_error(f'unable to connect to {self._server}:{self._port}')
@@ -87,7 +87,7 @@ class GameServerAPI:
                 response = bytearray()
 
                 while True:
-                    data = sd.recv(4096)
+                    data = sd.recv(self._buffer_size)
                     if not data: break
                     response += data
 
@@ -139,3 +139,5 @@ class GameServerAPI:
     _players = None
     _token = None
     _player_id = None
+    _buffer_size = 4096 # bytes
+    _timeout = 5 # seconds

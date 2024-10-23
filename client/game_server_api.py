@@ -41,16 +41,13 @@ class GameServerAPI:
         tuple(int, str):
             int: player ID, if the game was successfully started, else None
             str: error message, if a problem occurred, an empty string otherwise
+
+        Raises:
+        AssertionError: when invalid arguments are passed
         """
-        self._check_args(server, port, game, token, players)
+        self._process_args(server, port, game, token, players)
 
-        self._server = server
-        self._port = port
-        self._game = game
-        self._token = token
-        self._players = players
-
-        response, err = self._send({'request':'join', 'game':game, 'players':players, 'token':token})
+        response, err = self._send({'request':'join', 'game':self._game, 'token':self._token, 'players':self._players})
 
         if not response: return None, err
         self._player_id = response['player_id']
@@ -118,16 +115,24 @@ class GameServerAPI:
     def _api_error(self, message):
         return None, 'api: ' + message
 
-    def _check_args(self, server, port, game, token, players=1):
-        msg = '\n\nInvalid argument'
-        assert type(server) == str and len(server) > 0, msg
-        assert type(port) == int and port >= 0 and port <= 65535, msg
-        assert type(game) == str and len(game) > 0, msg
-        assert type(token) == str and len(token) > 0, msg
-        assert type(players) == int and players > 0, msg
+    def _process_args(self, server, port, game, token, players=1):
+        def msg(msg): return 'Invalid argument: ' + msg
+
+        assert type(server) == str and len(server) > 0, msg('server')
+        assert type(port) == int and port >= 0 and port <= 65535, msg('port')
+        assert type(game) == str and len(game) > 0, msg('game')
+        assert type(token) == str and len(token) > 0, msg('token')
+        assert type(players) == int and players > 0, msg('players')
+
+        self._server = server
+        self._port = port
+        self._game = game
+        self._token = token
+        self._players = players
 
     class MissingResponse(Exception): pass
 
+    # class attributes:
     _server = None
     _port = None
     _game = None

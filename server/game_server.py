@@ -71,19 +71,19 @@ def request_handler(conn, ip, port):
             response = framework_function(request) # TODO pass IP and port as well?
 
         except MessageSizeExceeded:
-            l.log(f'message size exceeded by client')
+            l.log('message size exceeded by client')
             response = utility.server_error('too much data sent')
         except socket.timeout:
-            l.log(f'connection timed out on server')
+            l.log('connection timed out on server')
             response = utility.server_error('connection timed out')
         except ClientDisconnect:
-            l.log(f'disconnect by client')
+            l.log('disconnect by client')
             response = None
         except json.decoder.JSONDecodeError:
-            l.log(f'corrupt data received from client')
+            l.log('corrupt data received from client')
             response = utility.server_error('received corrupt data')
         except:
-            l.log(f'unexpected exception on server:\n' + traceback.format_exc())
+            l.log('unexpected exception on server:\n' + traceback.format_exc())
             response = utility.server_error('internal error')
 
         # send response to client:
@@ -95,7 +95,7 @@ def request_handler(conn, ip, port):
 
     finally:
         conn.close()
-        l.log(f'connection closed by server')
+        l.log('connection closed by server')
 
 # start server:
 try:

@@ -7,8 +7,8 @@ from tictactoe import TicTacToe
 
 def print_board(board):
     board = [i if board[i] == -1 else players[board[i]] for i in range(9)]
-    print(f' {board[0]} | {board[1]} | {board[2]}', f'---+---+---',
-          f' {board[3]} | {board[4]} | {board[5]}', f'---+---+---',
+    print(f' {board[0]} | {board[1]} | {board[2]}', '---+---+---',
+          f' {board[3]} | {board[4]} | {board[5]}', '---+---+---',
           f' {board[6]} | {board[7]} | {board[8]}', sep='\n')
 
 def user_input(current):

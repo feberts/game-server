@@ -73,10 +73,10 @@ class GameServerAPI:
             request = bytes(request, 'utf-8')
         except:
             return self._api_error('data could not be converted to JSON')
-        
+
         if len(request) > self._message_size_max:
             return self._api_error('message size exceeded')
-        
+
         # create a socket:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
             try:

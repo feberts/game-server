@@ -2,7 +2,7 @@
 """
 Game server.
 
-This program opens a port and handles client connections in separate threads. It passes the data received from a client to the game framework and sends the framework's reply back to the client. Then the connection is closed again. Parameters like IP or port number are defines in the config module.
+This program opens a port and handles client connections in separate threads. It passes the data received from a client to the game framework and sends the framework's reply back to the client. Then the connection is closed again. Parameters like IP or port number are defined in the config module.
 """
 
 import config
@@ -38,7 +38,7 @@ def request_handler(conn, ip, port):
     - sends the data returned by the framework back to the client
     - then closes the connection
 
-    Data is expected to be received in JSON format, and it is sent back to the client in the same format. The connection has a server side timeout, and the amount of data accepted in a single request is limited by the server. The corresponding parameters are defined in the config module. Whenever possible, error messages are sent back to the client.
+    Data is expected to be received in JSON format and it is also sent back to the client in JSON format. The connection has a server side timeout and the amount of data accepted in a single request is limited by the server. The corresponding parameters are defined in the config module. Whenever possible, error messages are sent back to the client.
 
     Parameters:
     conn (socket): connection socket

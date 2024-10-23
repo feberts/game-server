@@ -26,7 +26,7 @@ class Logger:
     def __init__(self, ip, port):
         self._ip, self._port = ip, port
     def log(self, message, prefix=''):
-        print(f'{prefix}[{ip}:{port}] {message}') # comment out to disable logging
+        print(f'{prefix}[{ip}:{port}] {message}')
 
 def request_handler(conn, ip, port):
     """

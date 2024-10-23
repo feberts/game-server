@@ -68,6 +68,17 @@ class GameServerAPI:
             dict: data returned by server, None in case of an error
             str: error message, if a problem occurred, an empty string otherwise
         """
+        # prepare data:
+        try:
+            request = json.dumps(data)
+            request = bytes(request, 'utf-8')
+        except:
+            return self._api_error('data could not be converted to JSON')
+        
+        if len(request) > self._message_size_max:
+            return self._api_error('message size exceeded')
+        
+        # create a socket:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
             try:
                 # connect to server:
@@ -78,8 +89,6 @@ class GameServerAPI:
 
             try:
                 # send data to server:
-                request = json.dumps(data)
-                request = bytes(request, 'utf-8')
                 sd.sendall(request)
                 sd.shutdown(socket.SHUT_WR) # signal end of message
 
@@ -141,3 +150,4 @@ class GameServerAPI:
     _player_id = None
     _buffer_size = 4096 # bytes
     _timeout = 5 # seconds
+    _message_size_max = 1000 # bytes

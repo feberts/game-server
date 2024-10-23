@@ -2,7 +2,7 @@
 """
 Game server.
 
-This program opens a port and handles client connections in separate threads. It passes the data received from a client to the game framework and sends the framework's reply back to the client. Then the connection is closed again. Parameters like IP or port number are defined in the config module.
+This server program opens a port and handles client connections in separate threads. It passes the data received from a client to the game framework and sends the framework's reply back to the client. The connection is then closed. Parameters like IP or port number are defined in the config module.
 """
 
 import config
@@ -11,7 +11,6 @@ import socket
 import threading
 import traceback
 import utility
-import time # TODO rm after testing
 
 class ClientDisconnect(Exception): pass
 class MessageSizeExceeded(Exception): pass
@@ -25,6 +24,7 @@ class Logger:
     """
     def __init__(self, ip, port):
         self._ip, self._port = ip, port
+
     def log(self, message, prefix=''):
         print(f'{prefix}[{ip}:{port}] {message}')
 
@@ -104,12 +104,14 @@ try:
         sd.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sd.bind((config.ip, config.port))
         sd.listen()
+
         print(f'Listening on {config.ip}:{config.port}')
 
         while True:
             # accept a connection:
             conn, client = sd.accept()
             ip, port = client
+
             Logger(ip, port).log('connection accepted', '\n')
 
             # handle request in separate thread:

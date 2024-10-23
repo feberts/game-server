@@ -44,7 +44,7 @@ class AbstractGame:
         This function reports the highest allowed number of players in the game to the framework.
 
         Returns:
-        int: highest number of players
+        int: highest allowed number of players
         """
         raise NotImplementedError
 
@@ -63,7 +63,7 @@ class AbstractGame:
         """
         Submit a move.
 
-        A player's move is passed as a dictionary. The content of this dictionary entirely depends on the needs of the game. The API function to submit a move on the client side accepts the data as keyword arguments. Those keyword arguments are then converted to a dictionary. It is important to let the user of the API know about the names of these keywords and the expected data type of their values. See the documentation on how to add new games for more details.
+        A player's move is passed as a dictionary. The content of this dictionary entirely depends on the needs of the game. The API function to submit a move on the client side accepts the data as keyword arguments. Those keyword arguments are then converted to a dictionary. It is important to let the user of the API know about the names of these keywords and the expected data types of their values. See the documentation on how to add new games for more details.
 
         The framework makes sure, that only the current player can submit a move. The framework also guaranties, that the argument is of type dictionary, but the validity of the contained data must be checked thoroughly by the implementer of the game class.
 
@@ -86,6 +86,8 @@ class AbstractGame:
         This can be the complete state of the game, or just specific information for a specific player. What information is returned depends entirely on the game. In some games all information is available to all players, in other games players can possess information that is hidden from the others.
 
         It is important to let the user of the API know how the dictionary is structured so he can access its content. See the documentation on how to add new games for more details.
+
+        The current player's ID must not be included in the dictionary. The framework will add it automatically.
 
         Parameters:
         player_id (int): player ID (no parameter check required)

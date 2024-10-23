@@ -4,14 +4,14 @@ Utility functions.
 This module provides various utility functions.
 """
 
-def error_message(sender, message):
+def generic_error(sender, message):
     """
     Create an error message.
 
     The message is embedded into a dictionary, to be sent back to the client.
 
     Parameters:
-    sender (str): to let the client know, where the error occurred
+    sender (str): to let the client know where the error was detected
     message (str): error message
 
     Returns:
@@ -25,9 +25,9 @@ def server_error(message):
     """
     Server error.
 
-    See function error_message for details.
+    See function generic_error() for details.
     """
-    return error_message('server', message)
+    return generic_error('server', message)
 
 def check_dict(d, expected):
     """

@@ -12,7 +12,6 @@ This module provides an API for communicating with the game server. The API can 
 import json
 import socket
 import traceback
-import time # TODO rm after testing
 
 class GameServerAPI:
     """
@@ -125,6 +124,9 @@ class GameServerAPI:
         return None, 'api: ' + message
 
     def _process_args(self, server, port, game, token, players=1):
+        """
+        Check arguments and assign them to class attributes.
+        """
         def msg(msg): return 'Invalid argument: ' + msg
 
         assert type(server) == str and len(server) > 0, msg('server')

@@ -141,13 +141,17 @@ class GameServerAPI:
 
     class MissingResponse(Exception): pass
 
-    # class attributes:
-    _server = None
-    _port = None
+    # game:
     _game = None
     _players = None
     _token = None
     _player_id = None
+
+    # server:
+    _server = None
+    _port = None
+
+    # connections:
     _buffer_size = 4096 # bytes
     _timeout = 5 # seconds
     _message_size_max = 1000 # bytes

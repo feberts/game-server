@@ -62,10 +62,10 @@ def request_handler(conn, ip, port):
 
             if not len(request): raise ClientDisconnect
 
-            l.log(f'recv ({len(request)} bytes)')
+            l.log(f'received {len(request)} bytes from client')
             request = str(request, 'utf-8')
             request = json.loads(request)
-            l.log(f'data:\n{request}')
+            l.log(f'received from client:\n{request}')
 
             # pass request to the framework:
             response = framework_function(request) # TODO pass IP and port as well?
@@ -88,14 +88,14 @@ def request_handler(conn, ip, port):
 
         # send response to client:
         if response:
-            l.log(f'sendall\n{response}')
+            l.log(f'responding to client:\n{response}')
             response = json.dumps(response)
             response = bytes(response, 'utf-8')
             conn.sendall(response)
 
     finally:
         conn.close()
-        l.log('close')
+        l.log('connection closed by server')
 
 # start server:
 try:
@@ -112,7 +112,7 @@ try:
             conn, client = sd.accept()
             ip, port = client
 
-            Logger(ip, port).log('accept', '\n')
+            Logger(ip, port).log('connection accepted', '\n')
 
             # handle request in separate thread:
             t = threading.Thread(target=request_handler, args=(conn, ip, port), daemon=True)

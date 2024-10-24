@@ -26,7 +26,7 @@ class Logger:
         self._ip, self._port = ip, port
 
     def log(self, message, prefix=''):
-        print(f'{prefix}[{ip}:{port}] {message}')
+        print(f'{prefix}[{self._ip}:{self._port}] {message}')
 
 def request_handler(conn, ip, port):
     """

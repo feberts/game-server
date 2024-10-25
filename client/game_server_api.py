@@ -156,5 +156,5 @@ class GameServerAPI:
 
         # connections:
         self._buffer_size = 4096 # bytes
-        self._timeout = 5 # seconds
-        self._message_size_max = 1000 # bytes
+        self._timeout = 30 # seconds
+        self._message_size_max = int(1e6) # bytes

@@ -13,7 +13,7 @@ class TicTacToe(AbstractGame):
     This class implements a tic-tac-toe game.
     """
 
-    class State:
+    class _State:
         def __init__(self):
             self.board = [-1] * 9
             self.current = 0
@@ -21,7 +21,7 @@ class TicTacToe(AbstractGame):
             self.winner = None
 
     def __init__(self, _): # override
-        self._state = self.State()
+        self._state = self._State()
 
     def state(self, player_id): # override
         """

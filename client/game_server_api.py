@@ -99,7 +99,7 @@ class GameServerAPI:
                     if not data: break
                     response += data
 
-                if not response: raise self.MissingResponse
+                if not response: raise self._MissingResponse
                 response = str(response, 'utf-8')
                 response = json.loads(response)
 
@@ -111,7 +111,7 @@ class GameServerAPI:
 
             except socket.timeout:
                 return self._api_error('connection timed out')
-            except self.MissingResponse:
+            except self._MissingResponse:
                 return self._api_error('empty or no response received from server')
             except (ConnectionResetError, BrokenPipeError):
                 return self._api_error('connection closed by server')
@@ -141,13 +141,13 @@ class GameServerAPI:
         self._token = token
         self._players = players
 
-    class MissingResponse(Exception): pass
+    class _MissingResponse(Exception): pass
 
     def __init__(self):
         # game:
         self._game = None
-        self._players = None
         self._token = None
+        self._players = None
         self._player_id = None
 
         # server:

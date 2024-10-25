@@ -14,12 +14,14 @@ class TicTacToe(AbstractGame):
     """
 
     class State:
-        board = [-1] * 9
-        current = 0
-        gameover = False
-        winner = None
+        def __init__(self):
+            self.board = [-1] * 9
+            self.current = 0
+            self.gameover = False
+            self.winner = None
 
-    _state = State()
+    def __init__(self, _): # override
+        self._state = self.State()
 
     def state(self, player_id): # override
         """
@@ -96,9 +98,6 @@ class TicTacToe(AbstractGame):
     def _check_board_full(self):
         if -1 not in self._state.board:
             self._state.gameover = True
-
-    def __init__(self, _): # override
-        pass
 
     def min_players(self): # override
         return 2

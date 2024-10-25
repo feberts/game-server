@@ -143,17 +143,18 @@ class GameServerAPI:
 
     class MissingResponse(Exception): pass
 
-    # game:
-    _game = None
-    _players = None
-    _token = None
-    _player_id = None
+    def __init__(self):
+        # game:
+        self._game = None
+        self._players = None
+        self._token = None
+        self._player_id = None
 
-    # server:
-    _server = None
-    _port = None
+        # server:
+        self._server = None
+        self._port = None
 
-    # connections:
-    _buffer_size = 4096 # bytes
-    _timeout = 5 # seconds
-    _message_size_max = 1000 # bytes
+        # connections:
+        self._buffer_size = 4096 # bytes
+        self._timeout = 5 # seconds
+        self._message_size_max = 1000 # bytes

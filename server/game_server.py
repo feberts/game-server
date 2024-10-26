@@ -12,11 +12,12 @@ import threading
 import traceback
 import utility
 
+from game_framework import GameFramework
+
+framework = GameFramework()
+
 class ClientDisconnect(Exception): pass
 class MessageSizeExceeded(Exception): pass
-
-def framework_function(data): # TODO rm dummy
-    return {'status':'ok', 'message':'framework: no such game', 'data':{'player_id':13}}
 
 class Logger:
     """
@@ -28,11 +29,11 @@ class Logger:
     def log(self, message, prefix=''):
         print(f'{prefix}[{self._ip}:{self._port}] {message}')
 
-def request_handler(conn, ip, port):
+def handle_connection(conn, ip, port):
     """
-    Handling a request.
+    Handling a connection.
 
-    This function handles a single request. It
+    This function handles a single connection. It
     - receives data from the client
     - passes that data to the framework
     - sends the data returned by the framework back to the client
@@ -68,7 +69,7 @@ def request_handler(conn, ip, port):
             l.log(f'received from client:\n{request}')
 
             # pass request to the framework:
-            response = framework_function(request) # TODO pass IP and port as well?
+            response = framework.request(request) # TODO pass IP and port as well?
 
         except MessageSizeExceeded:
             l.log('message size exceeded by client')
@@ -114,8 +115,8 @@ try:
 
             Logger(ip, port).log('connection accepted', '\n')
 
-            # handle request in separate thread:
-            t = threading.Thread(target=request_handler, args=(conn, ip, port), daemon=True)
+            # handle connection in separate thread:
+            t = threading.Thread(target=handle_connection, args=(conn, ip, port), daemon=True)
             t.start()
 except KeyboardInterrupt:
     pass

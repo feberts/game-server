@@ -15,6 +15,12 @@ To perform these actions, the framework calls the corresponding methods of a gam
 
 class GameFramework:
     """
-    TODO
+    Class GameFramework.
+    
+    This class manages active games and handles the interaction between clients and game instances.
     """
-    pass
+    def __init__(self):
+        pass
+
+    def request(self, request):
+        return {'status':'ok', 'message':'framework: no such game', 'data':{'player_id':13}}

@@ -64,7 +64,7 @@ class GameFramework:
         def __init__(self, game_instance, players):
             self.game = game_instance
             self.players_target = players
-            self.players_joined = 0
+            self.players_joined = 1
 
     def _start_game(self, request):
         """
@@ -92,6 +92,12 @@ class GameFramework:
         print(self._active_games) # TODO del
 
         # TODO weitere implementierung
-        return {'status':'ok', 'data':{'player_id':13}}
+
+        return self._return_data({'player_id':0})
         
-        
+    def _return_data(self, data):
+        """
+        TODO
+        """
+        return {'status':'ok', 'data':data}
+

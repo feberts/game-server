@@ -23,7 +23,7 @@ class GameFramework:
     This class manages active games and handles the interaction between clients and game instances.
     """
     def __init__(self):
-        self._game_classes = [TicTacToe] # add each newly implemented game here
+        self._game_classes = [TicTacToe] # add each newly implemented game class here
         self._game_classes_by_name = {} # name -> class
         self._build_game_class_dict()
 
@@ -33,6 +33,12 @@ class GameFramework:
         """
         for game in self._game_classes:
             self._game_classes_by_name[game.__name__] = game
+
+    def _instantiate_game(name):
+        """
+        Instantiate a game class by name.
+        """
+        return self._game_classes_by_name[name]()
 
     def handle_request(self, request):
         """

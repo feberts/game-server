@@ -14,6 +14,8 @@ To perform these actions, the framework calls the corresponding methods of a gam
 """
 
 import utility
+import time # TODO needed?
+import config # TODO needed?
 from tictactoe import TicTacToe
 
 # TODO spell check of this whole file
@@ -63,8 +65,14 @@ class GameFramework:
     class _ActiveGame:
         def __init__(self, game_instance, players):
             self.game = game_instance
-            self.players_target = players
-            self.players_joined = 1
+            self._players_target = players
+            self._next_id = 0
+        def get_id(self):
+            ret = self._next_id
+            self._next_id = self._next_id + 1
+            return ret
+        def ready(self):
+            return self._players_target == self._next_id
 
     def _start_game(self, request):
         """
@@ -87,13 +95,24 @@ class GameFramework:
             return utility.framework_error('invalid number of players')
         
         # create game instance and add it to dictionary of active games:
-        game = game_class(players)
-        self._active_games[(game_name, token)] = self._ActiveGame(game, players)
-        print(self._active_games) # TODO del
+        new_game = self._ActiveGame(game_class(players), players)
+        self._active_games[(game_name, token)] = new_game
 
-        # TODO weitere implementierung
+        # get player ID:
+        player_id = new_game.get_id()
 
-        return self._return_data({'player_id':0})
+        # wait for others to join:
+        seconds = 0
+        
+        while not new_game.ready() and seconds < config.timeout:
+            time.sleep(1)
+            seconds = seconds + 1
+
+        if not new_game.ready():
+            del self._active_games[(game_name, token)]
+            return utility.framework_error('time out while waiting for others to join')
+
+        return self._return_data({'player_id':player_id})
         
     def _return_data(self, data):
         """

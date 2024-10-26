@@ -35,7 +35,7 @@ class GameFramework:
             self._game_classes_by_name[game.__name__] = game
 
         """
-    def _instantiate_game(name):
+    def _instantiate_game(name): # TODO del
         Instantiate a game class by name.
         return self._game_classes_by_name[name]()
         """
@@ -55,7 +55,7 @@ class GameFramework:
         if 'type' not in request:
             return utility.framework_error("key 'type' of type str missing")
 
-        handlers = {'start_game':self._start_game}
+        handlers = {'start_game':self._start_game} # TODO add more handlers
         
         if request['type'] not in handlers:
             return utility.framework_error('invalid request type')
@@ -79,6 +79,7 @@ class GameFramework:
         if players > game_class.max_players() or players < game_class.min_players():
             return utility.framework_error('invalid number of players')
 
+        # TODO weitere implementierung
         return {'status':'ok', 'data':{'player_id':13}}
         
         

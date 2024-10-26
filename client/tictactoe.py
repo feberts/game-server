@@ -9,34 +9,10 @@ from game_server_api import GameServerAPI
 
 api = GameServerAPI()
 
-my_id, msg = api.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
+my_id, err = api.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
 
-"""
-my_id, msg = api.start_game(server='127.0.0.11', port=4711, game='TicTacToe', players=2, token='mygame')
-my_id, msg = api.start_game(server='127.0.0.256', port=4711, game='TicTacToe', players=2, token='mygame')
-my_id, msg = api.start_game(server='sdfgh', port=4711, game='TicTacToe', players=2, token='mygame')
-my_id, msg = api.start_game(server='', port=4711, game='TicTacToe', players=2, token='mygame')
-my_id, msg = api.start_game(server=34, port=4711, game='TicTacToe', players=2, token='mygame')
-my_id, msg = api.start_game(server='', port=4712, game='TicTacToe', players=2, token='mygame')
-
-my_id, msg = api.start_game(server='127.0.0.1', port=4712, game='TicTacToe', players=2, token='mygame')
-my_id, msg = api.start_game(server='127.0.0.1', port=471159875, game='TicTacToe', players=2, token='mygame')
-my_id, msg = api.start_game(server='127.0.0.1', port="4711", game='TicTacToe', players=2, token='mygame')
-my_id, msg = api.start_game(server='127.0.0.1', port=-4711, game='TicTacToe', players=2, token='mygame')
-
-my_id, msg = api.start_game(server='127.0.0.1', port=4711, game='', players=2, token='mygame')
-my_id, msg = api.start_game(server='127.0.0.1', port=4711, game=456, players=2, token='mygame')
-
-my_id, msg = api.start_game(server='127.0.0.1', port=4711, game='TicTacToe', players=0, token='mygame')
-my_id, msg = api.start_game(server='127.0.0.1', port=4711, game='TicTacToe', players="2", token='mygame')
-
-my_id, msg = api.start_game(server='127.0.0.1', port=4711, game='TicTacToe', players=2, token='')
-my_id, msg = api.start_game(server='127.0.0.1', port=4711, game='TicTacToe', players=2, token=8765)
-"""
-
-if not my_id:
-    print(msg)
-    print('end')
+if err:
+    print(err)
     exit()
 
 print('Player ID:', my_id)

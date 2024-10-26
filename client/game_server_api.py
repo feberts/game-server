@@ -39,7 +39,7 @@ class GameServerAPI:
         Returns:
         tuple(int, str):
             int: player ID, if the game was successfully started, else None
-            str: error message, if a problem occurred, an empty string otherwise
+            str: error message, if a problem occurred, None otherwise
 
         Raises:
         AssertionError: for invalid arguments
@@ -48,10 +48,10 @@ class GameServerAPI:
 
         response, err = self._send({'request':'start', 'game':game, 'token':token, 'players':players})
 
-        if not response: return None, err
+        if err: return None, err
         self._player_id = response['player_id']
 
-        return self._player_id, ''
+        return self._player_id, None
 
     def _send(self, data):
         """
@@ -65,7 +65,7 @@ class GameServerAPI:
         Returns:
         tuple(dict, str):
             dict: data returned by server, None in case of an error
-            str: error message, if a problem occurred, an empty string otherwise
+            str: error message, if a problem occurred, None otherwise
         """
         # prepare data:
         try:
@@ -107,7 +107,7 @@ class GameServerAPI:
                 if response['status'] == 'error': # server responded with error
                     return None, response['message']
 
-                return response['data'], ''
+                return response['data'], None
 
             except socket.timeout:
                 return self._api_error('connection timed out')

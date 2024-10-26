@@ -97,8 +97,8 @@ class TicTacToe(AbstractGame):
         if -1 not in self._state.board:
             self._state.gameover = True
 
-    def min_players(self): # override
+    def min_players(): # override
         return 2
 
-    def max_players(self): # override
+    def max_players(): # override
         return 2

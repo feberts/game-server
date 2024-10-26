@@ -69,7 +69,15 @@ class GameFramework:
         err = utility.check_dict(request, {'game':str, 'token':str, 'players':int})
         if err: return utility.framework_error(err)
     
-        game, token, players = request['game'], request['token'], request['players']
+        game_name, token, players = request['game'], request['token'], request['players']
+        
+        if game_name not in self._game_classes_by_name:
+            return utility.framework_error('no such game')
+
+        game_class = self._game_classes_by_name[game_name]
+        
+        if players > game_class.max_players() or players < game_class.min_players():
+            return utility.framework_error('invalid number of players')
 
         return {'status':'ok', 'data':{'player_id':13}}
         

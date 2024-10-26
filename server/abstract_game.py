@@ -67,15 +67,13 @@ class AbstractGame:
 
         The framework makes sure, that only the current player can submit a move. The framework also guaranties, that the argument is of type dictionary, but the validity of the contained data must be checked thoroughly by the implementer of the game class.
 
-        In order to respond to invalid moves, flags and error messages must be returned. These are then sent back to the client, where they are returned from an API function. So make sure to return meaningful messages.
+        In order to respond to invalid moves, error messages must be returned. These are then sent back to the client, where they are returned from an API function. So make sure to return meaningful messages. If a move is valid, None must be returned.
 
         Parameters:
         args (dict): the current player's move (must be checked)
 
         Returns:
-        tuple(bool, str):
-            bool: to inform the client whether the move was valid or not
-            str: error message in case the move was illegal, an empty string otherwise
+        str: error message in case the move was illegal, None otherwise
         """
         raise NotImplementedError
 

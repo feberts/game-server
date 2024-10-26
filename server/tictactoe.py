@@ -59,24 +59,22 @@ class TicTacToe(AbstractGame):
         args (dict): the current player's move
 
         Returns:
-        tuple(bool, str):
-            bool: to inform the client whether the move was valid or not
-            str: error message in case the move was illegal, an empty string otherwise
+        str: error message in case the move was illegal, None otherwise
         """
         if 'position' not in args:
-            return False, "keyword argument 'position' of type int missing"
+            return "keyword argument 'position' of type int missing"
         if type(args['position']) != int:
-            return False, "type of argument 'position' must be int"
+            return "type of argument 'position' must be int"
 
         pos = int(args['position'])
         valid, msg = self._check_move(pos)
-        if not valid: return False, msg
+        if not valid: return msg
 
         self._update_board(pos)
         self._check_win()
         self._check_board_full()
         self._state.current ^= 1 # rotate players
-        return True, ''
+        return None
 
     def _check_move(self, pos):
         if pos < 0 or pos > 8:

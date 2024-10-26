@@ -20,7 +20,8 @@ classes = [DerivedA, DerivedB]
 classes_by_name = {}
 
 for cl in classes:
-    classes_by_name[type(cl()).__name__] = cl
+    #classes_by_name[type(cl()).__name__] = cl
+    classes_by_name[cl.__name__] = cl
 
 def instantiate(name):
     """factory method"""

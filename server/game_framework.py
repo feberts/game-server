@@ -14,6 +14,7 @@ To perform these actions, the framework calls the corresponding methods of a gam
 """
 
 import utility
+from tictactoe import TicTacToe
 
 class GameFramework:
     """
@@ -22,8 +23,16 @@ class GameFramework:
     This class manages active games and handles the interaction between clients and game instances.
     """
     def __init__(self):
-        #TODO
-        pass
+        self._game_classes = [TicTacToe] # add each newly implemented game here
+        self._game_classes_by_name = {} # name -> class
+        self._build_game_class_dict()
+
+    def _build_game_class_dict(self):
+        """
+        Build dictionary mapping game names to game classes.
+        """
+        for game in self._game_classes:
+            self._game_classes_by_name[game.__name__] = game
 
     def handle_request(self, request):
         """
@@ -40,17 +49,22 @@ class GameFramework:
         if 'type' not in request:
             return utility.framework_error("key 'type' of type str missing")
 
-        handlers = {'start_game':self.start_game}
+        handlers = {'start_game':self._start_game}
         
         if request['type'] not in handlers:
             return utility.framework_error('invalid request type')
         
         return handlers[request['type']](request)
 
-    def start_game(self, request):
+    def _start_game(self, request):
         """
         TODO
         """
-        return {'status':'ok', 'message':'starting game', 'data':{'player_id':13}}
+        err = utility.check_dict(request, {'game':str, 'token':str, 'players':int})
+        if err: return utility.framework_error(err)
+    
+        game, token, players = request['game'], request['token'], request['players']
+
+        return {'status':'ok', 'data':{'player_id':13}}
         
         

@@ -24,7 +24,9 @@ class GameFramework:
     """
     def __init__(self):
         self._game_classes = [TicTacToe] # add each newly implemented game class here
-        self._game_classes_by_name = {} # name -> class
+        self._game_classes_by_name = {}
+        self._active_games = {}
+
         self._build_game_class_dict()
 
     def _build_game_class_dict(self):
@@ -78,6 +80,9 @@ class GameFramework:
         
         if players > game_class.max_players() or players < game_class.min_players():
             return utility.framework_error('invalid number of players')
+        
+        self._active_games[(game_name, token)] = game_class(players)
+        print(self._active_games)
 
         # TODO weitere implementierung
         return {'status':'ok', 'data':{'player_id':13}}

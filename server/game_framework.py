@@ -34,11 +34,11 @@ class GameFramework:
         for game in self._game_classes:
             self._game_classes_by_name[game.__name__] = game
 
+        """
     def _instantiate_game(name):
-        """
         Instantiate a game class by name.
-        """
         return self._game_classes_by_name[name]()
+        """
 
     def handle_request(self, request):
         """

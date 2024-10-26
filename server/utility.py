@@ -42,7 +42,7 @@ def check_dict(d, expected):
     """
     Checking a dictionary's structure.
 
-    This function verifies, that all expected keys are present in a given dictionary and that their values are of the expected type.
+    This function verifies, that all expected keys are present in a given dictionary and that their values are of the expected type. It also checks, if strings contain at least one character.
 
     Example:
     To check, if dictionary d has keys named 'a' and 'b', that are mapped to values of types int and str, a function call might look like this:
@@ -63,5 +63,8 @@ def check_dict(d, expected):
             return f"key '{key_name}' of type {val_type} missing"
         if type(d[key_name]) != val_type:
             return f"value of key '{key_name}' must be of type {val_type}"
+        if type(d[key_name]) == str:
+            if len(d[key_name]) == 0:
+                return f"value of key '{key_name}' must be a string of length > 0"
 
     return None

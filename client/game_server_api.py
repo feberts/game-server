@@ -129,11 +129,11 @@ class GameServerAPI:
         """
         def msg(msg): return 'Invalid argument: ' + msg
 
-        #assert type(server) == str and len(server) > 0, msg('server')
-        #assert type(port) == int and port >= 0 and port <= 65535, msg('port')
-        #assert type(game) == str and len(game) > 0, msg('game')
-        #assert type(token) == str and len(token) > 0, msg('token')
-        #assert type(players) == int and players > 0, msg('players')
+        assert type(server) == str and len(server) > 0, msg('server')
+        assert type(port) == int and port >= 0 and port <= 65535, msg('port')
+        assert type(game) == str and len(game) > 0, msg('game')
+        assert type(token) == str and len(token) > 0, msg('token')
+        assert type(players) == int and players > 0, msg('players')
 
         self._server = server
         self._port = port

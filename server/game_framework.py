@@ -16,6 +16,8 @@ To perform these actions, the framework calls the corresponding methods of a gam
 import utility
 from tictactoe import TicTacToe
 
+# TODO spell check of this whole file
+
 class GameFramework:
     """
     Class GameFramework.
@@ -35,12 +37,6 @@ class GameFramework:
         """
         for game in self._game_classes:
             self._game_classes_by_name[game.__name__] = game
-
-        """
-    def _instantiate_game(name): # TODO del
-        Instantiate a game class by name.
-        return self._game_classes_by_name[name]()
-        """
 
     def handle_request(self, request):
         """
@@ -64,25 +60,36 @@ class GameFramework:
         
         return handlers[request['type']](request)
 
+    class _ActiveGame:
+        def __init__(self, game_instance, players):
+            self.game = game_instance
+            self.players_target = players
+            self.players_joined = 0
+
     def _start_game(self, request):
         """
         TODO
         """
+        # check and parse request:
         err = utility.check_dict(request, {'game':str, 'token':str, 'players':int})
         if err: return utility.framework_error(err)
-    
+        
         game_name, token, players = request['game'], request['token'], request['players']
         
+        # get game class:
         if game_name not in self._game_classes_by_name:
             return utility.framework_error('no such game')
 
         game_class = self._game_classes_by_name[game_name]
         
+        # check number of players:
         if players > game_class.max_players() or players < game_class.min_players():
             return utility.framework_error('invalid number of players')
         
-        self._active_games[(game_name, token)] = game_class(players)
-        print(self._active_games)
+        # create game instance and add it to dictionary of active games:
+        game = game_class(players)
+        self._active_games[(game_name, token)] = self._ActiveGame(game, players)
+        print(self._active_games) # TODO del
 
         # TODO weitere implementierung
         return {'status':'ok', 'data':{'player_id':13}}

@@ -60,8 +60,8 @@ def check_dict(d, expected):
     """
     for key_name, val_type in expected.items():
         if key_name not in d:
-            return f"keyword argument '{key_name}' of type {val_type} missing"
+            return f"key '{key_name}' of type {val_type} missing"
         if type(d[key_name]) != val_type:
-            return f"type of argument '{key_name}' must be {val_type}"
+            return f"value of key '{key_name}' must be of type {val_type}"
 
     return None

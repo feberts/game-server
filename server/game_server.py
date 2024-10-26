@@ -69,7 +69,7 @@ def handle_connection(conn, ip, port):
             l.log(f'received from client:\n{request}')
 
             # pass request to the framework:
-            response = framework.request(request) # TODO pass IP and port as well?
+            response = framework.handle_request(request) # TODO pass IP and port as well?
 
         except MessageSizeExceeded:
             l.log('message size exceeded by client')

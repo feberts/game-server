@@ -29,6 +29,14 @@ def server_error(message):
     """
     return generic_error('server', message)
 
+def framework_error(message):
+    """
+    Framwork error.
+
+    See function generic_error() for details.
+    """
+    return generic_error('framework', message)
+
 def check_dict(d, expected):
     # TODO del if not needed
     """

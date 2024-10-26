@@ -13,6 +13,8 @@ Client requests are parsed and the appropriate actions are performed. The follow
 To perform these actions, the framework calls the corresponding methods of a game class, if necessary.
 """
 
+import utility
+
 class GameFramework:
     """
     Class GameFramework.
@@ -20,7 +22,35 @@ class GameFramework:
     This class manages active games and handles the interaction between clients and game instances.
     """
     def __init__(self):
+        #TODO
         pass
 
-    def request(self, request):
-        return {'status':'ok', 'message':'framework: no such game', 'data':{'player_id':13}}
+    def handle_request(self, request):
+        """
+        Handling a client request.
+
+        This function is called by the server. It identifies the type of the request and redirects it to the corresponding method. The returned data is handed back to the server and then sent to the client.
+
+        Parameters:
+        request (dict): client request
+
+        Returns:
+        dict: reply
+        """
+        if 'type' not in request:
+            return utility.framework_error("key 'type' of type str missing")
+
+        handlers = {'start_game':self.start_game}
+        
+        if request['type'] not in handlers:
+            return utility.framework_error('invalid request type')
+        
+        return handlers[request['type']](request)
+
+    def start_game(self, request):
+        """
+        TODO
+        """
+        return {'status':'ok', 'message':'starting game', 'data':{'player_id':13}}
+        
+        

@@ -38,7 +38,6 @@ def framework_error(message):
     return generic_error('framework', message)
 
 def check_dict(d, expected):
-    # TODO del if not needed
     """
     Checking a dictionary's structure.
 

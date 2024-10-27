@@ -24,9 +24,8 @@ class GameServerAPI:
         """
         Start a game.
 
-        This function asks the server to start a game. Other clients can use the join-function to join that game. To be able to join, they need to know the chosen token. The token is used to identify the game session. It can be any string. A repeated call of this function will end the previous session.
+        This function asks the server to start a game. Other clients can use the join function to join that game. To be able to join, they need to know the chosen token. The token is used to identify the game session. It can be any string. A repeated call of this function will end the previous session.
 
-        TODO blockierend nicht möglich, wenn _send() mit Timeout arbeitet !!!
         This is a blocking function. The game starts as soon as the specified number of clients has joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
 
         Parameters:
@@ -57,9 +56,8 @@ class GameServerAPI:
         """
         Join a game.
 
-        This function lets a client join a game that another client has started by calling start_game(). To be able to join, the correct token must be provided. The token is used to identify a specific game session.
+        This function lets a client join a game that another client has started by calling the start function. To be able to join, the correct token must be provided. The token is used to identify a specific game session.
 
-        TODO blockierend nicht möglich, wenn _send() mit Timeout arbeitet !!!
         This is a blocking function. The game starts as soon as all clients have joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
 
         Parameters:
@@ -70,7 +68,7 @@ class GameServerAPI:
 
         Returns:
         tuple(int, str):
-            int: player ID, if the game was successfully started, else None
+            int: player ID, if the game could be joined, else None
             str: error message, if a problem occurred, None otherwise
 
         Raises:
@@ -85,9 +83,12 @@ class GameServerAPI:
 
         return self._player_id, None
 
+    # TODO function move
+    # TODO function state
+
     def _send(self, data):
         """
-        Sends data to the server and receive its response.
+        Send data to the server and receive its response.
 
         This function sends data to the server and returns the data sent back by it. The data is sent in JSON format. Make sure, that the passed dictionary's content is compatible with JSON.
 
@@ -106,7 +107,7 @@ class GameServerAPI:
         except:
             return self._api_error('data could not be converted to JSON')
 
-        if len(request) > self._message_size_max:
+        if len(request) > self._request_size_max:
             return self._api_error('message size exceeded')
 
         # create a socket:
@@ -152,6 +153,9 @@ class GameServerAPI:
                 return self._api_error('unexpected exception:\n' + traceback.format_exc())
 
     def _api_error(self, message):
+        """
+        Return an error message.
+        """
         return None, 'api: ' + message
 
     def _process_args(self, server, port, game, token, players=1):
@@ -187,4 +191,4 @@ class GameServerAPI:
 
         # connections:
         self._buffer_size = 4096 # bytes
-        self._message_size_max = int(1e6) # bytes
+        self._request_size_max = int(1e6) # bytes

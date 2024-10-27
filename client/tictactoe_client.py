@@ -5,6 +5,8 @@ Tic-tac-toe client.
 This program connects to the game server to play tic-tac-toe against another client.
 """
 
+# TODO implement tic-tac-toe client
+
 import threading
 import time
 

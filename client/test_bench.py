@@ -5,6 +5,7 @@ Test bench for client server interaction in separate threads.
 
 import threading
 import time
+
 from game_server_api import GameServerAPI
 
 game = 'TicTacToe'

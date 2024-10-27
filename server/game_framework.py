@@ -12,7 +12,6 @@ Client requests are parsed and the appropriate actions are performed. The follow
 
 To perform these actions, the framework calls the corresponding methods of a game class instance, if necessary.
 """
-# TODO spell check of this whole file
 
 import threading
 import time
@@ -42,6 +41,25 @@ class GameFramework:
         for game in self._game_classes:
             self._game_classes_by_name[game.__name__] = game
 
+    class _ActiveGame:
+        """
+        Wrapper class for game instances providing functionality for retrieving player IDs.
+        """
+        def __init__(self, game_instance, players):
+            self.game = game_instance
+            self._number_of_players = players
+            self._next_id = 0
+            self._lock = threading.Lock()
+
+        def next_id(self): # IDs assigned to clients joining the game
+            with self._lock:
+                ret = self._next_id
+                self._next_id = self._next_id + 1
+                return ret
+
+        def ready(self): # ready when all players have joined the game
+            return self._number_of_players == self._next_id
+
     def handle_request(self, request):
         """
         Handling a client request.
@@ -64,30 +82,10 @@ class GameFramework:
 
         return handlers[request['type']](request)
 
-    class _ActiveGame:
-        """
-        Wrapper class for game instances providing functionality for retrieving player IDs.
-        """
-        def __init__(self, game_instance, players):
-            self.game = game_instance
-            self._number_of_players = players
-            self._next_id = 0
-            self._lock = threading.Lock()
-
-        def get_id(self):
-            with self._lock:
-                ret = self._next_id
-                self._next_id = self._next_id + 1
-                return ret
-
-        def ready(self):
-            # ready when all players have joined the game
-            return self._number_of_players == self._next_id
-
     def _start_game(self, request):
         """
         Request handler for starting a game.
-        
+
         This function instantiates the requested game and adds it to the list of active games. This function is blocking. After the required number of players has joined the game, the function sends the player ID back to the client who requested the start of the game. If not enough players have joined the game before the timeout occurs, the game instance is deleted and the requesting client is informed accordingly.
 
         Parameters:
@@ -117,7 +115,7 @@ class GameFramework:
         self._active_games[(game_name, token)] = new_game
 
         # get player ID:
-        player_id = new_game.get_id()
+        player_id = new_game.next_id()
 
         # wait for others to join:
         self._await_game_start(new_game)
@@ -128,45 +126,10 @@ class GameFramework:
 
         return self._return_data({'player_id':player_id})
 
-    def _retrieve_active_game(self, game, token):
-        """
-        Retrieves an active game.
-        
-        If the specified game session exists, it is returned to the caller.
-
-        Parameters:
-        game (str): game name
-        token (str): token
-
-        Returns:
-        _ActiveGame: active game specified by game name and token
-        """
-        # check if game session exists:
-        if game not in self._game_classes_by_name:
-            return None, utility.framework_error('no such game')
-        if (game, token) not in self._active_games:
-            return None, utility.framework_error('no such game session')
-
-        return self._active_games[(game, token)], None
-
-    def _await_game_start(self, game):
-        """
-        Waits for players to join the game.
-        
-        This function waits until the required number of players has joined the game or until the timeout is reached.
-        
-        Parameters:
-        game (_ActiveGame): game instance
-        """
-        seconds = 0
-        while not game.ready() and seconds < config.timeout:
-            time.sleep(config.game_start_poll_interval)
-            seconds = seconds + config.game_start_poll_interval
-
     def _join_game(self, request):
         """
         Request handler for joining a game.
-        
+
         This function checks if a game specified by its name and token is already started and waiting for clients to join. This function is blocking. After the required number of players has joined the game, the function sends the player ID back to the client who requested to join the game. If not enough players have joined the game before the timeout occurs, the requesting client is informed accordingly.
 
         Parameters:
@@ -183,13 +146,13 @@ class GameFramework:
 
         # retrieve game:
         game, err = self._retrieve_active_game(game_name, token)
-        if err:
-            return err # no such game or game session
-        if game.ready():
+        if err: # no such game or game session
+            return err
+        if game.ready(): # game is full
             return utility.framework_error('game is already full')
 
         # get player ID:
-        player_id = game.get_id()
+        player_id = game.next_id()
 
         # wait for others to join:
         self._await_game_start(game)
@@ -198,6 +161,41 @@ class GameFramework:
             return utility.framework_error('timeout while waiting for others to join')
 
         return self._return_data({'player_id':player_id})
+
+    def _await_game_start(self, game):
+        """
+        Waits for players to join the game.
+
+        This function waits until the required number of players has joined the game or until the timeout is reached.
+
+        Parameters:
+        game (_ActiveGame): game instance
+        """
+        seconds = 0
+        while not game.ready() and seconds < config.timeout:
+            time.sleep(config.game_start_poll_interval)
+            seconds = seconds + config.game_start_poll_interval
+
+    def _retrieve_active_game(self, game, token):
+        """
+        Retrieves an active game.
+
+        If the specified game session exists, it is returned to the caller.
+
+        Parameters:
+        game (str): game name
+        token (str): token
+
+        Returns:
+        _ActiveGame: active game specified by game name and token
+        """
+        # check if game session exists:
+        if game not in self._game_classes_by_name:
+            return None, utility.framework_error('no such game')
+        if (game, token) not in self._active_games:
+            return None, utility.framework_error('no such game session')
+
+        return self._active_games[(game, token)], None
 
     def _return_data(self, data):
         """

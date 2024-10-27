@@ -121,8 +121,10 @@ class GameFramework:
         self._await_game_start(new_game)
 
         if not new_game.ready(): # timeout reached
-            del self._active_games[(game_name, token)]
+            del self._active_games[(game_name, token)] # remove game
             return utility.framework_error('timeout while waiting for others to join')
+
+        self._log_active_games()
 
         return self._return_data({'player_id':player_id})
 
@@ -202,3 +204,13 @@ class GameFramework:
         Adds data to a dictionary to be sent back to the client. This function is to be used only for sending regular data back to a client as a response to a valid request. It must not be used for sending error messages (hence the status flag 'ok').
         """
         return {'status':'ok', 'data':data}
+
+    def _log_active_games(self):
+        """
+        Print active games.
+        """
+        log = 'GAME                TOKEN               PLAYERS\n'
+        for session, instance in self._active_games.items():
+            game, token = session
+            log += f'{game:20}{token:20}{instance._number_of_players:7}\n'
+        print(log)

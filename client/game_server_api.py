@@ -113,7 +113,6 @@ class GameServerAPI:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
             try:
                 # connect to server:
-                #sd.settimeout(self._timeout) # TODO entfernen ??? damit Funktion blockierend genutzt werden kann ???
                 sd.connect((self._server, self._port))
             except:
                 return self._api_error(f'unable to connect to {self._server}:{self._port}')
@@ -188,5 +187,4 @@ class GameServerAPI:
 
         # connections:
         self._buffer_size = 4096 # bytes
-        #self._timeout = 30 # seconds # TODO entfernen ???
         self._message_size_max = int(1e6) # bytes

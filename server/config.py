@@ -11,4 +11,5 @@ port = 4711
 # connections:
 buffer_size = 4096 # bytes
 timeout = 30 # seconds
-message_size_max = int(1e6) # bytes
+receive_size_max = int(1e6) # bytes
+game_start_poll_interval = 0.1 # seconds

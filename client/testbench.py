@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test bench for client server interaction in multiple threads.
+Test bench for client server interaction in separate threads.
 """
 
 import threading
@@ -30,7 +30,6 @@ def client_join():
         exit()
 
     print(f'Player ID:', my_id)
-
 
 threading.Thread(target=client_start, args=(), daemon=True).start()
 

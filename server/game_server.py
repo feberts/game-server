@@ -58,7 +58,7 @@ def handle_connection(conn, ip, port):
                 data = conn.recv(config.buffer_size)
                 request += data
                 if not data: break
-                if len(request) > config.message_size_max:
+                if len(request) > config.receive_size_max:
                     raise MessageSizeExceeded
 
             if not len(request): raise ClientDisconnect

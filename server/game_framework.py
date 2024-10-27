@@ -109,11 +109,7 @@ class GameFramework:
         player_id = new_game.get_id()
 
         # wait for others to join:
-        seconds = 0
-        
-        while not new_game.ready() and seconds < config.timeout:
-            time.sleep(1)
-            seconds = seconds + 1
+        self._await_game_start(new_game)
 
         if not new_game.ready():
             del self._active_games[(game_name, token)]
@@ -129,6 +125,12 @@ class GameFramework:
             return None, utility.framework_error('no such game session')
 
         return self._active_games[(game, token)], None
+
+    def _await_game_start(self, game):
+        seconds = 0
+        while not game.ready() and seconds < config.timeout:
+            time.sleep(config.game_start_poll_interval)
+            seconds = seconds + config.game_start_poll_interval
 
     def _join_game(self, request):
         """
@@ -151,11 +153,7 @@ class GameFramework:
         player_id = game.get_id()
 
         # wait for others to join:
-        seconds = 0
-        
-        while not game.ready() and seconds < config.timeout:
-            time.sleep(1)
-            seconds = seconds + 1
+        self._await_game_start(game)
 
         if not game.ready():
             return utility.framework_error('time out while waiting for others to join')

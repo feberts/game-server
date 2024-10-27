@@ -5,14 +5,14 @@ Game server.
 This server program opens a port and handles client connections in separate threads. It passes the data received from a client to the game framework and sends the framework's reply back to the client. The connection is then closed. Parameters like IP or port number are defined in the config module.
 """
 
-import config
 import json
 import socket
 import threading
 import traceback
-import utility
 
+import config
 from game_framework import GameFramework
+import utility
 
 framework = GameFramework()
 
@@ -95,10 +95,11 @@ def handle_connection(conn, ip, port):
             conn.sendall(response)
 
     finally:
+        # close connection:
         conn.close()
         l.log('connection closed by server')
 
-# start server:
+# start the server:
 try:
     # create listening socket:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:

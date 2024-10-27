@@ -13,18 +13,19 @@ Client requests are parsed and the appropriate actions are performed. The follow
 To perform these actions, the framework calls the corresponding methods of a game class, if necessary.
 """
 
-import utility
-import time # TODO needed?
-import config # TODO needed?
-import threading # TODO needed?
+import threading
+import time
+
+import config
 from tictactoe import TicTacToe
+import utility
 
 # TODO spell check of this whole file
 
 class GameFramework:
     """
     Class GameFramework.
-    
+
     This class manages active games and handles the interaction between clients and game instances.
     """
     def __init__(self):
@@ -57,10 +58,10 @@ class GameFramework:
             return utility.framework_error("key 'type' of type str missing")
 
         handlers = {'start_game':self._start_game, 'join_game':self._join_game} # TODO add more handlers
-        
+
         if request['type'] not in handlers:
             return utility.framework_error('invalid request type')
-        
+
         return handlers[request['type']](request)
 
     class _ActiveGame:
@@ -71,8 +72,8 @@ class GameFramework:
             self.game = game_instance
             self._players_target = players
             self._next_id = 0
-        _lock = threading.Lock()
-        def get_id(self):# TODO atomic?
+            self._lock = threading.Lock()
+        def get_id(self):
             with self._lock:
                 ret = self._next_id
                 self._next_id = self._next_id + 1
@@ -88,19 +89,19 @@ class GameFramework:
         # check and parse request:
         err = utility.check_dict(request, {'game':str, 'token':str, 'players':int})
         if err: return utility.framework_error(err)
-        
+
         game_name, token, players = request['game'], request['token'], request['players']
-               
+
         # get game class:
         if game_name not in self._game_classes_by_name:
             return utility.framework_error('no such game')
 
         game_class = self._game_classes_by_name[game_name]
-        
+
         # check number of players:
         if players > game_class.max_players() or players < game_class.min_players():
             return utility.framework_error('invalid number of players')
-        
+
         # create game instance and add it to dictionary of active games:
         new_game = self._ActiveGame(game_class(players), players)
         self._active_games[(game_name, token)] = new_game
@@ -116,7 +117,7 @@ class GameFramework:
             return utility.framework_error('time out while waiting for others to join')
 
         return self._return_data({'player_id':player_id})
-        
+
     def _retrieve_game(self, game, token):
         # check if game session exists:
         if game not in self._game_classes_by_name:
@@ -139,9 +140,9 @@ class GameFramework:
         # check and parse request:
         err = utility.check_dict(request, {'game':str, 'token':str})
         if err: return utility.framework_error(err)
-        
+
         game_name, token = request['game'], request['token']
-        
+
         # retrieve game:
         game, err = self._retrieve_game(game_name, token)
         if err:
@@ -159,7 +160,7 @@ class GameFramework:
             return utility.framework_error('time out while waiting for others to join')
 
         return self._return_data({'player_id':player_id})
-        
+
     def _return_data(self, data):
         """
         TODO

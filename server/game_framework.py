@@ -90,7 +90,7 @@ class GameFramework:
         if err: return utility.framework_error(err)
         
         game_name, token, players = request['game'], request['token'], request['players']
-        
+               
         # get game class:
         if game_name not in self._game_classes_by_name:
             return utility.framework_error('no such game')
@@ -142,7 +142,10 @@ class GameFramework:
         
         # retrieve game:
         game, err = self._retrieve_game(game_name, token)
-        if err: return err
+        if err:
+            return err # no such game or game session
+        if game.ready():
+            return utility.framework_error('game is already full')
 
         # get player ID:
         player_id = game.get_id()

@@ -9,9 +9,8 @@ from game_server_api import GameServerAPI
 import threading
 import time
 
-def client_1():
+def client_start():
     api = GameServerAPI()
-
     my_id, err = api.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
 
     if err:
@@ -20,10 +19,11 @@ def client_1():
 
     print('Player ID:', my_id)
 
-def client_2():
-    api = GameServerAPI()
+def client_join():
+    time.sleep(0.1)
 
-    my_id, err = api.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygames')
+    api = GameServerAPI()
+    my_id, err = api.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
 
     if err:
         print(err)
@@ -32,13 +32,11 @@ def client_2():
     print('Player ID:', my_id)
 
 
-t1 = threading.Thread(target=client_1, args=(), daemon=False)
-t2 = threading.Thread(target=client_2, args=(), daemon=False)
+threading.Thread(target=client_start, args=(), daemon=True).start()
 
-t1.start()
-time.sleep(0.5)
-t2.start()
+threading.Thread(target=client_join, args=(), daemon=True).start()
+threading.Thread(target=client_join, args=(), daemon=True).start()
+threading.Thread(target=client_join, args=(), daemon=True).start()
+threading.Thread(target=client_join, args=(), daemon=True).start()
 
-#t1.join()
-#t2.join()
-
+time.sleep(3)

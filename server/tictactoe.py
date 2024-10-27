@@ -77,6 +77,9 @@ class TicTacToe(AbstractGame):
         return None
 
     def _check_move(self, pos):
+        """
+        Check if a move is legal.
+        """
         if pos < 0 or pos > 8:
             return False, 'value must be 0..8'
         if self._state.board[pos] != -1:
@@ -84,9 +87,15 @@ class TicTacToe(AbstractGame):
         return True, ''
 
     def _update_board(self, pos):
+        """
+        Add current player's move to the board.
+        """
         self._state.board[pos] = self._state.current
 
     def _check_win(self):
+        """
+        Check if the current player has won.
+        """
         b = self._state.board
         for i, j, k in ((0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6)):
             if b[i] == b[j] == b[k] == self._state.current:
@@ -94,6 +103,9 @@ class TicTacToe(AbstractGame):
                 self._state.gameover = True
 
     def _check_board_full(self):
+        """
+        Check if the board is filled completely.
+        """
         if -1 not in self._state.board:
             self._state.gameover = True
 

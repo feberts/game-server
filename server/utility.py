@@ -31,7 +31,7 @@ def server_error(message):
 
 def framework_error(message):
     """
-    Framwork error.
+    Framework error.
 
     See function generic_error() for details.
     """
@@ -43,8 +43,7 @@ def check_dict(d, expected):
 
     This function verifies, that all expected keys are present in a given dictionary and that their values are of the expected type. It also checks, if strings contain at least one character.
 
-    Example:
-    To check, if dictionary d has keys named 'a' and 'b', that are mapped to values of types int and str, a function call might look like this:
+    Example: To check, if dictionary d has keys named 'a' and 'b', that are mapped to values of types int and str, a function call might look like this:
 
     d = {'a':42, 'b':'forty-two'}
     err = check_dict(d, {'a':int, 'b':str})

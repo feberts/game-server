@@ -23,7 +23,7 @@ def client_1():
 def client_2():
     api = GameServerAPI()
 
-    my_id, err = api.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
+    my_id, err = api.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygames')
 
     if err:
         print(err)

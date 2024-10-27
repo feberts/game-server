@@ -121,6 +121,15 @@ class GameFramework:
 
         return self._return_data({'player_id':player_id})
         
+    def _retrieve_game(self, game, token):
+        # check if game session exists:
+        if game not in self._game_classes_by_name:
+            return None, utility.framework_error('no such game')
+        if (game, token) not in self._active_games:
+            return None, utility.framework_error('no such game session')
+
+        return self._active_games[(game, token)], None
+
     def _join_game(self, request):
         """
         TODO
@@ -131,15 +140,11 @@ class GameFramework:
         
         game_name, token = request['game'], request['token']
         
-        # check if game session exists:
-        if game_name not in self._game_classes_by_name:
-            return utility.framework_error('no such game')
-
-        if (game_name, token) not in self._active_games:
-            return utility.framework_error('no such game session')
+        # retrieve game:
+        game, err = self._retrieve_game(game_name, token)
+        if err: return err
 
         # get player ID:
-        game = self._active_games[(game_name, token)]
         player_id = game.get_id()
 
         # wait for others to join:

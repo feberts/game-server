@@ -16,6 +16,7 @@ To perform these actions, the framework calls the corresponding methods of a gam
 import utility
 import time # TODO needed?
 import config # TODO needed?
+import threading # TODO needed?
 from tictactoe import TicTacToe
 
 # TODO spell check of this whole file
@@ -63,15 +64,21 @@ class GameFramework:
         return handlers[request['type']](request)
 
     class _ActiveGame:
+        """
+        Wrapper class for game instances providing functionality for retrieving player IDs.
+        """
         def __init__(self, game_instance, players):
             self.game = game_instance
             self._players_target = players
             self._next_id = 0
-        def get_id(self):
-            ret = self._next_id
-            self._next_id = self._next_id + 1
-            return ret
+        _lock = threading.Lock()
+        def get_id(self):# TODO atomic?
+            with self._lock:
+                ret = self._next_id
+                self._next_id = self._next_id + 1
+                return ret
         def ready(self):
+            # ready when all players have joined
             return self._players_target == self._next_id
 
     def _start_game(self, request):

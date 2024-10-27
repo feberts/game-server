@@ -60,7 +60,7 @@ class GameServerAPI:
         This function lets a client join a game that another client has started by calling start_game(). To be able to join, the correct token must be provided. The token is used to identify a specific game session.
 
         TODO blockierend nicht möglich, wenn _send() mit Timeout arbeitet !!!
-        This is a blocking function. The game starts as soon as the specified number of clients has joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
+        This is a blocking function. The game starts as soon as all clients have joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
 
         Parameters:
         server (str): server
@@ -113,7 +113,7 @@ class GameServerAPI:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
             try:
                 # connect to server:
-                sd.settimeout(self._timeout) # TODO entfernen ??? damit Funktion blockierend genutzt werden kann ???
+                #sd.settimeout(self._timeout) # TODO entfernen ??? damit Funktion blockierend genutzt werden kann ???
                 sd.connect((self._server, self._port))
             except:
                 return self._api_error(f'unable to connect to {self._server}:{self._port}')
@@ -188,5 +188,5 @@ class GameServerAPI:
 
         # connections:
         self._buffer_size = 4096 # bytes
-        self._timeout = 30 # seconds # TODO entfernen ???
+        #self._timeout = 30 # seconds # TODO entfernen ???
         self._message_size_max = int(1e6) # bytes

@@ -53,6 +53,38 @@ class GameServerAPI:
 
         return self._player_id, None
 
+    def join_game(self, server, port, game, token):
+        """
+        Join a game.
+
+        This function lets a client join a game that another client has started by calling start_game(). To be able to join, the correct token must be provided. The token is used to identify a specific game session.
+
+        TODO blockierend nicht möglich, wenn _send() mit Timeout arbeitet !!!
+        This is a blocking function. The game starts as soon as the specified number of clients has joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
+
+        Parameters:
+        server (str): server
+        port (int): port number
+        game (str): name of the game
+        token (str): name of the game session
+
+        Returns:
+        tuple(int, str):
+            int: player ID, if the game was successfully started, else None
+            str: error message, if a problem occurred, None otherwise
+
+        Raises:
+        AssertionError: for invalid arguments
+        """
+        self._process_args(server, port, game, token)
+
+        response, err = self._send({'type':'join_game', 'game':game, 'token':token})
+
+        if err: return None, err
+        self._player_id = response['player_id']
+
+        return self._player_id, None
+
     def _send(self, data):
         """
         Sends data to the server and receive its response.

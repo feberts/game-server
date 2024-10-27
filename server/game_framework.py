@@ -56,7 +56,7 @@ class GameFramework:
         if 'type' not in request:
             return utility.framework_error("key 'type' of type str missing")
 
-        handlers = {'start_game':self._start_game} # TODO add more handlers
+        handlers = {'start_game':self._start_game, 'join_game':self._join_game} # TODO add more handlers
         
         if request['type'] not in handlers:
             return utility.framework_error('invalid request type')
@@ -117,6 +117,39 @@ class GameFramework:
 
         if not new_game.ready():
             del self._active_games[(game_name, token)]
+            return utility.framework_error('time out while waiting for others to join')
+
+        return self._return_data({'player_id':player_id})
+        
+    def _join_game(self, request):
+        """
+        TODO
+        """
+        # check and parse request:
+        err = utility.check_dict(request, {'game':str, 'token':str})
+        if err: return utility.framework_error(err)
+        
+        game_name, token = request['game'], request['token']
+        
+        # check if game session exists:
+        if game_name not in self._game_classes_by_name:
+            return utility.framework_error('no such game')
+
+        if (game_name, token) not in self._active_games:
+            return utility.framework_error('no such game session')
+
+        # get player ID:
+        game = self._active_games[(game_name, token)]
+        player_id = game.get_id()
+
+        # wait for others to join:
+        seconds = 0
+        
+        while not game.ready() and seconds < config.timeout:
+            time.sleep(1)
+            seconds = seconds + 1
+
+        if not game.ready():
             return utility.framework_error('time out while waiting for others to join')
 
         return self._return_data({'player_id':player_id})

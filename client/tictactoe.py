@@ -7,6 +7,7 @@ This program connects to the game server to play tic-tac-toe against another cli
 
 from game_server_api import GameServerAPI
 import threading
+import time
 
 def client_1():
     api = GameServerAPI()
@@ -31,7 +32,13 @@ def client_2():
     print('Player ID:', my_id)
 
 
-t1 = threading.Thread(target=client_1, args=(), daemon=True)
+t1 = threading.Thread(target=client_1, args=(), daemon=False)
+t2 = threading.Thread(target=client_2, args=(), daemon=False)
+
 t1.start()
-t1.join()
+time.sleep(0.5)
+t2.start()
+
+#t1.join()
+#t2.join()
 

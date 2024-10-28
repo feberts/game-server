@@ -26,11 +26,15 @@ def client_start():
         exit()
 
     print('Player ID:', my_id)
-    
-    err = api.move(position=42, string='hallo', liste=[1,2,3])
 
-    if err:
-        print(err)
+    err = api.move(position=7)
+    if err: print(err)
+
+    time.sleep(0.5)
+
+    err = api.move(position=8)
+    if err: print(err)
+
 
 def client_join():
     api = GameServerAPI()

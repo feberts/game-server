@@ -75,7 +75,7 @@ class GameFramework:
         if 'type' not in request:
             return utility.framework_error("key 'type' of type str missing")
 
-        handlers = {'start_game':self._start_game, 'join_game':self._join_game} # TODO add more handlers
+        handlers = {'start_game':self._start_game, 'join_game':self._join_game, 'move':self._move} # TODO add more handlers
 
         if request['type'] not in handlers:
             return utility.framework_error('invalid request type')
@@ -163,6 +163,41 @@ class GameFramework:
             return utility.framework_error('timeout while waiting for others to join')
 
         return self._return_data({'player_id':player_id})
+
+    def _move(self, request):
+        """
+        Request handler for player moves.
+
+        This function handles a client's move. It makes sure, that it is actually the client's turn to submit a move. It then passes the move to the game instance and returns the game instance's message in case of an invalid move.
+
+        Parameters:
+        request (dict): containing information about the game session and the player's move
+
+        Returns:
+        dict: containing an error message, if the move is invalid
+        """
+        # check and parse request:
+        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'move':dict})
+        if err: return utility.framework_error(err)
+
+        game_name, token, player_id, move = request['game'], request['token'], request['player_id'], request['move']
+
+        # retrieve game:
+        active_game, err = self._retrieve_active_game(game_name, token)
+        if err: # no such game or game session
+            return err
+
+        game = active_game.game
+
+        # check if it is the client's turn:
+        if game.current_player() != player_id:
+            return utility.framework_error('not your turn')
+
+        # pass the move to the game instance:
+        err = game.move(move)
+        if err: return utility.game_error(err)
+
+        return self._return_data(None)
 
     def _await_game_start(self, game):
         """

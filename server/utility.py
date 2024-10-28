@@ -37,6 +37,14 @@ def framework_error(message):
     """
     return generic_error('framework', message)
 
+def game_error(message):
+    """
+    Game error.
+
+    See function generic_error() for details.
+    """
+    return generic_error('game', message)
+
 def check_dict(d, expected):
     """
     Checking a dictionary's structure.

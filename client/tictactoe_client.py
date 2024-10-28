@@ -29,7 +29,15 @@ def client_start():
 
     err = api.move(position=7)
     if err: print(err)
+    
+    time.sleep(0.5)
 
+    state, err = api.state()
+    if err:
+        print(err)
+    else:
+        print(state)
+    
     time.sleep(0.5)
 
     err = api.move(position=8)

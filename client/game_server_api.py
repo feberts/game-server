@@ -95,15 +95,29 @@ class GameServerAPI:
         Returns:
         str: error message, if a problem occurred, None otherwise
         """
-        print(kwargs)
-
         _, err = self._send({'type':'move', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'move':kwargs})
 
         if err: return err
 
         return None
 
-    # TODO function state
+    def state(self):
+        """
+        Request the state.
+
+        This function requests the game state from the server. The state is returned as a dictionary. Refer to the documentation of a specific game to find out about the structure and content of that dictionary.
+    
+        Returns:
+        tuple(dict, str):
+            dict: game state if state could be retrieved, else None
+            str: error message, if a problem occurred, None otherwise
+        """
+        response, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id})
+        if err: return None, err
+
+        state = response['data']
+
+        return state, None
 
     def _send(self, data):
         """

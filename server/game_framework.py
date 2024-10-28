@@ -199,6 +199,36 @@ class GameFramework:
 
         return self._return_data(None)
 
+    def _state(self, request):
+        """
+        Request handler for game state requests.
+
+        This function retrieves the game state and sends it back to the client. It calls the game instance's state function and passes the player ID.
+
+        Parameters:
+        request (dict): containing information about the game session and the player
+
+        Returns:
+        dict: containing the game state
+        """
+        # check and parse request:
+        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int})
+        if err: return utility.framework_error(err)
+
+        game_name, token, player_id = request['game'], request['token'], request['player_id']
+
+        # retrieve game:
+        active_game, err = self._retrieve_active_game(game_name, token)
+        if err: # no such game or game session
+            return err
+
+        game = active_game.game
+
+        # retrieve the game state from the game instance:
+        state = game.state(player_id)
+
+        return self._return_data(state)
+
     def _await_game_start(self, game):
         """
         Waits for players to join the game.
@@ -224,7 +254,9 @@ class GameFramework:
         token (str): token
 
         Returns:
-        _ActiveGame: active game specified by game name and token
+        tuple(_ActiveGame, dict):
+            _ActiveGame: active game specified by name and token, None in case of an error
+            dict: error message, if a problem occurred, None otherwise
         """
         # check if game session exists:
         if game not in self._game_classes_by_name:

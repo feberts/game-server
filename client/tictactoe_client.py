@@ -5,9 +5,11 @@ Tic-tac-toe client.
 This program connects to the game server to play tic-tac-toe against another client.
 """
 
+import time
 from game_server_api import GameServerAPI
 
 def print_board(board):
+    print('\n' * 100)
     board = [i if board[i] == -1 else players[board[i]] for i in range(9)]
     print(f' {board[0]} | {board[1]} | {board[2]}', '---+---+---',
           f' {board[3]} | {board[4]} | {board[5]}', '---+---+---',
@@ -16,7 +18,7 @@ def print_board(board):
 def user_input(current):
     while True:
         try:
-            return int(input(f'Your turn {players[current]}: '))
+            return int(input(f'\nYour turn {players[current]}: '))
         except KeyboardInterrupt:
             exit()
         except:
@@ -25,88 +27,38 @@ def user_input(current):
 players = ('x', 'o')
 
 game = GameServerAPI()
-my_id, err = api.start_game(server='127.0.0.1', port=4711, game=game, token=token, players=players)
 
-current = game.current_player()
-state = game.state()
+my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
+
+if err: my_id, err = game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
+
+state, err = game.state() # TODO err prüfen
+current = state['current']
 
 while not state['gameover']:
     print_board(state['board'])
 
-    while True:
-        pos = user_input(current)
-        err = game.move({'position':pos})
-        if err:
-            print(err)
-        else:
-            break
+    if current == my_id: # my turn
+        while True:
+            pos = user_input(current)
+            err = game.move(position=pos)
+            if err:
+                print(err)
+            else:
+                break
+    else:
+        print('Opponents turn ...')
+        time.sleep(1)
 
-    state = game.state()
-    current = game.current_player()
+    state, err = game.state() # TODO err prüfen
+    current = state['current']
 
 print_board(state['board'])
 winner = state['winner']
 
 if winner == None:
     print('No winner!')
+elif winner == my_id:
+    print(f'You ({players[my_id]}) won!')
 else:
-    print(f'Player {players[int(winner)]} wins!')
-
-"""
-
-
-import threading
-import time
-
-from game_server_api import GameServerAPI
-
-game = 'TicTacToe'
-token = 'mygame'
-players = 2
-
-def client_start():
-    api = GameServerAPI()
-    my_id, err = api.start_game(server='127.0.0.1', port=4711, game=game, token=token, players=players)
-
-    if err:
-        print(err)
-        exit()
-
-    print('Player ID:', my_id)
-
-    err = api.move(position=7)
-    if err: print(err)
-    
-    time.sleep(0.5)
-
-    state, err = api.state()
-    if err:
-        print(err)
-    else:
-        print(state)
-    
-    time.sleep(0.5)
-
-    err = api.move(position=8)
-    if err: print(err)
-
-
-def client_join():
-    api = GameServerAPI()
-    my_id, err = api.join_game(server='127.0.0.1', port=4711, game=game, token=token)
-
-    if err:
-        print(err)
-        exit()
-
-    print(f'Player ID:', my_id)
-
-threading.Thread(target=client_start, args=(), daemon=True).start()
-
-time.sleep(0.5)
-
-for _ in range(1):
-    threading.Thread(target=client_join, args=(), daemon=True).start()
-
-time.sleep(5)
-"""
+    print(f'You ({players[my_id]}) lost...')

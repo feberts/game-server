@@ -203,7 +203,7 @@ class GameFramework:
         """
         Request handler for game state requests.
 
-        This function retrieves the game state and sends it back to the client. It calls the game instance's state function and passes the player ID.
+        This function retrieves the game state from a game instance and sends it back to the client. It calls the game instance's state function and passes the player ID.
 
         Parameters:
         request (dict): containing information about the game session and the player

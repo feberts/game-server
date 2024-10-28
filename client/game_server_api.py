@@ -112,10 +112,8 @@ class GameServerAPI:
             dict: game state if state could be retrieved, else None
             str: error message, if a problem occurred, None otherwise
         """
-        response, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id})
+        state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id})
         if err: return None, err
-
-        state = response['data']
 
         return state, None
 

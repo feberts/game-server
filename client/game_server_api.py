@@ -83,7 +83,26 @@ class GameServerAPI:
 
         return self._player_id, None
 
-    # TODO function move
+    def move(self, **kwargs):
+        """
+        Submit a move.
+
+        This function is used to submit a move to the game server. The move must be passed as keyword arguments. Refer to the documentation of a specific game to find out about the required or available arguments. If it is not your turn to submit a move or if the move is invalid, the server replies with an error message.
+
+        Parameters:
+        kwargs (dict): player move as keyword arguments
+
+        Returns:
+        str: error message, if a problem occurred, None otherwise
+        """
+        print(kwargs)
+
+        _, err = self._send({'type':'move', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'move':kwargs})
+
+        if err: return err
+
+        return None
+
     # TODO function state
 
     def _send(self, data):

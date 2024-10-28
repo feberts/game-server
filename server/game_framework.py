@@ -75,7 +75,7 @@ class GameFramework:
         if 'type' not in request:
             return utility.framework_error("key 'type' of type str missing")
 
-        handlers = {'start_game':self._start_game, 'join_game':self._join_game, 'move':self._move} # TODO add more handlers
+        handlers = {'start_game':self._start_game, 'join_game':self._join_game, 'move':self._move, 'state':self._state}
 
         if request['type'] not in handlers:
             return utility.framework_error('invalid request type')

@@ -30,7 +30,7 @@ def client_join():
         print(err)
         exit()
 
-    print(f'Player ID:', my_id)
+    print('Player ID:', my_id)
 
 threading.Thread(target=client_start, args=(), daemon=True).start()
 

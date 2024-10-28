@@ -106,7 +106,7 @@ class GameServerAPI:
         Request the state.
 
         This function requests the game state from the server. The state is returned as a dictionary. Refer to the documentation of a specific game to find out about the structure and content of that dictionary.
-    
+
         Returns:
         tuple(dict, str):
             dict: game state if state could be retrieved, else None

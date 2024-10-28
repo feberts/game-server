@@ -18,7 +18,7 @@ def print_board(board):
 def user_input(current):
     while True:
         try:
-            return int(input(f'\nYour turn {players[current]}: '))
+            return int(input(f'Your turn {players[current]}: '))
         except KeyboardInterrupt:
             exit()
         except:

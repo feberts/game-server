@@ -227,6 +227,9 @@ class GameFramework:
         # retrieve the game state from the game instance:
         state = game.state(player_id)
 
+        # add current player's ID:
+        state['current'] = game.current_player()
+
         return self._return_data(state)
 
     def _await_game_start(self, game):

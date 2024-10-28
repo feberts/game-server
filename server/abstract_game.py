@@ -86,7 +86,7 @@ class AbstractGame:
 
         It is important to let the user of the API know how the dictionary is structured so he can access its content. See the documentation on how to add new games for more details.
 
-        The current player's ID does not need to be included in the dictionary. The framework will add it automatically. This way, all players are aware of who's turn it is.
+        The current player's ID does not need to be included in the dictionary. The framework will add it automatically as the value to a key named 'current'. This way, all players are aware of who's turn it is.
 
         Parameters:
         player_id (int): ID of the player requesting the state (no parameter check required)

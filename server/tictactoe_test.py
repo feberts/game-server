@@ -48,4 +48,4 @@ winner = state['winner']
 if winner == None:
     print('No winner!')
 else:
-    print(f'Player {players[int(winner)]} wins!')
+    print(f'Player {players[winner]} wins!')

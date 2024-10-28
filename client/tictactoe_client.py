@@ -15,10 +15,10 @@ def print_board(board):
           f' {board[3]} | {board[4]} | {board[5]}', '---+---+---',
           f' {board[6]} | {board[7]} | {board[8]}', sep='\n')
 
-def user_input(current):
+def user_input(current_player):
     while True:
         try:
-            return int(input(f'\nYour ({players[current]}) turn: '))
+            return int(input(f'\nYour ({players[current_player]}) turn: '))
         except KeyboardInterrupt:
             exit()
         except:
@@ -41,14 +41,14 @@ if err:
 
 state, err = game.state()
 if err: fatal(err)
-current = state['current'] # current player
+current_player = state['current']
 
 while not state['gameover']:
     print_board(state['board'])
 
-    if current == my_id: # my turn
+    if current_player == my_id: # my turn
         while True:
-            pos = user_input(current)
+            pos = user_input(my_id)
             err = game.move(position=pos)
             if err: print(err)
             else: break
@@ -58,13 +58,13 @@ while not state['gameover']:
 
     state, err = game.state()
     if err: fatal(err)
-    current = state['current']
+    current_player = state['current']
 
 print_board(state['board'])
 winner = state['winner']
 
 if winner == None:
-    print('No winner!')
+    print('No winner...')
 elif winner == my_id:
     print(f'You ({players[my_id]}) won!')
 else:

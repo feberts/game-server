@@ -1,12 +1,12 @@
 """
 Game framework.
 
-This module implements the game framework. The framework is responsible for managing active games. It serves as an intermediary between the server and active game instances.
+This module implements the game framework. The framework is responsible for managing active game sessions. It acts as an intermediary between the server and game class instances of active game sessions.
 
 Client requests are parsed and the appropriate actions are performed. The following list shows the types of requests the framework can handle and the resulting actions:
 
-- start_game: instantiating game class objects
-- join_game: assigning clients to games
+- start_game: instantiating game sessions
+- join_game: assigning clients to game sessions
 - move: forwarding player moves to game instances
 - state: reporting the game state to clients
 

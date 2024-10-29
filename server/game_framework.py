@@ -31,7 +31,7 @@ class GameFramework:
     def __init__(self):
         self._game_classes = [TicTacToe] # list of available games
         self._game_classes_by_name = {} # game name -> game class
-        self._active_games = {} # (game name, token) -> active game
+        self._game_sessions = {} # (game name, token) -> active game
         self._build_game_class_dict()
 
     def _build_game_class_dict(self):
@@ -41,7 +41,7 @@ class GameFramework:
         for game in self._game_classes:
             self._game_classes_by_name[game.__name__] = game
 
-    class _ActiveGame:
+    class _GameSession:
         """
         Wrapper class for game instances providing functionality for retrieving player IDs.
         """
@@ -111,8 +111,8 @@ class GameFramework:
             return utility.framework_error('invalid number of players')
 
         # create game instance and add it to dictionary of active games:
-        new_game = self._ActiveGame(game_class(players), players)
-        self._active_games[(game_name, token)] = new_game
+        new_game = self._GameSession(game_class(players), players)
+        self._game_sessions[(game_name, token)] = new_game
 
         # get player ID:
         player_id = new_game.next_id()
@@ -121,10 +121,10 @@ class GameFramework:
         self._await_game_start(new_game)
 
         if not new_game.ready(): # timeout reached
-            del self._active_games[(game_name, token)] # remove game
+            del self._game_sessions[(game_name, token)] # remove game
             return utility.framework_error('timeout while waiting for others to join')
 
-        self._log_active_games()
+        self._log_game_sessions()
 
         return self._return_data({'player_id':player_id})
 
@@ -147,7 +147,7 @@ class GameFramework:
         game_name, token = request['game'], request['token']
 
         # retrieve game:
-        game, err = self._retrieve_active_game(game_name, token)
+        game, err = self._retrieve_game_session(game_name, token)
         if err: # no such game or game session
             return err
         if game.ready(): # game is full
@@ -182,12 +182,12 @@ class GameFramework:
 
         game_name, token, player_id, move = request['game'], request['token'], request['player_id'], request['move']
 
-        # retrieve game:
-        active_game, err = self._retrieve_active_game(game_name, token)
+        # retrieve game session:
+        session, err = self._retrieve_game_session(game_name, token)
         if err: # no such game or game session
             return err
 
-        game = active_game.game
+        game = session.game
 
         # check if it is the client's turn:
         if game.current_player() != player_id:
@@ -217,12 +217,12 @@ class GameFramework:
 
         game_name, token, player_id = request['game'], request['token'], request['player_id']
 
-        # retrieve game:
-        active_game, err = self._retrieve_active_game(game_name, token)
+        # retrieve game session:
+        session, err = self._retrieve_game_session(game_name, token)
         if err: # no such game or game session
             return err
 
-        game = active_game.game
+        game = session.game
 
         # retrieve the game state from the game instance:
         state = game.state(player_id)
@@ -239,14 +239,14 @@ class GameFramework:
         This function waits until the required number of players has joined the game or until the timeout is reached.
 
         Parameters:
-        game (_ActiveGame): game instance
+        game (_GameSession): game instance
         """
         seconds = 0
         while not game.ready() and seconds < config.timeout:
             time.sleep(config.game_start_poll_interval)
             seconds = seconds + config.game_start_poll_interval
 
-    def _retrieve_active_game(self, game, token):
+    def _retrieve_game_session(self, game, token):
         """
         Retrieves an active game.
 
@@ -257,17 +257,17 @@ class GameFramework:
         token (str): token
 
         Returns:
-        tuple(_ActiveGame, dict):
-            _ActiveGame: active game specified by name and token, None in case of an error
+        tuple(_GameSession, dict):
+            _GameSession: active game specified by name and token, None in case of an error
             dict: error message, if a problem occurred, None otherwise
         """
         # check if game session exists:
         if game not in self._game_classes_by_name:
             return None, utility.framework_error('no such game')
-        if (game, token) not in self._active_games:
+        if (game, token) not in self._game_sessions:
             return None, utility.framework_error('no such game session')
 
-        return self._active_games[(game, token)], None
+        return self._game_sessions[(game, token)], None
 
     def _return_data(self, data):
         """
@@ -275,12 +275,12 @@ class GameFramework:
         """
         return {'status':'ok', 'data':data}
 
-    def _log_active_games(self):
+    def _log_game_sessions(self):
         """
         Print active games.
         """
         log = 'GAME                TOKEN               PLAYERS\n'
-        for session, instance in self._active_games.items():
+        for session, instance in self._game_sessions.items():
             game, token = session
             log += f'{game:20}{token:20}{instance._number_of_players:7}\n'
         print(log)

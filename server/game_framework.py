@@ -279,7 +279,7 @@ class GameFramework:
         """
         Print active games.
         """
-        log = 'Game sessions (game:token:players):\n'
+        log = 'Game sessions:\n(game:token:players)\n'
         for session, instance in self._game_sessions.items():
             game_name, token = session
             log += f'{game_name}:{token}:{instance._number_of_players}\n'

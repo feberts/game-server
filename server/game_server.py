@@ -69,7 +69,11 @@ def handle_connection(conn, ip, port):
             l.log(f'received from client:\n{request}')
 
             # pass request to the framework:
-            response = framework.handle_request(request) # TODO exception fangen
+            try:
+                response = framework.handle_request(request) # TODO exception fangen
+            except:
+                l.log('unexpected exception in the framework:\n' + traceback.format_exc())
+                response = utility.framework_error('internal error')
 
         except MessageSizeExceeded:
             l.log('message size exceeded by client')

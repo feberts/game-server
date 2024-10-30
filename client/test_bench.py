@@ -14,7 +14,7 @@ players = 2
 
 def client_start():
     api = GameServerAPI()
-    my_id, err = api.start_game(server='127.0.0.1', port=4711, game=game, token=token, players=players)
+    my_id, err = api.start_game(server='127.0.0.1', port=4711, game=game, token=token, players=players, name='bob')
 
     if err:
         print(err)

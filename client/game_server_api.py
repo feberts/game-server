@@ -22,7 +22,7 @@ class GameServerAPI:
     This class provides API functions to communicate with the game server.
     """
 
-    def start_game(self, server, port, game, token, players):
+    def start_game(self, server, port, game, token, players, name=''):
         """
         Start a game.
 
@@ -36,6 +36,7 @@ class GameServerAPI:
         game (str): name of the game
         token (str): name of the game session
         players (int): total number of players
+        name TODO
 
         Returns:
         tuple(int, str):

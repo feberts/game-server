@@ -1,12 +1,12 @@
 """
 Game framework.
 
-This module implements the game framework. The framework is responsible for managing active game sessions. Client requests are parsed and the appropriate actions are performed. The following list shows the types of requests the framework can handle and the resulting actions:
+This module implements the game framework. The framework is responsible for managing active game sessions. Client requests are parsed, and the appropriate actions are performed. The following requests can be handled by the framework:
 
-- start_game: instantiating game sessions
-- join_game: assigning player IDs to clients
-- move: forwarding player moves to game instances
-- state: reporting the game state to clients
+- starting a new game
+- joining a game
+- submitting a move
+- requesting the game state
 TODO sind weitere neu hinzugekommen?
 
 To perform these actions, the framework calls the corresponding methods of a game class instance, if necessary.
@@ -24,21 +24,21 @@ class GameFramework:
     """
     Class GameFramework.
 
-    This class manages active games and handles the interaction between clients and game instances.
+    This class manages active game sessions and handles the interaction between clients and game instances.
     """
 
     def __init__(self):
         self._game_classes = [TicTacToe] # list of available games
         self._game_classes_by_name = {} # game name -> game class
-        self._game_sessions = {} # (game name, token) -> active game
+        self._game_sessions = {} # (game name, token) -> game session
         self._build_game_class_dict()
 
     def _build_game_class_dict(self):
         """
         Build a dictionary mapping game names to game classes.
         """
-        for game in self._game_classes:
-            self._game_classes_by_name[game.__name__] = game
+        for game_class in self._game_classes:
+            self._game_classes_by_name[game_class.__name__] = game_class
 
     class _GameSession:
         """
@@ -79,7 +79,7 @@ class GameFramework:
         if request['type'] not in handlers:
             return utility.framework_error('invalid request type')
 
-        return handlers[request['type']](request)
+        return handlers[request['type']](request) # TODO exception fangen
 
     def _start_game(self, request):
         """
@@ -109,18 +109,18 @@ class GameFramework:
         if players > game_class.max_players() or players < game_class.min_players():
             return utility.framework_error('invalid number of players')
 
-        # create game instance and add it to dictionary of active games:
-        new_game = self._GameSession(game_class(players), players)
-        self._game_sessions[(game_name, token)] = new_game
+        # create game session and add it to dictionary of active game sessions:
+        session = self._GameSession(game_class(players), players)
+        self._game_sessions[(game_name, token)] = session
 
         # get player ID:
-        player_id = new_game.next_id()
+        player_id = session.next_id()
 
         # wait for others to join:
-        self._await_game_start(new_game)
+        self._await_game_start(session)
 
-        if not new_game.ready(): # timeout reached
-            del self._game_sessions[(game_name, token)] # remove game
+        if not session.ready(): # timeout reached
+            del self._game_sessions[(game_name, token)] # remove game session
             return utility.framework_error('timeout while waiting for others to join')
 
         self._log_game_sessions()
@@ -145,20 +145,20 @@ class GameFramework:
 
         game_name, token = request['game'], request['token']
 
-        # retrieve game:
-        game, err = self._retrieve_game_session(game_name, token)
+        # retrieve game session:
+        session, err = self._retrieve_game_session(game_name, token)
         if err: # no such game or game session
             return err
-        if game.ready(): # game is full
+        if session.ready(): # game is full
             return utility.framework_error('game is already full')
 
         # get player ID:
-        player_id = game.next_id()
+        player_id = session.next_id()
 
         # wait for others to join:
-        self._await_game_start(game)
+        self._await_game_start(session)
 
-        if not game.ready(): # timeout reached
+        if not session.ready(): # timeout reached
             return utility.framework_error('timeout while waiting for others to join')
 
         return self._return_data({'player_id':player_id})
@@ -223,7 +223,7 @@ class GameFramework:
 
         game = session.game
 
-        # retrieve the game state from the game instance:
+        # retrieve the game state:
         state = game.state(player_id)
 
         # add current player's ID:
@@ -231,42 +231,42 @@ class GameFramework:
 
         return self._return_data(state)
 
-    def _await_game_start(self, game):
+    def _await_game_start(self, session):
         """
         Waits for players to join the game.
 
         This function waits until the required number of players has joined the game or until the timeout is reached.
 
         Parameters:
-        game (_GameSession): game instance
+        session (_GameSession): game session
         """
         seconds = 0
-        while not game.ready() and seconds < config.timeout:
+        while not session.ready() and seconds < config.timeout:
             time.sleep(config.game_start_poll_interval)
             seconds = seconds + config.game_start_poll_interval
 
-    def _retrieve_game_session(self, game, token):
+    def _retrieve_game_session(self, game_name, token):
         """
-        Retrieves an active game.
+        Retrieves an active game session.
 
         If the specified game session exists, it is returned to the caller.
 
         Parameters:
-        game (str): game name
+        game_name (str): game name
         token (str): token
 
         Returns:
         tuple(_GameSession, dict):
-            _GameSession: active game specified by name and token, None in case of an error
+            _GameSession: game session, None in case of an error
             dict: error message, if a problem occurred, None otherwise
         """
         # check if game session exists:
-        if game not in self._game_classes_by_name:
+        if game_name not in self._game_classes_by_name:
             return None, utility.framework_error('no such game')
-        if (game, token) not in self._game_sessions:
+        if (game_name, token) not in self._game_sessions:
             return None, utility.framework_error('no such game session')
 
-        return self._game_sessions[(game, token)], None
+        return self._game_sessions[(game_name, token)], None
 
     def _return_data(self, data):
         """
@@ -278,7 +278,7 @@ class GameFramework:
         """
         Print active games.
         """
-        log = 'Game sessions:\n(game:token:players)\n'
+        log = 'Game sessions (game:token:players):\n'
         for session, instance in self._game_sessions.items():
             game_name, token = session
             log += f'{game_name}:{token}:{instance._number_of_players}\n'

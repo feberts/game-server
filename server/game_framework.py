@@ -1,14 +1,13 @@
 """
 Game framework.
 
-This module implements the game framework. The framework is responsible for managing active game sessions. It acts as an intermediary between the server and game class instances of active game sessions.
-
-Client requests are parsed and the appropriate actions are performed. The following list shows the types of requests the framework can handle and the resulting actions:
+This module implements the game framework. The framework is responsible for managing active game sessions. Client requests are parsed and the appropriate actions are performed. The following list shows the types of requests the framework can handle and the resulting actions:
 
 - start_game: instantiating game sessions
-- join_game: assigning clients to game sessions
+- join_game: assigning player IDs to clients
 - move: forwarding player moves to game instances
 - state: reporting the game state to clients
+TODO sind weitere neu hinzugekommen?
 
 To perform these actions, the framework calls the corresponding methods of a game class instance, if necessary.
 """
@@ -84,9 +83,9 @@ class GameFramework:
 
     def _start_game(self, request):
         """
-        Request handler for starting a game.
+        Request handler for starting a game session.
 
-        This function instantiates the requested game and adds it to the list of active games. This function is blocking. After the required number of players has joined the game, the function sends the player ID back to the client who requested the start of the game. If not enough players have joined the game before the timeout occurs, the game instance is deleted and the requesting client is informed accordingly.
+        This function instantiates the requested game and adds it to the list of active game sessions. This function is blocking. After the required number of players has joined the game, the function sends the player ID back to the client who requested the start of the game. If not enough players have joined the game before the timeout occurs, the game session is deleted and the requesting client is informed accordingly.
 
         Parameters:
         request (dict): request containing game name, token and number of players
@@ -130,9 +129,9 @@ class GameFramework:
 
     def _join_game(self, request):
         """
-        Request handler for joining a game.
+        Request handler for joining a game session.
 
-        This function checks if a game specified by its name and token is already started and waiting for clients to join. This function is blocking. After the required number of players has joined the game, the function sends the player ID back to the client who requested to join the game. If not enough players have joined the game before the timeout occurs, the requesting client is informed accordingly.
+        This function checks if a game session specified by the game's name and the token is already started and waiting for clients to join. This function is blocking. After the required number of players has joined the game, the function sends the player ID back to the client who requested to join the game. If not enough players have joined the game before the timeout occurs, the requesting client is informed accordingly.
 
         Parameters:
         request (dict): request containing game name and token

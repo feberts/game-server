@@ -59,7 +59,7 @@ class GameFramework:
                 player_id = self._next_id
                 self._next_id = self._next_id + 1
                 # associate player name with ID:
-                if len(player_name):
+                if player_name != '':
                     self._player_names[player_name] = player_id
                 return player_id
 
@@ -269,7 +269,7 @@ class GameFramework:
             return utility.framework_error('game has not yet started')
 
         # get player ID:
-        if player_name == '_ALL_':
+        if player_name == '_NONAME_':
             player_id = -1
         else:
             player_id, err = session.player_id(player_name)

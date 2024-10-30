@@ -146,7 +146,7 @@ class GameServerAPI:
         self._process_args(server, port, game, token)
         assert type(player) == str, 'Invalid argument: player'
 
-        if not len(player): player = '_ALL_'
+        if not len(player): player = '_NONAME_'
 
         response, err = self._send({'type':'watch', 'game':game, 'token':token, 'player':player})
 

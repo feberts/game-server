@@ -32,11 +32,23 @@ def client_join():
 
     print('Player ID:', my_id)
 
+def client_watch():
+    api = GameServerAPI()
+    my_id, err = api.watch(server='127.0.0.1', port=4711, game=game, token=token)
+
+    if err:
+        print(err)
+        exit()
+
+    print('Player ID:', my_id)
+
 threading.Thread(target=client_start, args=(), daemon=True).start()
+time.sleep(0.1)
+threading.Thread(target=client_join, args=(), daemon=True).start()
+time.sleep(0.1)
+threading.Thread(target=client_watch, args=(), daemon=True).start()
 
-time.sleep(0.5)
+#for _ in range(players):
+    #threading.Thread(target=client_join, args=(), daemon=True).start()
 
-for _ in range(players):
-    threading.Thread(target=client_join, args=(), daemon=True).start()
-
-time.sleep(5)
+time.sleep(2)

@@ -7,6 +7,7 @@ This module implements the game framework. The framework is responsible for mana
 - joining a game
 - submitting a move
 - requesting the game state
+- observing a game
 TODO sind weitere neu hinzugekommen?
 
 To perform these actions, the framework calls the corresponding methods of a game class instance.
@@ -48,16 +49,27 @@ class GameFramework:
             self.game = game_instance
             self._number_of_players = players
             self._next_id = 0
+            self._player_names = {} # player name -> ID
             self._lock = threading.Lock()
 
-        def next_id(self): # IDs assigned to clients joining the game
+        def next_id(self, player_name=''): # IDs assigned to clients joining the game
             with self._lock:
-                ret = self._next_id
+                #TODO prüfen ob name schon vergeben
+                # player ID:
+                player_id = self._next_id
                 self._next_id = self._next_id + 1
-                return ret
+                # associate player name with ID:
+                if len(player_name):
+                    self._player_names[player_name] = player_id
+                return player_id
 
         def ready(self): # ready when all players have joined the game
             return self._number_of_players == self._next_id
+        
+        def player_id(self, player_name):#TODO kommentar
+            if not player_name in self._player_names:
+                return None, 'no such player'
+            return self._player_names[player_name], None
 
     def handle_request(self, request):
         """
@@ -74,7 +86,7 @@ class GameFramework:
         if 'type' not in request:
             return utility.framework_error("key 'type' of type str missing")
 
-        handlers = {'start_game':self._start_game, 'join_game':self._join_game, 'move':self._move, 'state':self._state}
+        handlers = {'start_game':self._start_game, 'join_game':self._join_game, 'move':self._move, 'state':self._state, 'watch':self._watch}
 
         if request['type'] not in handlers:
             return utility.framework_error('invalid request type')
@@ -230,6 +242,40 @@ class GameFramework:
         state['current'] = game.current_player()
 
         return self._return_data(state)
+
+    def _watch(self, request):
+        """
+        Request handler for joining a game session.TODO
+
+        This function checks if a game session specified by the game's name and the token is already started and waiting for clients to join. After the required number of players has joined the game, the function sends the player ID back to the client who requested to join the game. If not enough players have joined the game before the timeout occurs, the requesting client is informed.TODO
+
+        Parameters:
+        request (dict): request containing game name, token and player to be observed
+
+        Returns:
+        dict: containing the ID of the observed player
+        """
+        # check and parse request:
+        err = utility.check_dict(request, {'game':str, 'token':str, 'player':str})
+        if err: return utility.framework_error(err)
+
+        game_name, token, player_name = request['game'], request['token'], request['player']
+
+        # retrieve game session:
+        session, err = self._retrieve_game_session(game_name, token)
+        if err: # no such game or game session
+            return err
+        if not session.ready(): # game has not yet started
+            return utility.framework_error('game has not yet started')
+
+        # get player ID:
+        if player_name == '_ALL_':
+            player_id = -1
+        else:
+            player_id, err = session.player_id(player_name)
+            if err: return utility.framework_error(err)
+
+        return self._return_data({'player_id':player_id})
 
     def _await_game_start(self, session):
         """

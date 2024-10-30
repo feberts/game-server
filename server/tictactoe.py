@@ -38,7 +38,7 @@ class TicTacToe(AbstractGame):
         Returns:
         dict: game state
         """
-        return {'board':self._state.board, 'gameover':self._state.gameover, 'winner':self._state.winner}
+        return {'board':self._state.board, 'gameover':self._state.gameover, 'winner':self._state.winner, 'ID':player_id} # TODO ID wieder enfernen
 
     def current_player(self): # override
         """

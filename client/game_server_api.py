@@ -7,6 +7,8 @@ This module provides an API for communicating with the game server. The API can 
 - join a game that was started by another client
 - submit moves to the server
 - request the game state
+- passively observe other players
+TODO sind weitere neu hinzugekommen?
 """
 
 import json
@@ -117,6 +119,42 @@ class GameServerAPI:
 
         return state, None
 
+    def watch(self, server, port, game, token, player=''): # TODO player optional?
+        #TODO arg player auch bei start_game und join_game
+        """
+        Join a game.TODO
+
+        This function lets a client join a game that another client has started by calling the start function. To be able to join, the correct token must be provided. The token is used to identify a specific game session.TODO
+
+        This is a blocking function. The game starts as soon as all clients have joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.TODO
+
+        Parameters:
+        server (str): server
+        port (int): port number
+        game (str): name of the game
+        token (str): name of the game session
+        player (str): name of player to observe # TODO optional?
+
+        Returns:
+        tuple(int, str):
+            int: ID of observed player, None in case of an error
+            str: error message, if a problem occurred, None otherwise
+
+        Raises:
+        AssertionError: for invalid arguments
+        """
+        self._process_args(server, port, game, token)
+        assert type(player) == str, 'Invalid argument: player'
+
+        if not len(player): player = '_ALL_'
+
+        response, err = self._send({'type':'watch', 'game':game, 'token':token, 'player':player})
+
+        if err: return None, err
+        self._player_id = response['player_id']
+
+        return self._player_id, None
+
     def _send(self, data):
         """
         Send data to the server and receive its response.
@@ -213,7 +251,7 @@ class GameServerAPI:
         # game:
         self._game = None
         self._token = None
-        self._players = None
+        self._players = None # TODO bei start/join/watch vom server beziehen?
         self._player_id = None
 
         # server:

@@ -9,7 +9,7 @@ This module implements the game framework. The framework is responsible for mana
 - requesting the game state
 TODO sind weitere neu hinzugekommen?
 
-To perform these actions, the framework calls the corresponding methods of a game class instance, if necessary.
+To perform these actions, the framework calls the corresponding methods of a game class instance.
 """
 
 import threading
@@ -79,13 +79,13 @@ class GameFramework:
         if request['type'] not in handlers:
             return utility.framework_error('invalid request type')
 
-        return handlers[request['type']](request) # TODO exception fangen
+        return handlers[request['type']](request)
 
     def _start_game(self, request):
         """
         Request handler for starting a game session.
 
-        This function instantiates the requested game and adds it to the list of active game sessions. This function is blocking. After the required number of players has joined the game, the function sends the player ID back to the client who requested the start of the game. If not enough players have joined the game before the timeout occurs, the game session is deleted and the requesting client is informed accordingly.
+        This function instantiates the requested game and adds it to the list of active game sessions. After the required number of players has joined the game, the function sends the player ID back to the client who requested the start of the game. If not enough players have joined the game before the timeout occurs, the game session is deleted and the requesting client is informed.
 
         Parameters:
         request (dict): request containing game name, token and number of players
@@ -109,7 +109,7 @@ class GameFramework:
         if players > game_class.max_players() or players < game_class.min_players():
             return utility.framework_error('invalid number of players')
 
-        # create game session and add it to dictionary of active game sessions:
+        # create game session and add it to dictionary of active sessions:
         session = self._GameSession(game_class(players), players)
         self._game_sessions[(game_name, token)] = session
 
@@ -131,7 +131,7 @@ class GameFramework:
         """
         Request handler for joining a game session.
 
-        This function checks if a game session specified by the game's name and the token is already started and waiting for clients to join. This function is blocking. After the required number of players has joined the game, the function sends the player ID back to the client who requested to join the game. If not enough players have joined the game before the timeout occurs, the requesting client is informed accordingly.
+        This function checks if a game session specified by the game's name and the token is already started and waiting for clients to join. After the required number of players has joined the game, the function sends the player ID back to the client who requested to join the game. If not enough players have joined the game before the timeout occurs, the requesting client is informed.
 
         Parameters:
         request (dict): request containing game name and token
@@ -181,7 +181,7 @@ class GameFramework:
 
         game_name, token, player_id, move = request['game'], request['token'], request['player_id'], request['move']
 
-        # retrieve game session:
+        # retrieve the game:
         session, err = self._retrieve_game_session(game_name, token)
         if err: # no such game or game session
             return err
@@ -216,7 +216,7 @@ class GameFramework:
 
         game_name, token, player_id = request['game'], request['token'], request['player_id']
 
-        # retrieve game session:
+        # retrieve the game:
         session, err = self._retrieve_game_session(game_name, token)
         if err: # no such game or game session
             return err

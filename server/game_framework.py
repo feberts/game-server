@@ -256,10 +256,10 @@ class GameFramework:
         dict: containing the ID of the observed player
         """
         # check and parse request:
-        err = utility.check_dict(request, {'game':str, 'token':str, 'player':str})
+        err = utility.check_dict(request, {'game':str, 'token':str, 'name':str})
         if err: return utility.framework_error(err)
 
-        game_name, token, player_name = request['game'], request['token'], request['player']
+        game_name, token, player_name = request['game'], request['token'], request['name']
 
         # retrieve game session:
         session, err = self._retrieve_game_session(game_name, token)

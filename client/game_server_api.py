@@ -119,7 +119,7 @@ class GameServerAPI:
 
         return state, None
 
-    def watch(self, server, port, game, token, player=''): # TODO player optional?
+    def watch(self, server, port, game, token, name=''): # TODO player optional?
         #TODO arg player auch bei start_game und join_game
         """
         Join a game.TODO
@@ -133,7 +133,7 @@ class GameServerAPI:
         port (int): port number
         game (str): name of the game
         token (str): name of the game session
-        player (str): name of player to observe # TODO optional?
+        name (str): name of player to observe # TODO optional?
 
         Returns:
         tuple(int, str):
@@ -144,11 +144,11 @@ class GameServerAPI:
         AssertionError: for invalid arguments
         """
         self._process_args(server, port, game, token)
-        assert type(player) == str, 'Invalid argument: player'
+        assert type(name) == str, 'Invalid argument: name'
 
-        if not len(player): player = '_NONAME_'
+        if name == '': name = '_NONAME_'
 
-        response, err = self._send({'type':'watch', 'game':game, 'token':token, 'player':player})
+        response, err = self._send({'type':'watch', 'game':game, 'token':token, 'name':name})
 
         if err: return None, err
         self._player_id = response['player_id']

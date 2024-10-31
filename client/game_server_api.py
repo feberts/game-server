@@ -79,7 +79,7 @@ class GameServerAPI:
         """
         self._process_args(server, port, game, token, name)
 
-        response, err = self._send({'type':'join_game', 'game':game, 'token':token})
+        response, err = self._send({'type':'join_game', 'game':game, 'token':token, 'name':name})
 
         if err: return None, err
         self._player_id = response['player_id']

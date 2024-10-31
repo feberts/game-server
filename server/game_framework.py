@@ -52,7 +52,8 @@ class GameFramework:
             self._player_names = {} # player name -> ID
             self._lock = threading.Lock()
 
-        def next_id(self, player_name=''): # IDs assigned to clients joining the game
+        # TODO default wert unnötig?
+        def next_id(self, player_name): # IDs assigned to clients joining the game
             with self._lock:
                 #TODO prüfen ob name schon vergeben
                 # player ID:
@@ -152,10 +153,10 @@ class GameFramework:
         dict: containing the player ID
         """
         # check and parse request:
-        err = utility.check_dict(request, {'game':str, 'token':str})
+        err = utility.check_dict(request, {'game':str, 'token':str, 'name':str})
         if err: return utility.framework_error(err)
 
-        game_name, token = request['game'], request['token']
+        game_name, token, name = request['game'], request['token'], request['name']
 
         # retrieve game session:
         session, err = self._retrieve_game_session(game_name, token)
@@ -165,7 +166,7 @@ class GameFramework:
             return utility.framework_error('game is already full')
 
         # get player ID:
-        player_id = session.next_id()
+        player_id = session.next_id(name)
 
         # wait for others to join:
         self._await_game_start(session)

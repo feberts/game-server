@@ -8,17 +8,19 @@ This program connects to the game server to play tic-tac-toe against another cli
 from game_server_api import GameServerAPI
 import time
 
+symbols = ('x', 'o')
+
 def print_board(board):
     print('\n' * 100)
-    board = [i if board[i] == -1 else players[board[i]] for i in range(9)]
+    board = [i if board[i] == -1 else symbols[board[i]] for i in range(9)]
     print(f' {board[0]} | {board[1]} | {board[2]}', '---+---+---',
           f' {board[3]} | {board[4]} | {board[5]}', '---+---+---',
           f' {board[6]} | {board[7]} | {board[8]}', sep='\n')
 
-def user_input(current_player):
+def user_input(player_id):
     while True:
         try:
-            return int(input(f'\nYour ({players[current_player]}) turn: '))
+            return int(input(f'\nYour ({symbols[player_id]}) turn: '))
         except KeyboardInterrupt:
             exit()
         except:
@@ -28,25 +30,23 @@ def fatal(msg):
     print(msg)
     exit()
 
-players = ('x', 'o')
 game = GameServerAPI()
 
-# join a game:
+# join game:
 my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
 
-if err:
-    # could not join, start new game:
+if err: # no game started yet
+    # start new game:
     my_id, err = game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
     if err: fatal(err)
 
 state, err = game.state()
 if err: fatal(err)
-current_player = state['current']
 
 while not state['gameover']:
     print_board(state['board'])
 
-    if current_player == my_id: # my turn
+    if state['current'] == my_id: # my turn
         while True:
             pos = user_input(my_id)
             err = game.move(position=pos)
@@ -58,7 +58,6 @@ while not state['gameover']:
 
     state, err = game.state()
     if err: fatal(err)
-    current_player = state['current']
 
 print_board(state['board'])
 winner = state['winner']
@@ -66,6 +65,6 @@ winner = state['winner']
 if winner == None:
     print('No winner...')
 elif winner == my_id:
-    print(f'You ({players[my_id]}) won!')
+    print(f'You ({symbols[my_id]}) won!')
 else:
-    print(f'You ({players[my_id]}) lost...')
+    print(f'You ({symbols[my_id]}) lost...')

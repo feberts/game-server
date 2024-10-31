@@ -29,13 +29,15 @@ class GameServerAPI:
 
         This is a blocking function. The game starts as soon as the specified number of clients has joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
 
+        The optional name parameter makes it possible for other clients to passively observe your playing by joining a game using the watch function. They will be able to retrieve the same game state from the server as you.
+
         Parameters:
         server (str): server
         port (int): port number
         game (str): name of the game
         token (str): name of the game session
         players (int): total number of players
-        name TODO
+        name (str): player name (optional)
 
         Returns:
         tuple(int, str):
@@ -62,12 +64,14 @@ class GameServerAPI:
 
         This is a blocking function. The game starts as soon as all clients have joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
 
+        The optional name parameter makes it possible for other clients to passively observe your playing by joining a game using the watch function. They will be able to retrieve the same game state from the server as you.
+
         Parameters:
         server (str): server
         port (int): port number
         game (str): name of the game
         token (str): name of the game session
-        name TODO
+        name (str): player name (optional)
 
         Returns:
         tuple(int, str):
@@ -120,21 +124,22 @@ class GameServerAPI:
 
         return state, None
 
-    def watch(self, server, port, game, token, name=''): # TODO player optional?
-        #TODO arg player auch bei start_game und join_game
+    def watch(self, server, port, game, token, name=''):
         """
-        Join a game.TODO
+        Observe another player.
 
-        This function lets a client join a game that another client has started by calling the start function. To be able to join, the correct token must be provided. The token is used to identify a specific game session.TODO
+        This function lets one client observe another client. By providing the name of the player to be observed, you will receive the same data calling the state function as that player does. Moreover, this function will return the player ID of the observed player.
 
-        This is a blocking function. The game starts as soon as all clients have joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.TODO
+        When omitting the name, a special ID will be assigned, that is not a player ID. What data the state function returns in that case, depends on the implementation of the game. Refer to the documentation of a specific game to find out about the structure and content of the returned data, when calling the state function.
+
+        This function can only be called, after the specified game session has already been started.
 
         Parameters:
         server (str): server
         port (int): port number
         game (str): name of the game
         token (str): name of the game session
-        name (str): name of player to observe # TODO optional?
+        name (str): name of player to observe (optional)
 
         Returns:
         tuple(int, str):
@@ -242,18 +247,14 @@ class GameServerAPI:
         self._port = port
         self._game = game
         self._token = token
-        self._players = players
-        self._name = name
 
     class _MissingResponse(Exception): pass
 
     def __init__(self):
-        # game:
+        # game session:
         self._game = None
         self._token = None
-        self._players = None # TODO bei start/join/watch vom server beziehen?
         self._player_id = None
-        self._name = None
 
         # server:
         self._server = None

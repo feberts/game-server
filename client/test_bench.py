@@ -34,7 +34,7 @@ def client_join():
 
 def client_watch():
     api = GameServerAPI()
-    my_id, err = api.watch(server='127.0.0.1', port=4711, game=game, token=token)
+    my_id, err = api.watch(server='127.0.0.1', port=4711, game=game, token=token, name='bob')
 
     if err:
         print(err)

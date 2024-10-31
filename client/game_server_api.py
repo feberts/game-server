@@ -14,7 +14,6 @@ TODO sind weitere neu hinzugekommen?
 import json
 import socket
 import traceback
-
 class GameServerAPI:
     """
     Class GameServerAPI.
@@ -46,16 +45,16 @@ class GameServerAPI:
         Raises:
         AssertionError: for invalid arguments
         """
-        self._process_args(server, port, game, token, players)
+        self._process_args(server, port, game, token, name, players)
 
-        response, err = self._send({'type':'start_game', 'game':game, 'token':token, 'players':players})
+        response, err = self._send({'type':'start_game', 'game':game, 'token':token, 'players':players, 'name':name})
 
         if err: return None, err
         self._player_id = response['player_id']
 
         return self._player_id, None
 
-    def join_game(self, server, port, game, token):
+    def join_game(self, server, port, game, token, name=''):
         """
         Join a game.
 
@@ -68,6 +67,7 @@ class GameServerAPI:
         port (int): port number
         game (str): name of the game
         token (str): name of the game session
+        name TODO
 
         Returns:
         tuple(int, str):
@@ -77,7 +77,7 @@ class GameServerAPI:
         Raises:
         AssertionError: for invalid arguments
         """
-        self._process_args(server, port, game, token)
+        self._process_args(server, port, game, token, name)
 
         response, err = self._send({'type':'join_game', 'game':game, 'token':token})
 
@@ -144,10 +144,7 @@ class GameServerAPI:
         Raises:
         AssertionError: for invalid arguments
         """
-        self._process_args(server, port, game, token)
-        assert type(name) == str, 'Invalid argument: name'
-
-        if name == '': name = '_NONAME_'
+        self._process_args(server, port, game, token, name)
 
         response, err = self._send({'type':'watch', 'game':game, 'token':token, 'name':name})
 
@@ -228,7 +225,7 @@ class GameServerAPI:
         """
         return None, 'api: ' + message
 
-    def _process_args(self, server, port, game, token, players=1):
+    def _process_args(self, server, port, game, token, name, players=1):
         """
         Check arguments and assign them to class attributes.
         """
@@ -239,12 +236,14 @@ class GameServerAPI:
         assert type(game) == str and len(game) > 0, msg('game')
         assert type(token) == str and len(token) > 0, msg('token')
         assert type(players) == int and players > 0, msg('players')
+        assert type(name) == str, msg('name')
 
         self._server = server
         self._port = port
         self._game = game
         self._token = token
         self._players = players
+        self._name = name
 
     class _MissingResponse(Exception): pass
 
@@ -254,6 +253,7 @@ class GameServerAPI:
         self._token = None
         self._players = None # TODO bei start/join/watch vom server beziehen?
         self._player_id = None
+        self._name = None
 
         # server:
         self._server = None

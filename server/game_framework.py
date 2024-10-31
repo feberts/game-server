@@ -106,10 +106,10 @@ class GameFramework:
         dict: containing the player ID
         """
         # check and parse request:
-        err = utility.check_dict(request, {'game':str, 'token':str, 'players':int})
+        err = utility.check_dict(request, {'game':str, 'token':str, 'players':int, 'name':str})
         if err: return utility.framework_error(err)
 
-        game_name, token, players = request['game'], request['token'], request['players']
+        game_name, token, players, name = request['game'], request['token'], request['players'], request['name']
 
         # get game class:
         if game_name not in self._game_classes_by_name:
@@ -126,7 +126,7 @@ class GameFramework:
         self._game_sessions[(game_name, token)] = session
 
         # get player ID:
-        player_id = session.next_id()
+        player_id = session.next_id(name)
 
         # wait for others to join:
         self._await_game_start(session)
@@ -269,7 +269,7 @@ class GameFramework:
             return utility.framework_error('game has not yet started')
 
         # get player ID:
-        if player_name == '_NONAME_':
+        if player_name == '':
             player_id = -1
         else:
             player_id, err = session.player_id(player_name)

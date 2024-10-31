@@ -69,8 +69,9 @@ def check_dict(d, expected):
             return f"key '{key_name}' of type {val_type} missing"
         if type(d[key_name]) != val_type:
             return f"value of key '{key_name}' must be of type {val_type}"
-        if type(d[key_name]) == str:
-            if len(d[key_name]) == 0:
-                return f"value of key '{key_name}' must be a string of length > 0"
+        # TODO falls dauerhaft weglassen, dann oben kommentar aktualisieren
+        #if type(d[key_name]) == str:
+            #if len(d[key_name]) == 0:
+                #return f"value of key '{key_name}' must be a string of length > 0"
 
     return None

@@ -48,7 +48,7 @@ class GameSession:
         """
         return self._number_of_players == self._next_id
     
-    def get_id(self, player_name):#TODO umbenennen
+    def get_id(self, player_name):
         """
         Return player ID by name.
         

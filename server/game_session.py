@@ -29,7 +29,7 @@ class GameSession:
         player_name (str): player name, can be an empty string
 
         Returns:
-        int: player ID
+        int: the next player ID
         """
         with self._lock:
             # player ID:
@@ -48,11 +48,19 @@ class GameSession:
         """
         return self._number_of_players == self._next_id
     
-    def player_id(self, player_name):#TODO umbenennen
+    def get_id(self, player_name):#TODO umbenennen
         """
         Return player ID by name.
         
-        This function returns the ID that is assigned to the passed player name.
+        This function returns the ID that was assigned to the passed player name.
+
+        Parameters:
+        player_name (str): name of an existing player that has already joined the game
+
+        Returns:
+        tuple(int, str):
+            int: player ID, None in case of an error
+            str: error message, if a problem occurred, None otherwise
         """
         if not player_name in self._player_names:
             return None, 'no such player'

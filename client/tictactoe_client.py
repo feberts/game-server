@@ -17,10 +17,10 @@ def print_board(board):
           f' {board[3]} | {board[4]} | {board[5]}', '---+---+---',
           f' {board[6]} | {board[7]} | {board[8]}', sep='\n')
 
-def user_input(player_id):
+def user_input(prompt):
     while True:
         try:
-            return int(input(f'\nYour ({symbols[player_id]}) turn: '))
+            return int(input(prompt))
         except KeyboardInterrupt:
             exit()
         except:
@@ -48,7 +48,7 @@ while not state['gameover']:
 
     if state['current'] == my_id: # my turn
         while True:
-            pos = user_input(my_id)
+            pos = user_input(f'\nYour ({symbols[my_id]}) turn: ')
             err = game.move(position=pos)
             if err: print(err)
             else: break

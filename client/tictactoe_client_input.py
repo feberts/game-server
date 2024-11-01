@@ -8,10 +8,10 @@ This program joins a game as an active player and submits moves. It must be used
 from game_server_api import GameServerAPI
 import time
 
-def user_input():
+def user_input(prompt):
     while True:
         try:
-            return int(input('Input: '))
+            return int(input(prompt))
         except KeyboardInterrupt:
             exit()
         except:
@@ -35,7 +35,7 @@ state, err = game.state()
 if err: fatal(err)
 
 while True:
-    pos = user_input()
+    pos = user_input('Input: ')
     err = game.move(position=pos)
     if err: print(err)
 

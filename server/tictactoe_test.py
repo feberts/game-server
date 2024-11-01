@@ -5,16 +5,18 @@ Interactive test of class TicTacToe.
 
 from tictactoe import TicTacToe
 
+symbols = ('x', 'o')
+
 def print_board(board):
-    board = [i if board[i] == -1 else players[board[i]] for i in range(9)]
+    board = [i if board[i] == -1 else symbols[board[i]] for i in range(9)]
     print(f' {board[0]} | {board[1]} | {board[2]}', '---+---+---',
           f' {board[3]} | {board[4]} | {board[5]}', '---+---+---',
           f' {board[6]} | {board[7]} | {board[8]}', sep='\n')
 
-def user_input(current):
+def user_input(player_id):
     while True:
         try:
-            return int(input(f'Your turn {players[current]}: '))
+            return int(input(f'Your turn {symbols[player_id]}: '))
         except KeyboardInterrupt:
             exit()
         except:
@@ -24,7 +26,6 @@ print('Min. players:', TicTacToe.min_players())
 print('Max. players:', TicTacToe.max_players())
 
 game = TicTacToe(2)
-players = ('x', 'o')
 current = game.current_player()
 state = game.state(current)
 
@@ -48,4 +49,4 @@ winner = state['winner']
 if winner == None:
     print('No winner!')
 else:
-    print(f'Player {players[winner]} wins!')
+    print(f'Player {symbols[winner]} wins!')

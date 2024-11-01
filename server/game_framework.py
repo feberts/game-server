@@ -29,7 +29,7 @@ class GameFramework:
     """
 
     def __init__(self):
-        self._game_classes = [TicTacToe] # list of available games
+        self._game_classes = [TicTacToe] # list of available games TODO auslagern
         self._game_classes_by_name = {} # game name -> game class
         self._game_sessions = {} # (game name, token) -> game session
         self._build_game_class_dict()
@@ -41,7 +41,7 @@ class GameFramework:
         for game_class in self._game_classes:
             self._game_classes_by_name[game_class.__name__] = game_class
 
-    class _GameSession:
+    class _GameSession: # TODO auslagern
         """
         Wrapper class for game instances providing functionality for retrieving player IDs.
         """
@@ -52,7 +52,6 @@ class GameFramework:
             self._player_names = {} # player name -> ID
             self._lock = threading.Lock()
 
-        # TODO default wert unnötig?
         def next_id(self, player_name): # IDs assigned to clients joining the game
             with self._lock:
                 #TODO prüfen ob name schon vergeben
@@ -67,7 +66,7 @@ class GameFramework:
         def ready(self): # ready when all players have joined the game
             return self._number_of_players == self._next_id
         
-        def player_id(self, player_name):#TODO kommentar
+        def player_id(self, player_name):#TODO kommentar TODO umbenennen
             if not player_name in self._player_names:
                 return None, 'no such player'
             return self._player_names[player_name], None

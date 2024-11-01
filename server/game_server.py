@@ -70,7 +70,7 @@ def handle_connection(conn, ip, port):
 
             # pass request to the framework:
             try:
-                response = framework.handle_request(request) # TODO exception fangen
+                response = framework.handle_request(request)
             except:
                 l.log('unexpected exception in the framework:\n' + traceback.format_exc())
                 response = utility.framework_error('internal error')

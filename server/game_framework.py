@@ -13,13 +13,13 @@ TODO sind weitere neu hinzugekommen?
 To perform these actions, the framework calls the corresponding methods of a game class instance.
 """
 
-import threading
 import time
 
 import config
 import utility
 
 from tictactoe import TicTacToe
+from game_session import GameSession
 
 class GameFramework:
     """
@@ -40,36 +40,6 @@ class GameFramework:
         """
         for game_class in self._game_classes:
             self._game_classes_by_name[game_class.__name__] = game_class
-
-    class _GameSession: # TODO auslagern
-        """
-        Wrapper class for game instances providing functionality for retrieving player IDs.
-        """
-        def __init__(self, game_instance, players):
-            self.game = game_instance
-            self._number_of_players = players
-            self._next_id = 0
-            self._player_names = {} # player name -> ID
-            self._lock = threading.Lock()
-
-        def next_id(self, player_name): # IDs assigned to clients joining the game
-            with self._lock:
-                #TODO prüfen ob name schon vergeben
-                # player ID:
-                player_id = self._next_id
-                self._next_id = self._next_id + 1
-                # associate player name with ID:
-                if player_name != '':
-                    self._player_names[player_name] = player_id
-                return player_id
-
-        def ready(self): # ready when all players have joined the game
-            return self._number_of_players == self._next_id
-        
-        def player_id(self, player_name):#TODO kommentar TODO umbenennen
-            if not player_name in self._player_names:
-                return None, 'no such player'
-            return self._player_names[player_name], None
 
     def handle_request(self, request):
         """
@@ -122,7 +92,7 @@ class GameFramework:
             return utility.framework_error('invalid number of players')
 
         # create game session and add it to dictionary of active sessions:
-        session = self._GameSession(game_class(players), players)
+        session = GameSession(game_class(players), players)
         self._game_sessions[(game_name, token)] = session
 
         # get player ID:
@@ -284,7 +254,7 @@ class GameFramework:
         This function waits until the required number of players has joined the game or until the timeout is reached.
 
         Parameters:
-        session (_GameSession): game session
+        session (GameSession): game session
         """
         seconds = 0
         while not session.ready() and seconds < config.timeout:
@@ -302,8 +272,8 @@ class GameFramework:
         token (str): token
 
         Returns:
-        tuple(_GameSession, dict):
-            _GameSession: game session, None in case of an error
+        tuple(GameSession, dict):
+            GameSession: game session, None in case of an error
             dict: error message, if a problem occurred, None otherwise
         """
         # check if game session exists:

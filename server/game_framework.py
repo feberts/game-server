@@ -245,9 +245,9 @@ class GameFramework:
 
     def _watch(self, request):
         """
-        Request handler for joining a game session.TODO
+        Request handler for observing another player.
 
-        This function checks if a game session specified by the game's name and the token is already started and waiting for clients to join. After the required number of players has joined the game, the function sends the player ID back to the client who requested to join the game. If not enough players have joined the game before the timeout occurs, the requesting client is informed.TODO
+        To observe another player in the same game session, the observing client needs to know the ID of that player. This function retrieves that ID based on the player's name. This only works, if the player has supplied a name when joining the game session.
 
         Parameters:
         request (dict): request containing game name, token and player to be observed

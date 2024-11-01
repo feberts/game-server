@@ -84,9 +84,12 @@ class AbstractGame:
 
         This can be the complete state of the game, or just specific information for a specific player. What information is returned depends entirely on the game. In some games all information is available to all players, in other games players can possess information that is hidden from the others.
 
-        It is important to let the user of the API know how the dictionary is structured so he can access its content. See the documentation on how to add new games for more details.
+        It is important to let the user of the API know how the dictionary is structured, so its content can be accessed properly. See the documentation on how to add new games for more details.
 
-        The current player's ID does not need to be included in the dictionary. The framework will add it automatically as the value to a key named 'current'. This way, all players are aware of who's turn it is.
+        The framework will add additional data to the state after it is returned by this function. The following information is added:
+
+        - the current player's ID as returned by function current_player; the framework will add it automatically as the value to a key named 'current'; this way, all players are aware of who's turn it is
+        - TODO: a boolean value as returned by function gameover indicating whether the game has ended or is still active; the framework will add it automatically as the value to a key named 'gameover'
 
         Parameters:
         player_id (int): ID of the player requesting the state (no parameter check required)

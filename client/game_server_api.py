@@ -131,6 +131,7 @@ class GameServerAPI:
         This function lets one client observe another client. By providing the name of the player to be observed, you will receive the same data calling the state function as that player does. Moreover, this function will return the player ID of the observed player.
 
         When omitting the name, a special ID will be assigned, that is not a player ID. What data the state function returns in that case, depends on the implementation of the game. Refer to the documentation of a specific game to find out about the structure and content of the returned data, when calling the state function.
+        TODO feature wieder entfernen
 
         This function can only be called, after the specified game session has already been started.
 

@@ -1,14 +1,16 @@
 """
-Game base class.TODO
+Game session.
 
-This module provides a base class for games.TODO
+This module provides a class that contains all data associated with a specific game session.
 """
 
 import threading
 
-class GameSession: # TODO auslagern
+class GameSession:
     """
-    Wrapper class for game instances providing functionality for retrieving player IDs.
+    Class GameSession.
+    
+    This is a wrapper class for game instances providing functionality for retrieving player IDs.
     """
     def __init__(self, game_instance, players):
         self.game = game_instance
@@ -18,20 +20,41 @@ class GameSession: # TODO auslagern
         self._lock = threading.Lock()
 
     def next_id(self, player_name): # IDs assigned to clients joining the game
+        """
+        Returning a player ID.
+
+        This function returns a new ID for each player joining a game session. If a none empty string is passed as the player name, this name together with the assigned ID will be added to a dictionary.
+
+        Parameters:
+        player_name (str): player name, can be an empty string
+
+        Returns:
+        int: player ID
+        """
         with self._lock:
-            #TODO prüfen ob name schon vergeben
             # player ID:
             player_id = self._next_id
             self._next_id = self._next_id + 1
+            
             # associate player name with ID:
             if player_name != '':
                 self._player_names[player_name] = player_id
+                
             return player_id
 
-    def ready(self): # ready when all players have joined the game
+    def ready(self):
+        """
+        Game session is ready to start as soon as all players have joined the game.
+        """
         return self._number_of_players == self._next_id
     
-    def player_id(self, player_name):#TODO kommentar TODO umbenennen
+    def player_id(self, player_name):#TODO umbenennen
+        """
+        Return player ID by name.
+        
+        This function returns the ID that is assigned to the passed player name.
+        """
         if not player_name in self._player_names:
             return None, 'no such player'
+
         return self._player_names[player_name], None

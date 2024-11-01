@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Tic-tac-toe observer client.
+Tic-tac-toe observer client.TODO
 
-This program starts a tic-tac-toe client in observation mode.
+This program starts a tic-tac-toe client in observation mode.TODO
 """
 
 from game_server_api import GameServerAPI

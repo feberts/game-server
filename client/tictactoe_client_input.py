@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Tic-tac-toe input client.
+Tic-tac-toe input client.TODO
 
 This program connects to the game server to play tic-tac-toe against another client. If you want to test it on a single machine, just run this program twice in separate shells.TODO
 """

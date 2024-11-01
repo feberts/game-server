@@ -16,10 +16,9 @@ To perform these actions, the framework calls the corresponding methods of a gam
 import time
 
 import config
+import games
+import game_session
 import utility
-
-from tictactoe import TicTacToe
-from game_session import GameSession
 
 class GameFramework:
     """
@@ -29,7 +28,7 @@ class GameFramework:
     """
 
     def __init__(self):
-        self._game_classes = [TicTacToe] # list of available games TODO auslagern
+        self._game_classes = games.available_games
         self._game_classes_by_name = {} # game name -> game class
         self._game_sessions = {} # (game name, token) -> game session
         self._build_game_class_dict()
@@ -92,7 +91,7 @@ class GameFramework:
             return utility.framework_error('invalid number of players')
 
         # create game session and add it to dictionary of active sessions:
-        session = GameSession(game_class(players), players)
+        session = game_session.GameSession(game_class(players), players)
         self._game_sessions[(game_name, token)] = session
 
         # get player ID:

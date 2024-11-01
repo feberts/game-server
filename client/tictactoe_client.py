@@ -54,7 +54,7 @@ while not state['gameover']:
             else: break
     else:
         print("Opponent's turn ...")
-        time.sleep(1)
+        time.sleep(0.5)
 
     state, err = game.state()
     if err: fatal(err)

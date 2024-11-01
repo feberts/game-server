@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Tic-tac-toe observer.
+Tic-tac-toe observer client.
 
-This program starts a tic-tac-toe client in global observation mode.
+This program starts a tic-tac-toe client in observation mode.
 """
 
 from game_server_api import GameServerAPI
@@ -24,7 +24,7 @@ def fatal(msg):
 game = GameServerAPI()
 
 # observe game:
-observed_id, err = game.watch(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
+observed_id, err = game.watch(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', name='bob')
 if err: fatal(err)
 
 state, err = game.state()
@@ -32,7 +32,12 @@ if err: fatal(err)
 
 while not state['gameover']:
     print_board(state['board'])
-    print(f"Player {symbols[state['current']]}'s turn")
+
+    if state['current'] == observed_id: # my turn
+        print(f'Your ({symbols[observed_id]}) turn')
+    else:
+        print("Opponent's turn ...")
+
     state, err = game.state()
     if err: fatal(err)
     time.sleep(0.5)
@@ -42,5 +47,7 @@ winner = state['winner']
 
 if winner == None:
     print('No winner...')
+elif winner == observed_id:
+    print(f'You ({symbols[observed_id]}) win!')
 else:
-    print(f'Player {symbols[winner]} wins!')
+    print(f'You ({symbols[observed_id]}) lose...')

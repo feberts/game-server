@@ -53,7 +53,7 @@ while not state['gameover']:
             if err: print(err)
             else: break
     else:
-        print('Opponents turn ...')
+        print("Opponent's turn ...")
         time.sleep(1)
 
     state, err = game.state()
@@ -65,6 +65,6 @@ winner = state['winner']
 if winner == None:
     print('No winner...')
 elif winner == my_id:
-    print(f'You ({symbols[my_id]}) won!')
+    print(f'You ({symbols[my_id]}) win!')
 else:
-    print(f'You ({symbols[my_id]}) lost...')
+    print(f'You ({symbols[my_id]}) lose...')

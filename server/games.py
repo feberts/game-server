@@ -1,7 +1,7 @@
 """
-Game base class.TODO
+Available games.
 
-This module provides a base class for games.TODO
+Every new game must be added to this list.
 """
 
 from tictactoe import TicTacToe

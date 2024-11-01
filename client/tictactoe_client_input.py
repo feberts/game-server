@@ -8,10 +8,10 @@ This program joins a game as an active player and submits moves. It must be used
 from game_server_api import GameServerAPI
 import time
 
-def user_input(player_id):
+def user_input():
     while True:
         try:
-            return int(input(f'\nYour turn: '))
+            return int(input('Input: '))
         except KeyboardInterrupt:
             exit()
         except:
@@ -34,12 +34,13 @@ if err: # no game started yet
 state, err = game.state()
 if err: fatal(err)
 
-while not state['gameover']:
-    if state['current'] == my_id: # my turn
-        pos = user_input(my_id)
-        err = game.move(position=pos)
-        if err: print(err)
+while True:
+    pos = user_input()
+    err = game.move(position=pos)
+    if err: print(err)
 
-    time.sleep(0.5)
     state, err = game.state()
     if err: fatal(err)
+    if state['gameover']: break
+
+print('End')

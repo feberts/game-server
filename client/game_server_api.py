@@ -148,6 +148,7 @@ class GameServerAPI:
         AssertionError: for invalid arguments
         """
         self._process_args(server, port, game, token, name)
+        assert name != '', 'Invalid argument: name'
 
         response, err = self._send({'type':'watch', 'game':game, 'token':token, 'name':name})
 

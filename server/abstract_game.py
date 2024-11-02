@@ -12,8 +12,7 @@ class AbstractGame:
 
     In some cases, the framework performs checks before it calls a method. In such a case, it can be assumed, that the argument passed is valid. Refer to the method descriptions to see which parameters this may apply to.
 
-    None of the methods may raise exceptions. If this happens anyway, the framework will catch the exception to prevent the server from crashing, log this event and report a generic error message back to the client, but it will also stop the execution of that game.
-    TODO delete game instance if an exception was raised by that game instance
+    None of the methods may raise exceptions. If this happens anyway, the framework will catch the exception to prevent the server from crashing, log this event and report a generic error message back to the client.
     """
 
     def __init__(self, players):

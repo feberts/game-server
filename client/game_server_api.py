@@ -105,6 +105,7 @@ class GameServerAPI:
         str: error message, if a problem occurred, None otherwise
         """
         if self._player_id == None: return self._api_error('start or join a game first')[1]
+        if self._watch_mode: return self._api_error('cannot submit moves in watch mode')[1]
 
         _, err = self._send({'type':'move', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'move':kwargs})
 
@@ -160,6 +161,7 @@ class GameServerAPI:
 
         if err: return None, err
         self._player_id = response['player_id']
+        self._watch_mode = True
 
         return self._player_id, None
 
@@ -260,6 +262,7 @@ class GameServerAPI:
         self._game = None
         self._token = None
         self._player_id = None
+        self._watch_mode = False
 
         # server:
         self._server = None

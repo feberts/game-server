@@ -167,7 +167,7 @@ class GameFramework:
         if err: # no such game or game session
             return err
 
-        game = session.game
+        game = session.get_game()
         
         # check if game is still active:
         if game.game_over():
@@ -206,7 +206,7 @@ class GameFramework:
         if err: # no such game or game session
             return err
 
-        game = session.game
+        game = session.get_game()
 
         # retrieve the game state:
         state = game.state(player_id)

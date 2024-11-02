@@ -13,7 +13,7 @@ class GameSession:
     This is a wrapper class for game instances providing functionality for retrieving player IDs.
     """
     def __init__(self, game_instance, players):
-        self.game = game_instance
+        self._game = game_instance
         self._number_of_players = players
         self._next_id = 0
         self._player_names = {} # player name -> ID
@@ -66,3 +66,7 @@ class GameSession:
             return None, 'no such player'
 
         return self._player_names[player_name], None
+
+    def get_game(self):
+        #TODO epoch aktualisieren
+        return self._game

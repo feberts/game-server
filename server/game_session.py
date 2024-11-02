@@ -5,6 +5,7 @@ This module provides a class that contains all data associated with a specific g
 """
 
 import threading
+import time
 
 class GameSession:
     """
@@ -18,6 +19,7 @@ class GameSession:
         self._next_id = 0
         self._player_names = {} # player name -> ID
         self._lock = threading.Lock()
+        self.last_access = time.time()
 
     def next_id(self, player_name): # IDs assigned to clients joining the game
         """
@@ -68,5 +70,5 @@ class GameSession:
         return self._player_names[player_name], None
 
     def get_game(self):
-        #TODO epoch aktualisieren
+        self.last_access = time.time()
         return self._game

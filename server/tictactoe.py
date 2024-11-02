@@ -29,7 +29,6 @@ class TicTacToe(AbstractGame):
 
         Dictionary keys and values:
         'board'    : integer list of size 9, values: -1 = empty; 0 or 1 = player
-        'gameover' : True if game has ended, else False
         'winner'   : player ID, or None if there is no winner
 
         Parameters:
@@ -38,16 +37,7 @@ class TicTacToe(AbstractGame):
         Returns:
         dict: game state
         """
-        return {'board':self._state.board, 'gameover':self._state.gameover, 'winner':self._state.winner}
-
-    def current_player(self): # override
-        """
-        Returns the current player's ID.
-
-        Returns:
-        int: current player's ID
-        """
-        return self._state.current
+        return {'board':self._state.board, 'winner':self._state.winner}
 
     def move(self, args): # override
         """
@@ -108,6 +98,12 @@ class TicTacToe(AbstractGame):
         """
         if -1 not in self._state.board:
             self._state.gameover = True
+
+    def current_player(self): # override
+        return self._state.current
+
+    def game_over(self): # override
+        return self._state.gameover
 
     def min_players(): # override
         return 2

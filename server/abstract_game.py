@@ -78,6 +78,17 @@ class AbstractGame:
         """
         raise NotImplementedError
 
+    def game_over(self):
+        """
+        Returns the game status.
+
+        A boolean value is returned indicating whether the game has ended or is still active.
+
+        Returns:
+        bool: True, if game has ended, else False
+        """
+        raise NotImplementedError
+
     def state(self, player_id):
         """
         Returns the game state as a dictionary.
@@ -89,7 +100,7 @@ class AbstractGame:
         The framework will add additional data to the state after it is returned by this function. The following information is added:
 
         - the current player's ID as returned by function current_player; the framework will add it automatically as the value to a key named 'current'; this way, all players are aware of who's turn it is
-        - TODO: a boolean value as returned by function gameover indicating whether the game has ended or is still active; the framework will add it automatically as the value to a key named 'gameover'
+        - a boolean value as returned by function game_over indicating whether the game has ended or is still active; the framework will add it automatically as the value to a key named 'gameover'
 
         Parameters:
         player_id (int): ID of the player requesting the state (no parameter check required)

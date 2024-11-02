@@ -207,8 +207,9 @@ class GameFramework:
         # retrieve the game state:
         state = game.state(player_id)
 
-        # add current player's ID:
+        # add current player's ID and game status:
         state['current'] = game.current_player()
+        state['gameover'] = game.game_over()
 
         return self._return_data(state)
 

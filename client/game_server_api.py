@@ -53,6 +53,7 @@ class GameServerAPI:
 
         if err: return None, err
         self._player_id = response['player_id']
+        self._request_size_max = response['request_size_max']
 
         return self._player_id, None
 
@@ -87,6 +88,7 @@ class GameServerAPI:
 
         if err: return None, err
         self._player_id = response['player_id']
+        self._request_size_max = response['request_size_max']
 
         return self._player_id, None
 
@@ -165,7 +167,7 @@ class GameServerAPI:
         """
         Send data to the server and receive its response.
 
-        This function sends data to the server and returns the data sent back by it. The data is sent in JSON format. Make sure, that the passed dictionary's content is compatible with JSON.
+        This function sends data to the server and returns the data sent back by it. The data is sent in JSON format. Make sure, that the passed dictionary's content is compatible with JSON. Before sending data, this function checks if the request exceeds the size limit. A default value for that limit is defined by this class. It is updated with a value transmitted by the server after starting or joining a game.
 
         Parameters:
         data (dict): data to be sent to the server
@@ -265,4 +267,4 @@ class GameServerAPI:
 
         # connections:
         self._buffer_size = 4096 # bytes
-        self._request_size_max = int(1e6) # bytes
+        self._request_size_max = int(1e6) # bytes (updated after starting/joining a game)

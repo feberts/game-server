@@ -106,7 +106,7 @@ class GameFramework:
 
         self._log_game_sessions()
 
-        return self._return_data({'player_id':player_id})
+        return self._return_data({'player_id':player_id, 'request_size_max':config.receive_size_max})
 
     def _join_game(self, request):
         """
@@ -142,7 +142,7 @@ class GameFramework:
         if not session.ready(): # timeout reached
             return utility.framework_error('timeout while waiting for others to join')
 
-        return self._return_data({'player_id':player_id})
+        return self._return_data({'player_id':player_id, 'request_size_max':config.receive_size_max})
 
     def _move(self, request):
         """

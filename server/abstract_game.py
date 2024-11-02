@@ -82,7 +82,7 @@ class AbstractGame:
         """
         Returns the game status.
 
-        A boolean value is returned indicating whether the game has ended or is still active.
+        A boolean value is returned indicating whether the game has ended or is still active. After the game has ended, the framework makes sure that moves can no longer be submitted.
 
         Returns:
         bool: True, if game has ended, else False

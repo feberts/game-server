@@ -168,6 +168,10 @@ class GameFramework:
             return err
 
         game = session.game
+        
+        # check if game is still active:
+        if game.game_over():
+            return utility.framework_error('game has ended')
 
         # check if it is the client's turn:
         if game.current_player() != player_id:

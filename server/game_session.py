@@ -70,5 +70,8 @@ class GameSession:
         return self._player_names[player_name], None
 
     def get_game(self):
+        """
+        Return game instance and update time of last access.
+        """
         self.last_access = time.time()
         return self._game

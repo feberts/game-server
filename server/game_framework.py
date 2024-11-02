@@ -13,6 +13,7 @@ TODO sind weitere neu hinzugekommen?
 To perform these actions, the framework calls the corresponding methods of a game class instance.
 """
 
+import threading
 import time
 
 import config
@@ -32,6 +33,7 @@ class GameFramework:
         self._game_classes_by_name = {} # game name -> game class
         self._game_sessions = {} # (game name, token) -> game session
         self._build_game_class_dict()
+        self._start_clean_up()
 
     def _build_game_class_dict(self):
         """
@@ -66,7 +68,7 @@ class GameFramework:
         """
         Request handler for starting a game session.
 
-        This function instantiates the requested game and adds it to the list of active game sessions. After the required number of players has joined the game, the function sends the player ID back to the client who requested the start of the game. If not enough players have joined the game before the timeout occurs, the game session is deleted and the requesting client is informed.
+        This function instantiates the requested game and adds it to the list of active game sessions. After the required number of players has joined the game, the function sends the player ID back to the client who requested the start of the game. If not enough players have joined the game before the timeout occurs, the game session is deleted and the requesting client is informed. A repeated call of this function will end the previous game session.
 
         Parameters:
         request (dict): request containing game name, token and number of players
@@ -295,7 +297,31 @@ class GameFramework:
         """
         Print active games.
         """
-        log = 'Game sessions (game:token:players):\n'
+        log = 'Game sessions (game:token):\n'
         for (game_name, token), session in self._game_sessions.items():
-            log += f'{game_name}:{token}:{session._number_of_players}\n'
+            log += f'{game_name}:{token}\n'
         print(log)
+
+    def _start_clean_up(self):
+        """
+        Starting the clean up function in a separate thread.
+        """
+        threading.Thread(target=self._clean_up, args=(), daemon=True).start()
+        
+    def _clean_up(self):
+        """
+        Deleting inactive game sessions after a defined time span without read or write access.
+        """
+        while True:
+            time.sleep(config.timeout)
+
+            # mark sessions for deletion:
+            old_sessions = []
+            for (game_name, token), session in self._game_sessions.items():
+                if session.last_access + config.timeout < time.time():
+                    old_sessions.append((game_name, token))
+
+            # delete old sessions:
+            for (game_name, token) in old_sessions:
+                del self._game_sessions[(game_name, token)]
+                print(f'Deleting session {game_name}:{token}')

@@ -51,4 +51,4 @@ threading.Thread(target=client_watch, args=(), daemon=True).start()
 #for _ in range(players):
     #threading.Thread(target=client_join, args=(), daemon=True).start()
 
-time.sleep(2)
+time.sleep(5)

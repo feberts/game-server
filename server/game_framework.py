@@ -238,11 +238,8 @@ class GameFramework:
             return utility.framework_error('game has not yet started')
 
         # get player ID:
-        if player_name == '':
-            player_id = -1
-        else:
-            player_id, err = session.get_id(player_name)
-            if err: return utility.framework_error(err)
+        player_id, err = session.get_id(player_name)
+        if err: return utility.framework_error(err)
 
         return self._return_data({'player_id':player_id})
 

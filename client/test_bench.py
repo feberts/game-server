@@ -14,33 +14,33 @@ players = 2
 
 def client_start():
     api = GameServerAPI()
-    my_id, err = api.start_game(server='127.0.0.1', port=4711, game=game, token=token, players=players, name='bob')
+    my_id, err = api.start_game(server='127.0.0.1', port=4711, game=game, token=token, players=players, name='Bob')
 
     if err:
         print(err)
         exit()
 
-    print('Player ID:', my_id)
+    print('Player ID Bob:', my_id)
 
 def client_join():
     api = GameServerAPI()
-    my_id, err = api.join_game(server='127.0.0.1', port=4711, game=game, token=token, name='alice')
+    my_id, err = api.join_game(server='127.0.0.1', port=4711, game=game, token=token, name='Alice')
 
     if err:
         print(err)
         exit()
 
-    print('Player ID:', my_id)
+    print('Player ID Alice:', my_id)
 
 def client_watch():
     api = GameServerAPI()
-    my_id, err = api.watch(server='127.0.0.1', port=4711, game=game, token=token, name='alice')
+    my_id, err = api.watch(server='127.0.0.1', port=4711, game=game, token=token, name='Bob')
 
     if err:
         print(err)
         exit()
 
-    print('Player ID:', my_id)
+    print('Observed ID:', my_id)
 
 threading.Thread(target=client_start, args=(), daemon=True).start()
 time.sleep(0.1)

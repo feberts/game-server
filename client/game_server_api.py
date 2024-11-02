@@ -102,6 +102,8 @@ class GameServerAPI:
         Returns:
         str: error message, if a problem occurred, None otherwise
         """
+        if not self._player_id: return self._api_error('start or join a game first')[1]
+
         _, err = self._send({'type':'move', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'move':kwargs})
 
         if err: return err
@@ -119,6 +121,8 @@ class GameServerAPI:
             dict: game state if state could be retrieved, else None
             str: error message, if a problem occurred, None otherwise
         """
+        if not self._player_id: return self._api_error('start or join a game first')
+
         state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id})
         if err: return None, err
 

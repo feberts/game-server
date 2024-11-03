@@ -21,30 +21,7 @@ import games
 import game_session
 import utility
 
-class FrameworkLogger:
-    """
-    Logging framework information.
-    """
-    def __init__(self):
-        self._old_message = ''
-        self._count = 1
-
-    def info(self, message):
-        if config.log_framework_info: print(f'{message}')
-
-    def request(self, message):
-        if config.log_framework_request:
-            if message != self._old_message:
-                if self._count > 1: print('')
-                print(f'Request: {message}')
-                self._old_message = message
-                self._count = 1
-            else:
-                # do not log identical consecutive request, print count instead:
-                self._count = self._count + 1
-                print('\r', self._count, end='', flush=True)
-
-log = FrameworkLogger()
+log = utility.FrameworkLogger()
 
 class GameFramework:
     """

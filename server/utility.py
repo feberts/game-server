@@ -4,6 +4,8 @@ Utility functions.
 This module provides various utility functions.
 """
 
+import config
+
 def generic_error(sender, message):
     """
     Create an error message.
@@ -71,3 +73,50 @@ def check_dict(d, expected):
             return f"value of key '{key_name}' must be of type {val_type}"
 
     return None
+
+class ServerLogger:
+    """
+    Logging server information.
+    
+    Use flags in config file to enable/disable logging.
+    """
+    def __init__(self, ip, port):
+        self._ip = ip
+        self._port = port
+
+    def error(self, message, prefix=''):
+        if config.log_server_errors:
+            self._log(message, prefix)
+
+    def info(self, message, prefix=''):
+        if config.log_server_info:
+            self._log(message, prefix)
+        
+    def _log(self, message, prefix):
+        print(f'{prefix}[{self._ip}:{self._port}] {message}')
+
+class FrameworkLogger:
+    """
+    Logging framework information.
+    
+    Use flags in config file to enable/disable logging.
+    """
+    def __init__(self):
+        self._old_message = ''
+        self._count = 1
+
+    def info(self, message):
+        if config.log_framework_info:
+            print(f'{message}')
+
+    def request(self, message):
+        if config.log_framework_request:
+            if message != self._old_message:
+                if self._count > 1: print('')
+                print(f'Request: {message}')
+                self._old_message = message
+                self._count = 1
+            else:
+                # do not log identical consecutive request, print count instead:
+                self._count = self._count + 1
+                print('\r', self._count, end='', flush=True)

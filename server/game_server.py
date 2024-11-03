@@ -19,22 +19,6 @@ framework = game_framework.GameFramework()
 class ClientDisconnect(Exception): pass
 class MessageSizeExceeded(Exception): pass
 
-class ServerLogger:
-    """
-    Logging server information.
-    """
-    def __init__(self, ip, port):
-        self._ip, self._port = ip, port
-
-    def error(self, message, prefix=''):
-        if config.log_server_errors: self._log(message, prefix)
-
-    def info(self, message, prefix=''):
-        if config.log_server_info: self._log(message, prefix)
-        
-    def _log(self, message, prefix):
-        print(f'{prefix}[{self._ip}:{self._port}] {message}')
-
 def handle_connection(conn, ip, port):
     """
     Handling a connection.
@@ -52,7 +36,7 @@ def handle_connection(conn, ip, port):
     client (str): client ip
     port (int): client port
     """
-    log = ServerLogger(ip, port)
+    log = utility.ServerLogger(ip, port)
     log.info('connection accepted', '\n')
 
     conn.settimeout(config.timeout)

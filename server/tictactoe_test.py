@@ -8,6 +8,7 @@ from tictactoe import TicTacToe
 symbols = ('x', 'o')
 
 def print_board(board):
+    print('\n' * 100)
     board = [i if board[i] == -1 else symbols[board[i]] for i in range(9)]
     print(f' {board[0]} | {board[1]} | {board[2]}', '---+---+---',
           f' {board[3]} | {board[4]} | {board[5]}', '---+---+---',

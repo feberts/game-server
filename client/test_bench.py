@@ -11,7 +11,7 @@ from game_server_api import GameServerAPI
 server = '127.0.0.1'
 port = 4711
 game = 'TicTacToe'
-token = 'mygame'
+token = 'mygame2'
 players = 2
 
 def client_start():

@@ -114,4 +114,4 @@ try:
             t = threading.Thread(target=handle_connection, args=(conn, ip, port), daemon=True)
             t.start()
 except KeyboardInterrupt:
-    pass
+    print('')

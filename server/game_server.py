@@ -11,17 +11,17 @@ import threading
 import traceback
 
 import config
-from game_framework import GameFramework
+import game_framework
 import utility
 
-framework = GameFramework()
+framework = game_framework.GameFramework()
 
 class ClientDisconnect(Exception): pass
 class MessageSizeExceeded(Exception): pass
 
-class Logger:
+class ServerLogger:
     """
-    Logging server output.
+    Logging server activities.
     """
     def __init__(self, ip, port):
         self._ip, self._port = ip, port
@@ -47,7 +47,7 @@ def handle_connection(conn, ip, port):
     port (int): client port
     """
     conn.settimeout(config.timeout)
-    l = Logger(ip, port)
+    l = ServerLogger(ip, port)
 
     try:
         try:
@@ -118,7 +118,7 @@ try:
             conn, client = sd.accept()
             ip, port = client
 
-            Logger(ip, port).log('connection accepted', '\n')
+            ServerLogger(ip, port).log('connection accepted', '\n')
 
             # handle connection in separate thread:
             t = threading.Thread(target=handle_connection, args=(conn, ip, port), daemon=True)

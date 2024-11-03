@@ -324,6 +324,7 @@ class GameFramework:
         """
         Print active games.
         """
+        if not config.log_framework_info: return
         msg = 'Sessions:'
         for (game_name, token), session in self._game_sessions.items():
             msg += f'\n{game_name}:{token}'

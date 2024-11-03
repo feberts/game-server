@@ -21,12 +21,18 @@ class MessageSizeExceeded(Exception): pass
 
 class ServerLogger:
     """
-    Logging server activities.
+    Logging server information.
     """
     def __init__(self, ip, port):
         self._ip, self._port = ip, port
 
-    def log(self, message, prefix=''):
+    def error(self, message, prefix=''):
+        self._log(message, prefix)
+
+    def info(self, message, prefix=''):
+        self._log(message, prefix)
+        
+    def _log(self, message, prefix=''):
         print(f'{prefix}[{self._ip}:{self._port}] {message}')
 
 def handle_connection(conn, ip, port):
@@ -46,8 +52,10 @@ def handle_connection(conn, ip, port):
     client (str): client ip
     port (int): client port
     """
+    log = ServerLogger(ip, port)
+    log.info('connection accepted', '\n')
+
     conn.settimeout(config.timeout)
-    l = ServerLogger(ip, port)
 
     try:
         try:
@@ -63,37 +71,37 @@ def handle_connection(conn, ip, port):
 
             if not len(request): raise ClientDisconnect
 
-            l.log(f'received {len(request)} bytes from client')
+            log.info(f'received {len(request)} bytes from client')
             request = str(request, 'utf-8')
             request = json.loads(request)
-            l.log(f'received from client:\n{request}')
+            log.info(f'received from client:\n{request}')
 
             # pass request to the framework:
             try:
                 response = framework.handle_request(request)
             except:
-                l.log('unexpected exception in the framework:\n' + traceback.format_exc())
+                log.error('unexpected exception in the framework:\n' + traceback.format_exc())
                 response = utility.framework_error('internal error')
 
         except MessageSizeExceeded:
-            l.log('message size exceeded by client')
+            log.error('message size exceeded by client')
             response = utility.server_error('too much data sent')
         except socket.timeout:
-            l.log('connection timed out on server')
+            log.error('connection timed out on server')
             response = utility.server_error('connection timed out')
         except ClientDisconnect:
-            l.log('disconnect by client')
+            log.error('disconnect by client')
             response = None
         except json.decoder.JSONDecodeError:
-            l.log('corrupt data received from client')
+            log.error('corrupt data received from client')
             response = utility.server_error('received corrupt data')
         except:
-            l.log('unexpected exception on server:\n' + traceback.format_exc())
+            log.error('unexpected exception on server:\n' + traceback.format_exc())
             response = utility.server_error('internal error')
 
         # send response to client:
         if response:
-            l.log(f'responding to client:\n{response}')
+            log.info(f'responding to client:\n{response}')
             response = json.dumps(response)
             response = bytes(response, 'utf-8')
             conn.sendall(response)
@@ -101,7 +109,7 @@ def handle_connection(conn, ip, port):
     finally:
         # close connection:
         conn.close()
-        l.log('connection closed by server')
+        log.info('connection closed by server')
 
 # start the server:
 try:
@@ -117,8 +125,6 @@ try:
             # accept a connection:
             conn, client = sd.accept()
             ip, port = client
-
-            ServerLogger(ip, port).log('connection accepted', '\n')
 
             # handle connection in separate thread:
             t = threading.Thread(target=handle_connection, args=(conn, ip, port), daemon=True)

@@ -66,7 +66,11 @@ class GameFramework:
 
         log.request(request)
 
-        return handlers[request['type']](request)
+        response = handlers[request['type']](request)
+
+        log.response(response)
+
+        return response
 
     def _start_game(self, request):
         """

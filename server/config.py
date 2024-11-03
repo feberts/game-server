@@ -19,3 +19,4 @@ log_server_info = False
 log_server_errors = True
 log_framework_info = True
 log_framework_request = True
+log_framework_response = True

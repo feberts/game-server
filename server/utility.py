@@ -102,21 +102,28 @@ class FrameworkLogger:
     Use flags in config file to enable/disable logging.
     """
     def __init__(self):
-        self._old_message = ''
-        self._count = 1
-
+        self._old_request = ''
+        self._old_response = ''
+        self._request_count = 1
+        
     def info(self, message):
         if config.log_framework_info:
             print(f'{message}')
 
     def request(self, message):
         if config.log_framework_request:
-            if message != self._old_message:
-                if self._count > 1: print('')
-                print(f'Request: {message}')
-                self._old_message = message
-                self._count = 1
+            if message != self._old_request:
+                if self._request_count > 1: print('')
+                print(f'Request:  {message}')
+                self._old_request = message
+                self._request_count = 1
             else:
                 # do not log identical consecutive request, print count instead:
-                self._count = self._count + 1
-                print('\r', self._count, end='', flush=True)
+                self._request_count = self._request_count + 1
+                print('\r', self._request_count, end='', flush=True)
+
+    def response(self, message):
+        if config.log_framework_response:
+            if message != self._old_response:# or self._request_count == 1:
+                print(f'Response: {message}')
+                self._old_response = message

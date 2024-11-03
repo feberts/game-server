@@ -29,7 +29,7 @@ game = TicTacToe(2)
 current = game.current_player()
 state = game.state(current)
 
-while not state['gameover']:
+while not game.game_over():
     print_board(state['board'])
 
     while True:

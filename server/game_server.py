@@ -27,12 +27,12 @@ class ServerLogger:
         self._ip, self._port = ip, port
 
     def error(self, message, prefix=''):
-        self._log(message, prefix)
+        if config.log_server_errors: self._log(message, prefix)
 
     def info(self, message, prefix=''):
-        self._log(message, prefix)
+        if config.log_server_info: self._log(message, prefix)
         
-    def _log(self, message, prefix=''):
+    def _log(self, message, prefix):
         print(f'{prefix}[{self._ip}:{self._port}] {message}')
 
 def handle_connection(conn, ip, port):

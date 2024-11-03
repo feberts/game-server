@@ -8,13 +8,15 @@ import time
 
 from game_server_api import GameServerAPI
 
+server = '127.0.0.1'
+port = 4711
 game = 'TicTacToe'
 token = 'mygame'
 players = 2
 
 def client_start():
     api = GameServerAPI()
-    my_id, err = api.start_game(server='127.0.0.1', port=4711, game=game, token=token, players=players, name='Bob')
+    my_id, err = api.start_game(server=server, port=port, game=game, token=token, players=players, name='Bob')
 
     if err:
         print(err)
@@ -24,7 +26,7 @@ def client_start():
 
 def client_join():
     api = GameServerAPI()
-    my_id, err = api.join_game(server='127.0.0.1', port=4711, game=game, token=token, name='Alice')
+    my_id, err = api.join_game(server=server, port=port, game=game, token=token, name='Alice')
 
     if err:
         print(err)
@@ -34,7 +36,7 @@ def client_join():
 
 def client_watch():
     api = GameServerAPI()
-    my_id, err = api.watch(server='127.0.0.1', port=4711, game=game, token=token, name='Alice')
+    my_id, err = api.watch(server=server, port=port, game=game, token=token, name='Alice')
 
     if err:
         print(err)
@@ -51,4 +53,4 @@ threading.Thread(target=client_watch, args=(), daemon=True).start()
 #for _ in range(players):
     #threading.Thread(target=client_join, args=(), daemon=True).start()
 
-time.sleep(5)
+time.sleep(1)

@@ -25,10 +25,26 @@ class FrameworkLogger:
     """
     Logging framework information.
     """
-    def info(self, message, prefix=''):
-        if config.log_framework_info: print(f'{prefix}{message}')
+    def __init__(self):
+        self._old_message = ''
+        self._count = 1
 
-log = FrameworkLogger();
+    def info(self, message):
+        if config.log_framework_info: print(f'{message}')
+
+    def request(self, message):
+        if config.log_framework_request:
+            if message != self._old_message:
+                if self._count > 1: print('')
+                print(f'Request: {message}')
+                self._old_message = message
+                self._count = 1
+            else:
+                # do not log identical consecutive request, print count instead:
+                self._count = self._count + 1
+                print('\r', self._count, end='', flush=True)
+
+log = FrameworkLogger()
 
 class GameFramework:
     """
@@ -70,6 +86,8 @@ class GameFramework:
 
         if request['type'] not in handlers:
             return utility.framework_error('invalid request type')
+
+        log.request(request)
 
         return handlers[request['type']](request)
 

@@ -17,3 +17,4 @@ game_start_poll_interval = 0.1 # seconds
 # logging:
 log_server_errors = True
 log_server_info = False
+log_framework_info = True

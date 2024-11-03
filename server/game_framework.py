@@ -21,6 +21,15 @@ import games
 import game_session
 import utility
 
+class FrameworkLogger:
+    """
+    Logging framework information.
+    """
+    def info(self, message, prefix=''):
+        if config.log_framework_info: print(f'{prefix}{message}')
+
+log = FrameworkLogger();
+
 class GameFramework:
     """
     Class GameFramework.
@@ -106,7 +115,7 @@ class GameFramework:
             del self._game_sessions[(game_name, token)] # remove game session
             return utility.framework_error('timeout while waiting for others to join')
 
-        self._log_game_sessions()
+        self._log_sessions()
 
         return self._return_data({'player_id':player_id, 'request_size_max':config.receive_size_max})
 
@@ -293,14 +302,14 @@ class GameFramework:
         """
         return {'status':'ok', 'data':data}
 
-    def _log_game_sessions(self):
+    def _log_sessions(self):
         """
         Print active games.
         """
-        log = 'Game sessions (game:token):\n'
+        msg = 'Sessions:'
         for (game_name, token), session in self._game_sessions.items():
-            log += f'{game_name}:{token}\n'
-        print(log)
+            msg += f'\n{game_name}:{token}'
+        log.info(msg)
 
     def _start_clean_up(self):
         """
@@ -324,4 +333,4 @@ class GameFramework:
             # delete old sessions:
             for (game_name, token) in old_sessions:
                 del self._game_sessions[(game_name, token)]
-                print(f'Deleting session {game_name}:{token}')
+                log.info(f'Deleting session {game_name}:{token}')

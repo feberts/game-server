@@ -33,23 +33,23 @@ def fatal(msg):
 game = TicTacToeAPI()
 
 # join game:
-my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
+my_id, err = game.join_game(token='mygame', name='herbert')
 
 if err: # no game started yet
     # start new game:
-    my_id, err = game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
+    my_id, err = game.start_game(token='mygame')
     if err: fatal(err)
 
 state, err = game.state()
 if err: fatal(err)
 
-while not state['gameover']:
-    print_board(state['board'])
+while not state.gameover:
+    print_board(state.board)
 
-    if state['current'] == my_id: # my turn
+    if state.current == my_id: # my turn
         while True:
             pos = user_input(f'\nYour ({symbols[my_id]}) turn: ')
-            err = game.move(position=pos)
+            err = game.move(pos)
             if err: print(err)
             else: break
     else:
@@ -59,8 +59,8 @@ while not state['gameover']:
     state, err = game.state()
     if err: fatal(err)
 
-print_board(state['board'])
-winner = state['winner']
+print_board(state.board)
+winner = state.winner
 
 if winner == None:
     print('No winner...')

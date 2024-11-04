@@ -115,7 +115,9 @@ class FrameworkLogger:
         if config.log_framework_info:
             if self._request_count > 1: print('')
             print(f'{message}')
-            self._reset()
+            #self._old_request = '' # NEU
+            self._reset() # NEU
+            #self._reset()
 
     def request(self, message):
         if config.log_framework_request:
@@ -131,6 +133,11 @@ class FrameworkLogger:
 
     def response(self, message):
         if config.log_framework_response:
-            if message != self._old_response or self._request_count == 1:
+            if message != self._old_response:# or self._request_count == 1:
+                if self._request_count > 1: print('')
                 print(f'Response: {message}')
                 self._old_response = message
+                self._old_request = '' # NEU
+                #self._reset() # NEU
+                #self._reset()
+                self._request_count = 1

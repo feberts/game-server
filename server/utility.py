@@ -1,7 +1,7 @@
 """
-Utility functions.
+Utility.
 
-This module provides various utility functions.
+This module provides various utility functions and classes.
 """
 
 import config
@@ -78,19 +78,19 @@ class ServerLogger:
     """
     Logging server information.
     
-    Use flags in config file to enable/disable logging.
+    The log level can be set in the config file. It is recommended to log errors only, as the info log is very verbose. It prints detailed information about every single connection and is only useful for debugging TCP connections.
     """
-    def __init__(self, ip, port):
-        self._ip = ip
-        self._port = port
+    def info(self, message, prefix=''):
+        if config.log_server_info:
+            self._log(message, prefix)
 
     def error(self, message, prefix=''):
         if config.log_server_errors:
             self._log(message, prefix)
 
-    def info(self, message, prefix=''):
-        if config.log_server_info:
-            self._log(message, prefix)
+    def __init__(self, ip, port):
+        self._ip = ip
+        self._port = port
         
     def _log(self, message, prefix):
         print(f'{prefix}[{self._ip}:{self._port}] {message}')
@@ -99,10 +99,58 @@ class FrameworkLogger:
     """
     Logging framework information.
     
-    TODO comment
-    
-    Use flags in config file to enable/disable logging.
+    The log level can be set in the config file.
     """
+    def info(self, message):
+        """
+        Log framework actions.
+        
+        To be used to log actions initiated by the framework.
+
+        Parameters:
+        message (str): message
+        """
+        if config.log_framework_info:
+            if self._request_count > 1: print('')
+            print(f'{message}')
+            self._reset()
+
+    def request(self, request):
+        """
+        Log client requests.
+
+        Identical repeating request are not logged; a count is printed instead.
+        
+        Parameters:
+        request (dict): client request
+        """
+        if config.log_framework_request:
+            if request != self._old_request:
+                if self._request_count > 1: print('')
+                print(f'Request:  {request}')
+                self._old_request = request
+                self._request_count = 1
+            else:
+                self._request_count = self._request_count + 1
+                print(f'\rx{self._request_count} ', end='', flush=True)
+
+    def response(self, response):
+        """
+        Log server responses.
+        
+        Identical responses to repeated requests are logged only once. If no response is printed, it can be assumed that the same response was sent back as for the last request.
+
+        Parameters:
+        response (dict): server response
+        """
+        if config.log_framework_response:
+            if response != self._old_response:# or self._request_count == 1:
+                if self._request_count > 1: print('')
+                print(f'Response: {response}')
+                self._old_response = response
+                self._old_request = ''
+                self._request_count = 1
+
     def __init__(self):
         self._reset()
 
@@ -110,34 +158,3 @@ class FrameworkLogger:
         self._old_request = ''
         self._old_response = ''
         self._request_count = 1
-
-    def info(self, message):
-        if config.log_framework_info:
-            if self._request_count > 1: print('')
-            print(f'{message}')
-            #self._old_request = '' # NEU
-            self._reset() # NEU
-            #self._reset()
-
-    def request(self, message):
-        if config.log_framework_request:
-            if message != self._old_request:
-                if self._request_count > 1: print('')
-                print(f'Request:  {message}')
-                self._old_request = message
-                self._request_count = 1
-            else:
-                # do not log identical repeating request, print count instead:
-                self._request_count = self._request_count + 1
-                print(f'\rx{self._request_count} ', end='', flush=True)
-
-    def response(self, message):
-        if config.log_framework_response:
-            if message != self._old_response:# or self._request_count == 1:
-                if self._request_count > 1: print('')
-                print(f'Response: {message}')
-                self._old_response = message
-                self._old_request = '' # NEU
-                #self._reset() # NEU
-                #self._reset()
-                self._request_count = 1

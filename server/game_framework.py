@@ -34,6 +34,11 @@ class GameFramework:
         self._game_classes = games.available_games
         self._game_classes_by_name = {} # game name -> game class
         self._game_sessions = {} # (game name, token) -> game session
+        self._handlers = {'start_game':self._start_game,
+                          'join_game':self._join_game,
+                          'move':self._move,
+                          'state':self._state,
+                          'watch':self._watch}
         self._build_game_class_dict()
         self._start_clean_up()
 
@@ -58,16 +63,12 @@ class GameFramework:
         """
         if 'type' not in request:
             return utility.framework_error("key 'type' of type str missing")
-
-        handlers = {'start_game':self._start_game, 'join_game':self._join_game, 'move':self._move, 'state':self._state, 'watch':self._watch}
-
-        if request['type'] not in handlers:
+        if request['type'] not in self._handlers:
             return utility.framework_error('invalid request type')
 
         log.request(request)
 
-        response = handlers[request['type']](request)
-
+        response = self._handlers[request['type']](request)
         log.response(response)
 
         return response

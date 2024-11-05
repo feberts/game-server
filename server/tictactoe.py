@@ -5,6 +5,7 @@ This module provides a tic-tac-toe implementation to be executed by the framewor
 """
 
 from abstract_game import AbstractGame
+import random
 
 class TicTacToe(AbstractGame):
     """
@@ -16,7 +17,7 @@ class TicTacToe(AbstractGame):
     class _State:
         def __init__(self):
             self.board = [-1] * 9
-            self.current = 0
+            self.current = random.randint(0, 1)
             self.gameover = False
             self.winner = None
 

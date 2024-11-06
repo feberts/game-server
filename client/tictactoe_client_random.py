@@ -22,7 +22,7 @@ def fatal(msg):
 while True:
     time.sleep(0.1) # TODO entfernen bzw. Einfluss auf Geschw. beim KI-Training messen
     game = GameServerAPI()
-    my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame') # TODO token ändern
+    my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='learn') # TODO token ändern
     if err: continue
 
     state, err = game.state()

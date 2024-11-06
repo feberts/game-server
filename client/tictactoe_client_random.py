@@ -26,37 +26,28 @@ def fatal(msg):
     print(msg)
     exit()
 
-game = GameServerAPI()
-
-# join game:
-my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
-if err: fatal(err)
-
-state, err = game.state()
-if err: fatal(err)
-
-while not state['gameover']:
-    print_board(state['board'])
-
-    if state['current'] == my_id: # my turn
-        while True:
-            pos = random_move(state['board'])
-            err = game.move(position=pos)
-            if err: print(err)
-            else: break
-    else:
-        print("Opponent's turn ...")
-        time.sleep(0.5)
+while True:
+    game = GameServerAPI()
+    
+    err = True
+    while err:
+        my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame') # TODO token ändern
 
     state, err = game.state()
     if err: fatal(err)
 
-print_board(state['board'])
-winner = state['winner']
+    while not state['gameover']:
+        time.sleep(2)
+        print_board(state['board'])
 
-if winner == None:
-    print('No winner...')
-elif winner == my_id:
-    print(f'You ({symbols[my_id]}) win!')
-else:
-    print(f'You ({symbols[my_id]}) lose...')
+        if state['current'] == my_id: # my turn
+            while True:
+                pos = random_move(state['board'])
+                err = game.move(position=pos)
+                if err: print(err)
+                else: break
+        else:
+            print("Opponent's turn ...")
+
+        state, err = game.state()
+        if err: fatal(err)

@@ -7,6 +7,7 @@ This program connects to the game server to play tic-tac-toe against another cli
 
 from game_server_api import GameServerAPI
 import time
+import random
 
 symbols = ('x', 'o')
 
@@ -17,12 +18,9 @@ def print_board(board):
           f' {board[3]} | {board[4]} | {board[5]}', '---+---+---',
           f' {board[6]} | {board[7]} | {board[8]}', sep='\n')
 
-p=0
 def random_move(board):
-    global p
-    ret = p
-    p = p + 1
-    return ret
+    vacant = [i for i in range(9) if board[i] == -1]
+    return random.choice(vacant)
 
 def fatal(msg):
     print(msg)

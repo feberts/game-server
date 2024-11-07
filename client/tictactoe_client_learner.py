@@ -33,7 +33,7 @@ def fatal(msg):
 while True:
     game = GameServerAPI()
     my_id, err = game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='learn', players=2)
-    if err: fatal(err) # TODO oder continue?
+    if err: continue # fatal(err) # TODO
 
     state, err = game.state()
     if err: fatal(err)
@@ -45,7 +45,6 @@ while True:
             pos = user_input(f'\nYour ({symbols[my_id]}) turn: ')
             err = game.move(position=pos)
             if err: print(err)
-            else: break
 
         state, err = game.state()
         if err: fatal(err)
@@ -59,3 +58,6 @@ while True:
         print(f'You ({symbols[my_id]}) win!')
     else:
         print(f'You ({symbols[my_id]}) lose...')
+        
+    time.sleep(0.1)
+    # TODO session id -> beim aufruf von state wird diese vom client an den server übermittelt. wenn bereits neues spiel (mit neuer id): state enthält 'gameover = True'

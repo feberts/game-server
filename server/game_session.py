@@ -46,7 +46,7 @@ class GameSession:
         with self._lock:
             # player ID:
             player_id = self._next_id
-            self._next_id = self._next_id + 1
+            self._next_id += 1
             
             # associate player name with ID:
             if player_name != '':

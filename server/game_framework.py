@@ -303,7 +303,7 @@ class GameFramework:
         seconds = 0
         while not session.ready() and seconds < config.timeout:
             time.sleep(config.game_start_poll_interval)
-            seconds = seconds + config.game_start_poll_interval
+            seconds += config.game_start_poll_interval
 
     def _retrieve_game_session(self, game_name, token):
         """

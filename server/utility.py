@@ -129,7 +129,7 @@ class FrameworkLogger:
                 self._old_request = request
                 self._request_count = 1
             else:
-                self._request_count = self._request_count + 1
+                self._request_count += 1
                 print(f'\rx{self._request_count} ', end='', flush=True)
 
     def response(self, response):
@@ -159,4 +159,3 @@ class FrameworkLogger:
     def _log(self, message):
         if self._request_count > 1: print('') # because there is no newline after the request count
         print(message)
-        

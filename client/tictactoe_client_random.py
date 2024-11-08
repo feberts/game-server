@@ -30,4 +30,4 @@ while True:
         err = game.move(position=pos)
         if err: fatal(err)
 
-    time.sleep(0.1) # TODO rm
+    #time.sleep(0.1) # TODO rm

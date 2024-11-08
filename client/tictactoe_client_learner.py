@@ -44,7 +44,9 @@ won = 0
 lost = 0
 draw = 0
 
-while games < 10000:
+time_start = time.time()
+
+while games < 1000:
     state, err = game.state()
     if err: fatal(err)
 
@@ -78,3 +80,5 @@ while games < 10000:
     game.reset_game()
 
 print(f'games: {games}, won: {won}, lost: {lost}, draw: {draw}, win rate: {won / games}, win rate opponent: {lost / games}')
+
+print(time.time() - time_start, 'seconds')

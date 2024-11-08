@@ -8,6 +8,7 @@ This module implements the game framework. The framework is responsible for mana
 - submitting a move
 - requesting the game state
 - observing a game
+- resetting a game
 TODO sind weitere neu hinzugekommen?
 
 To perform these actions, the framework calls the corresponding methods of a game class instance.
@@ -262,16 +263,15 @@ class GameFramework:
 
     def _reset_game(self, request):
         """
-        TODO
-        Request handler for player moves.
+        Request handler for resetting a game.
 
-        This function handles a client's move. It makes sure, that it is actually the client's turn to submit a move. It then passes the move to the game instance and returns the game instance's message in case of an invalid move.
+        This function resets a game. The game class object is replaced with a new one, the game session itself stays untouched. Only the client who started the session (ID = 0) can reset the game.
 
         Parameters:
-        request (dict): containing information about the game session and the player's move
+        request (dict): containing information about the game session
 
         Returns:
-        dict: containing an error message, if the move is invalid
+        dict: containing an error message, if the request is invalid
         """
         # check and parse request:
         err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int})

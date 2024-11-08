@@ -15,7 +15,13 @@ class GameSession:
     """
     def __init__(self, game_class, players):
         """
-        TODO
+        Constructor.
+        
+        Instantiating a game class object and other attributes.
+        
+        Parameters:
+        game_class (derived from AbstractGame): the game class
+        players (int): number of players
         """
         self._game_class = game_class
         self._number_of_players = players
@@ -25,7 +31,7 @@ class GameSession:
         self._last_access = time.time()
         self._lock = threading.Lock()
 
-    def next_id(self, player_name): # IDs assigned to clients joining the game
+    def next_id(self, player_name):
         """
         Returning a player ID.
 
@@ -51,6 +57,9 @@ class GameSession:
     def ready(self):
         """
         Game session is ready to start as soon as all players have joined the game.
+
+        Returns:
+        bool: True, if session ready, else False
         """
         return self._number_of_players == self._next_id
     
@@ -88,6 +97,6 @@ class GameSession:
 
     def reset_game(self):
         """
-        TODO
+        The game class object is replaced with a new instance.
         """
         self._game = self._game_class(self._number_of_players)

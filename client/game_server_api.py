@@ -8,12 +8,14 @@ This module provides an API for communicating with the game server. The API can 
 - submit moves to the server
 - request the game state
 - passively observe other players
+- reset a game without starting a new session
 TODO sind weitere neu hinzugekommen?
 """
 
 import json
 import socket
 import traceback
+
 class GameServerAPI:
     """
     Class GameServerAPI.
@@ -168,9 +170,9 @@ class GameServerAPI:
 
     def reset_game(self):
         """
-        Request game reset.
+        Reset a game.
 
-        TODO
+        This function resets the current game. There is no need to rejoin the game, and all players will keep their IDs. This is useful when simulating many games to collect data for AI training. Only the client who started the game can reset it.
 
         Returns:
         str: error message, if game could not be reset, None otherwise

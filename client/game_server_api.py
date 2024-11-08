@@ -127,6 +127,7 @@ class GameServerAPI:
         if self._player_id == None: return self._api_error('start or join a game first')
 
         state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id})
+
         if err: return None, err
 
         return state, None
@@ -164,6 +165,23 @@ class GameServerAPI:
         self._watch_mode = True
 
         return self._player_id, None
+
+    def reset_game(self):
+        """
+        Request game reset.
+
+        TODO
+
+        Returns:
+        str: error message, if game could not be reset, None otherwise
+        """
+        if self._player_id != 0: return self._api_error('game can only be reset by starter')[1]
+
+        _, err = self._send({'type':'reset_game', 'game':self._game, 'token':self._token, 'player_id':self._player_id})
+
+        if err: return err
+
+        return None
 
     def _send(self, data):
         """

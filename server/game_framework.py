@@ -38,7 +38,8 @@ class GameFramework:
                           'join_game':self._join_game,
                           'move':self._move,
                           'state':self._state,
-                          'watch':self._watch}
+                          'watch':self._watch,
+                          'reset_game':self._reset_game}
         self._build_game_class_dict()
         self._start_clean_up()
 
@@ -102,7 +103,7 @@ class GameFramework:
             return utility.framework_error('invalid number of players')
 
         # create game session and add it to dictionary of active sessions:
-        session = game_session.GameSession(game_class(players), players)
+        session = game_session.GameSession(game_class, players)
         self._game_sessions[(game_name, token)] = session
 
         # get player ID:
@@ -258,6 +259,37 @@ class GameFramework:
         if err: return utility.framework_error(err)
 
         return self._return_data({'player_id':player_id})
+
+    def _reset_game(self, request):
+        """
+        TODO
+        Request handler for player moves.
+
+        This function handles a client's move. It makes sure, that it is actually the client's turn to submit a move. It then passes the move to the game instance and returns the game instance's message in case of an invalid move.
+
+        Parameters:
+        request (dict): containing information about the game session and the player's move
+
+        Returns:
+        dict: containing an error message, if the move is invalid
+        """
+        # check and parse request:
+        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int})
+        if err: return utility.framework_error(err)
+
+        game_name, token, player_id = request['game'], request['token'], request['player_id']
+        
+        if player_id != 0: return utility.framework_error('game can only be reset by starter')
+
+        # retrieve the game session:
+        session, err = self._retrieve_game_session(game_name, token)
+        if err: # no such game or game session
+            return err
+
+        # reset game instance:
+        session.reset_game()
+        
+        return self._return_data(None)
 
     def _await_game_start(self, session):
         """

@@ -13,13 +13,17 @@ class GameSession:
     
     This is a wrapper class for game instances providing functionality for retrieving player IDs.
     """
-    def __init__(self, game_instance, players):
-        self._game = game_instance
+    def __init__(self, game_class, players):
+        """
+        TODO
+        """
+        self._game = game_class(players)
+        self._game_class = game_class
         self._number_of_players = players
         self._next_id = 0
         self._player_names = {} # player name -> ID
         self._lock = threading.Lock()
-        self.last_access = time.time()
+        self.last_access = time.time() # TODO getter statt public?
 
     def next_id(self, player_name): # IDs assigned to clients joining the game
         """
@@ -75,3 +79,9 @@ class GameSession:
         """
         self.last_access = time.time()
         return self._game
+
+    def reset_game(self):
+        """
+        TODO
+        """
+        self._game = self._game_class(self._number_of_players)

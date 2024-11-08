@@ -16,6 +16,9 @@ def print_board(board):
     print(f' {board[0]} | {board[1]} | {board[2]}', '---+---+---',
           f' {board[3]} | {board[4]} | {board[5]}', '---+---+---',
           f' {board[6]} | {board[7]} | {board[8]}', sep='\n')
+    global games, won, lost, draw
+    print(f'games: {games}, won: {won}, lost: {lost}, draw: {draw}')
+
 
 def user_input(prompt):
     while True:
@@ -30,11 +33,16 @@ def fatal(msg):
     print(msg)
     exit()
 
-while True:
-    game = GameServerAPI()
-    my_id, err = game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='learn', players=2)
-    if err: continue # fatal(err) # TODO
+game = GameServerAPI()
+my_id, err = game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='learn', players=2)
+if err: fatal(err)
 
+games = 0
+won = 0
+lost = 0
+draw = 0
+
+while True:
     state, err = game.state()
     if err: fatal(err)
 
@@ -51,13 +59,19 @@ while True:
 
     print_board(state['board'])
     winner = state['winner']
+    
+    games += 1
 
     if winner == None:
+        draw += 1
         print('No winner...')
     elif winner == my_id:
+        won += 1
         print(f'You ({symbols[my_id]}) win!')
     else:
+        lost += 1
         print(f'You ({symbols[my_id]}) lose...')
         
-    time.sleep(0.1)
+    time.sleep(1)
     # TODO session id -> beim aufruf von state wird diese vom client an den server übermittelt. wenn bereits neues spiel (mit neuer id): state enthält 'gameover = True'
+    game.reset_game()

@@ -19,23 +19,18 @@ def fatal(msg):
     print(msg)
     exit()
 
+game = GameServerAPI()
+my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='learn') # TODO token ändern
+if err: fatal(err)
+    
 while True:
-    time.sleep(0.5) # TODO entfernen bzw. Einfluss auf Geschw. beim KI-Training messen
-    game = GameServerAPI()
-    my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='learn') # TODO token ändern
-    if err:
-        print(err)
-        continue
 
     state, err = game.state()
     if err: fatal(err)
 
-    while not state['gameover']:
-        if state['current'] == my_id: # my turn
-            pos = random_move(state['board'])
-            err = game.move(position=pos)
-            if err: print(err)
+    if state['current'] == my_id and not state['gameover']: # my turn
+        pos = random_move(state['board'])
+        err = game.move(position=pos)
+        if err: print(err)
 
-        state, err = game.state()
-        if err: fatal(err)
-        time.sleep(0.1) # TODO entfernen bzw. Einfluss auf Geschw. beim KI-Training messen
+    time.sleep(0.1) # TODO rm

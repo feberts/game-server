@@ -1,21 +1,16 @@
 """
-Tic-tac-toe API.
+Tic-tac-toe API wrapper.
 
-TODO
+This is a demonstration of how one could implement an API with wrapper functions for a specific game. Doing this is not necessary, because the game server API is generic and works with every game, but it can simplify the API usage.
 """
 
 import game_server_api
 
-class State:
-    def __init__(self, board, current, gameover, winner):
-        self.board = board
-        self.current = current
-        self.gameover = gameover
-        self.winner = winner
-
 class TicTacToeAPI(game_server_api.GameServerAPI):
     """
-    TODO
+    Class TicTacToeAPI.
+    
+    This class provides API wrapper functions for tic-tac-toe.
     """
     def start_game(self, token, name=''):
         return super().start_game('127.0.0.1', 4711, 'TicTacToe', token, 2, name)
@@ -33,3 +28,15 @@ class TicTacToeAPI(game_server_api.GameServerAPI):
 
     def watch(self, token, name):
         return super().watch('127.0.0.1', 4711, 'TicTacToe', token, name)
+
+class State:
+    """
+    Class State.
+    
+    Usually, a dictionary is returned by the state function. Here, all data is encapsulated in a designated class for easy access.
+    """
+    def __init__(self, board, current, gameover, winner):
+        self.board = board
+        self.current = current
+        self.gameover = gameover
+        self.winner = winner

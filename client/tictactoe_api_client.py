@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Tic-tac-toe client.TODO
+Tic-tac-toe API client.
 
-This program connects to the game server to play tic-tac-toe against another client. If you want to test it on a single machine, just run this program twice in separate shells.TODO
+This client program demonstrates the use of the wrapper API for tic-tac-toe. Implementing wrapper functions is not necessary because the game server API is generic and works with every game, but it can simplify the API usage.
 """
 
 from tictactoe_api import TicTacToeAPI

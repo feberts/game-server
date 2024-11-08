@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
 """
-Tic-tac-toe client.TODO
+Tic-tac-toe learner.
 
-This program connects to the game server to play tic-tac-toe against another client. If you want to test it on a single machine, just run this program twice in separate shells.TODO
+This client learns how to play tic-tac-toe. It collects data for reinforcement learning by performing random moves against another client and uses a method designed by Donald Michie in 1961 to develop a strategy. During training, a statistic is printed showing how the winning rate increases with more data.
+
+Paper by Michie describing his method:
+https://people.csail.mit.edu/brooks/idocs/matchbox.pdf
+
+Wikipedia article on his method:
+https://en.wikipedia.org/w/index.php?title=Matchbox_Educable_Noughts_and_Crosses_Engine&oldid=1242708397
 """
 
 from game_server_api import GameServerAPI
@@ -49,7 +55,7 @@ while True:
     while not state['gameover']:
         print_board(state['board'])
 
-        if state['current'] == my_id: # my turn
+        if state['current'] == my_id:
             pos = user_input(f'\nYour ({symbols[my_id]}) turn: ')
             err = game.move(position=pos)
             if err: print(err)
@@ -73,5 +79,4 @@ while True:
         print(f'You ({symbols[my_id]}) lose...')
         
     time.sleep(1)
-    # TODO session id -> beim aufruf von state wird diese vom client an den server übermittelt. wenn bereits neues spiel (mit neuer id): state enthält 'gameover = True'
     game.reset_game()

@@ -360,7 +360,7 @@ class GameFramework:
             # mark sessions for deletion:
             old_sessions = []
             for (game_name, token), session in self._game_sessions.items():
-                if session.last_access + config.timeout < time.time():
+                if session.last_access() + config.timeout < time.time():
                     old_sessions.append((game_name, token))
 
             # delete old sessions:

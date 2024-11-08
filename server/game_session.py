@@ -17,13 +17,13 @@ class GameSession:
         """
         TODO
         """
-        self._game = game_class(players)
         self._game_class = game_class
         self._number_of_players = players
+        self._game = game_class(players)
         self._next_id = 0
         self._player_names = {} # player name -> ID
+        self._last_access = time.time()
         self._lock = threading.Lock()
-        self.last_access = time.time() # TODO getter statt public?
 
     def next_id(self, player_name): # IDs assigned to clients joining the game
         """
@@ -77,8 +77,14 @@ class GameSession:
         """
         Return game instance and update time of last access.
         """
-        self.last_access = time.time()
+        self._last_access = time.time()
         return self._game
+
+    def last_access(self):
+        """
+        Return time of last access.
+        """
+        return self._last_access
 
     def reset_game(self):
         """

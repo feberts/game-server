@@ -33,11 +33,13 @@ class Menace:
         self.matchboxes = {} # board configuration -> list of positions
         self.game = {} # board configuration -> position
         self.stage = 0 # stage in a game
+        self.color_replicates = [4, 3, 2, 1, 1]
 
     def move(self, board):
         board = tuple(board)
         if board not in self.matchboxes:
-            vacant = [i for i in range(9) if board[i] == -1] * (5 - self.stage)
+            n = self.color_replicates[self.stage]
+            vacant = [i for i in range(9) if board[i] == -1] * n
             self.matchboxes[board] = vacant
         pos = random.choice(self.matchboxes[board])
         self.game[board] = pos
@@ -50,15 +52,15 @@ class Menace:
     
     def win(self):
         for configuration, move in self.game.items():
-            #print(configuration, '->', move)
             self.matchboxes[configuration].append(move)
         self.reset()
 
     def loose(self):
         for configuration, move in self.game.items():
-            #print(configuration, '->', move)
-            if len(self.matchboxes[configuration]) > 1: # keep last bead # TODO makes sense?
+            if len(self.matchboxes[configuration]) > 1: # keep last bead 
                 self.matchboxes[configuration].remove(move)
+            #else:
+                #del self.matchboxes[configuration] # TODO makes sense?
         self.reset()
 
     def draw(self):
@@ -71,6 +73,8 @@ if err: fatal(err)
 
 stat = Statistic()
 menace = Menace()
+#outcome = []
+reinforcements = 0
 
 while stat.games < 1000:
     state, err = game.state()
@@ -90,18 +94,25 @@ while stat.games < 1000:
 
     if winner == None:
         #print('draw')
+        #outcome += 'd'
         stat.draw += 1
         menace.draw()
     elif winner == my_id:
+        reinforcements += 1
         #print('won ')
+        #outcome += 'w'
         stat.won += 1
         menace.win()
     else:
+        reinforcements -=1
+        #outcome += 'l'
         #print('lost')
         stat.lost += 1
         menace.loose()
         
     game.reset_game()
+    #print(stat.games, reinforcements, sep=',')
     
-stat.show()
+#stat.show()
+#print(''.join(outcome))
 #print(menace.game)

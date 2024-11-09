@@ -19,28 +19,43 @@ def fatal(msg):
     print(msg)
     exit()
 
-def random_move(board):
-    vacant = [i for i in range(9) if board[i] == -1]
-    return random.choice(vacant)
+class Statistic:
+    def __init__(self):
+        self.games = 0
+        self.won = 0
+        self.lost = 0
+        self.draw = 0
+    def show(self):
+        print(f'games: {self.games:3}, win rate: {self.won / self.games:.3f}, draw rate: {self.draw / self.games:.3f}, won: {self.won}, lost: {self.lost}, draw: {self.draw}')
+
+class Menace:
+    def __init__(self):
+        self.matchboxes = {} # board configuration -> list of positions
+        self.game = {}  # board configuration -> position
+
+    def move(self, board):
+        board = tuple(board)
+        if board not in self.matchboxes:
+            vacant = [i for i in range(9) if board[i] == -1]
+            self.matchboxes[board] = vacant # TODO unterschiedl. Anzahl je nach Stage
+        pos = random.choice(self.matchboxes[board])
+        self.game[board] = pos
+        return pos
 
 game = GameServerAPI()
 my_id, err = game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='learn', players=2)
 if err: fatal(err)
 
-games = 0
-won = 0
-lost = 0
-draw = 0
+stat = Statistic()
+menace = Menace()
 
-time_start = time.time()
-
-while games < 1000:
+while stat.games < 1000:
     state, err = game.state()
     if err: fatal(err)
 
     while not state['gameover']:
         if state['current'] == my_id:
-            pos = random_move(state['board'])
+            pos = menace.move(state['board'])
             err = game.move(position=pos)
             if err: fatal(err)
 
@@ -48,18 +63,16 @@ while games < 1000:
         if err: fatal(err)
 
     winner = state['winner']
-    
-    games += 1
+    stat.games += 1
 
     if winner == None:
-        draw += 1
+        stat.draw += 1
     elif winner == my_id:
-        won += 1
+        stat.won += 1
     else:
-        lost += 1
+        stat.lost += 1
         
     game.reset_game()
-
-print(f'games: {games}, won: {won}, lost: {lost}, draw: {draw}, win rate: {won / games}, win rate opponent: {lost / games}')
-
-print(time.time() - time_start, 'seconds')
+    
+stat.show()
+#print(menace.game)

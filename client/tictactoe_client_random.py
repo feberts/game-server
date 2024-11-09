@@ -7,7 +7,6 @@ This client joins a game and submits random moves. It is used in combination wit
 
 from game_server_api import GameServerAPI
 import random
-import time
 
 def fatal(msg):
     print(msg)
@@ -29,5 +28,3 @@ while True:
         pos = random_move(state['board'])
         err = game.move(position=pos)
         if err: fatal(err)
-
-    #time.sleep(0.1) # TODO rm

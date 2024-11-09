@@ -31,16 +31,39 @@ class Statistic:
 class Menace:
     def __init__(self):
         self.matchboxes = {} # board configuration -> list of positions
-        self.game = {}  # board configuration -> position
+        self.game = {} # board configuration -> position
+        self.stage = 0 # stage in a game
 
     def move(self, board):
         board = tuple(board)
         if board not in self.matchboxes:
-            vacant = [i for i in range(9) if board[i] == -1]
-            self.matchboxes[board] = vacant # TODO unterschiedl. Anzahl je nach Stage
+            vacant = [i for i in range(9) if board[i] == -1] * (5 - self.stage)
+            self.matchboxes[board] = vacant
         pos = random.choice(self.matchboxes[board])
         self.game[board] = pos
+        self.stage += 1
         return pos
+    
+    def reset(self):
+        self.game = {}
+        self.stage = 0
+    
+    def win(self):
+        for configuration, move in self.game.items():
+            #print(configuration, '->', move)
+            self.matchboxes[configuration].append(move)
+        self.reset()
+
+    def loose(self):
+        for configuration, move in self.game.items():
+            #print(configuration, '->', move)
+            if len(self.matchboxes[configuration]) > 1: # keep last bead # TODO makes sense?
+                self.matchboxes[configuration].remove(move)
+        self.reset()
+
+    def draw(self):
+        self.reset()
+        
 
 game = GameServerAPI()
 my_id, err = game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='learn', players=2)
@@ -66,11 +89,17 @@ while stat.games < 1000:
     stat.games += 1
 
     if winner == None:
+        #print('draw')
         stat.draw += 1
+        menace.draw()
     elif winner == my_id:
+        #print('won ')
         stat.won += 1
+        menace.win()
     else:
+        #print('lost')
         stat.lost += 1
+        menace.loose()
         
     game.reset_game()
     

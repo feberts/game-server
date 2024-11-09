@@ -2,11 +2,10 @@
 """
 Tic-tac-toe learner.
 
-This client learns how to play tic-tac-toe. It collects data for reinforcement learning by performing random moves against another client and uses a method designed by Donald Michie in 1961 to develop a strategy. During training, a statistic is printed showing how the winning rate increases with more data.
+This client learns how to play tic-tac-toe. It collects data for reinforcement learning by performing random moves against another client and uses a method designed by Donald Michie in 1961 to develop a strategy. During training, a statistic is printed showing how the winning rate increases with more training.
 
-Paper by Michie describing his method:
-https://people.csail.mit.edu/brooks/idocs/matchbox.pdf
-# TODO pdf in besserer qualität verfügbar?
+Article by Donald Michie describing his method:
+https://academic.oup.com/comjnl/article/6/3/232/360077
 
 Wikipedia article on his method:
 https://en.wikipedia.org/w/index.php?title=Matchbox_Educable_Noughts_and_Crosses_Engine&oldid=1242708397

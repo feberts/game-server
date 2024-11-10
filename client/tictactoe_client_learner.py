@@ -12,7 +12,6 @@ https://en.wikipedia.org/w/index.php?title=Matchbox_Educable_Noughts_and_Crosses
 """
 
 from game_server_api import GameServerAPI
-import time
 import random
 
 def fatal(msg):
@@ -28,58 +27,58 @@ class Statistic:
     def show(self):
         print(f'games: {self.games:3}, win rate: {self.won / self.games:.3f}, draw rate: {self.draw / self.games:.3f}, won: {self.won}, lost: {self.lost}, draw: {self.draw}')
 
-class Menace:
+class MENACE:
+    """
+    Implementation of Donald Michie's device.
+    """
     def __init__(self):
-        self.matchboxes = {} # board configuration -> list of positions
-        self.game = {} # board configuration -> position
-        self.stage = 0 # stage in a game
-        self.color_replicates = [4, 3, 2, 1, 1]
+        self.boxes = {} # board layout -> list of possible positions
+        self.current_game = {} # board layout -> chosen position
+        self.stage = 0 # stage in the current game
+        self.n_beads = [4, 3, 2, 1, 1] # initial number of beads per game stage and colour
 
     def move(self, board):
-        board = tuple(board)
-        if board not in self.matchboxes:
-            n = self.color_replicates[self.stage]
-            vacant = [i for i in range(9) if board[i] == -1] * n
-            self.matchboxes[board] = vacant
-        pos = random.choice(self.matchboxes[board])
-        self.game[board] = pos
+        layout = tuple(board)
+        if layout not in self.boxes:
+            vacant = [i for i in range(9) if layout[i] == -1]
+            self.boxes[layout] = vacant * self.n_beads[self.stage]
+        pos = random.choice(self.boxes[layout])
+        self.current_game[layout] = pos
         self.stage += 1
         return pos
     
-    def reset(self):
-        self.game = {}
-        self.stage = 0
-    
     def win(self):
-        for configuration, move in self.game.items():
-            self.matchboxes[configuration].append(move) # old
-            #self.matchboxes[configuration].extend([move] * 3) # new
-        self.reset()
+        for layout, pos in self.current_game.items():
+            self.boxes[layout].append(pos) # old
+            #self.boxes[layout].extend([pos] * 3) # new
+        self.new_game()
 
     def loose(self):
-        for configuration, move in self.game.items():
-            if len(self.matchboxes[configuration]) > 1: # keep last bead 
-                self.matchboxes[configuration].remove(move)
+        for layout, pos in self.current_game.items():
+            if len(self.boxes[layout]) > 1: # keep last bead 
+                self.boxes[layout].remove(pos)
             #else:
-                #del self.matchboxes[configuration] # TODO makes sense?
-        self.reset()
+                #del self.boxes[layout] # TODO makes sense?
+        self.new_game()
 
     def draw(self):
-        #for configuration, move in self.game.items(): # new
-            #self.matchboxes[configuration].extend([move] * 1) # new
-        self.reset()
+        #for layout, pos in self.current_game.items(): # new
+            #self.boxes[layout].extend([pos] * 1) # new
+        self.new_game()
         
+    def new_game(self):
+        self.current_game = {}
+        self.stage = 0
 
 game = GameServerAPI()
 my_id, err = game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='learn', players=2)
 if err: fatal(err)
 
 stat = Statistic()
-menace = Menace()
-#outcome = []
+menace = MENACE()
 reinforcements = 0
 
-while stat.games < 10000:
+while stat.games < 100:
     state, err = game.state()
     if err: fatal(err)
 
@@ -95,27 +94,22 @@ while stat.games < 10000:
     winner = state['winner']
     stat.games += 1
 
-    if winner == None:
-        #print('draw')
-        #outcome += 'd'
-        stat.draw += 1
-        menace.draw()
-    elif winner == my_id:
+    if winner == my_id:
         reinforcements += 1
-        #print('won ')
-        #outcome += 'w'
-        stat.won += 1
+        #stat.won += 1
         menace.win()
+    if winner == None:
+        reinforcements += 0
+        #stat.draw += 1
+        menace.draw()
     else:
-        reinforcements -=1
-        #outcome += 'l'
-        #print('lost')
-        stat.lost += 1
+        reinforcements -= 1
+        #stat.lost += 1
         menace.loose()
-        
+
     game.reset_game()
     print(stat.games, reinforcements, sep=',')
     
 #stat.show()
 #print(''.join(outcome))
-#print(menace.game)
+#print(menace.current_game)

@@ -52,7 +52,8 @@ class Menace:
     
     def win(self):
         for configuration, move in self.game.items():
-            self.matchboxes[configuration].append(move)
+            self.matchboxes[configuration].append(move) # old
+            #self.matchboxes[configuration].extend([move] * 3) # new
         self.reset()
 
     def loose(self):
@@ -64,6 +65,8 @@ class Menace:
         self.reset()
 
     def draw(self):
+        #for configuration, move in self.game.items(): # new
+            #self.matchboxes[configuration].extend([move] * 1) # new
         self.reset()
         
 
@@ -76,7 +79,7 @@ menace = Menace()
 #outcome = []
 reinforcements = 0
 
-while stat.games < 1000:
+while stat.games < 10000:
     state, err = game.state()
     if err: fatal(err)
 
@@ -111,7 +114,7 @@ while stat.games < 1000:
         menace.loose()
         
     game.reset_game()
-    #print(stat.games, reinforcements, sep=',')
+    print(stat.games, reinforcements, sep=',')
     
 #stat.show()
 #print(''.join(outcome))

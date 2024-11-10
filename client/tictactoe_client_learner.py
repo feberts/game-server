@@ -78,7 +78,7 @@ stat = Statistic()
 menace = MENACE()
 reinforcements = 0
 
-while stat.games < 100:
+while stat.games < 10000:
     state, err = game.state()
     if err: fatal(err)
 
@@ -98,7 +98,7 @@ while stat.games < 100:
         reinforcements += 1
         #stat.won += 1
         menace.win()
-    if winner == None:
+    elif winner == None:
         reinforcements += 0
         #stat.draw += 1
         menace.draw()

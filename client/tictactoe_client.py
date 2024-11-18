@@ -47,7 +47,7 @@ old_state = None
 while not state['gameover']:
     if state != old_state: print_board(state['board'])
 
-    if state['current'] == my_id: # my turn
+    if my_id in state['current']: # my turn
         while True:
             pos = user_input(f'\nYour ({symbols[my_id]}) turn: ')
             err = game.move(position=pos)

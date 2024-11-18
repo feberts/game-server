@@ -187,11 +187,11 @@ class GameFramework:
             return utility.framework_error('game has ended')
 
         # check if it is the client's turn:
-        if game.current_player() != player_id:
+        if player_id not in game.current_player():
             return utility.framework_error('not your turn')
 
         # pass the move to the game instance:
-        err = game.move(move)
+        err = game.move(move, player_id)
         if err: return utility.game_error(err)
 
         return self._return_data(None)
@@ -200,7 +200,7 @@ class GameFramework:
         """
         Request handler for game state requests.
 
-        This function retrieves the game state from a game instance and sends it back to the client. It calls the game instance's state function and passes the player ID.
+        This function retrieves the game state from a game instance and sends it back to the client. It calls the game instance's state function and passes the ID of the player requesting the state. In addition to the information returned from the game instance, the framework also adds the IDs of the current players and the game status.
 
         Parameters:
         request (dict): containing information about the game session and the player
@@ -224,7 +224,7 @@ class GameFramework:
         # retrieve the game state:
         state = game.state(player_id)
 
-        # add current player's ID and game status:
+        # add IDs of current players and game status:
         state['current'] = game.current_player()
         state['gameover'] = game.game_over()
 

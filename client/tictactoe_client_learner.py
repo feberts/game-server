@@ -82,7 +82,7 @@ while True:
     if err: fatal(err)
 
     while not state['gameover']:
-        if state['current'] == my_id:
+        if my_id in state['current']:
             pos = menace.move(state['board'])
             err = game.move(position=pos)
             if err: fatal(err)

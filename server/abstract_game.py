@@ -50,27 +50,28 @@ class AbstractGame:
 
     def current_player(self):
         """
-        Returns the current player's ID.
+        Returns a list of players who can currently submit a move.
 
-        A game class must keep track of which player must perform the next move. This function reports this player's ID to the framework. In return, the framework makes sure, that no other than the current player can submit a move.
+        A game class must keep track of which player must perform the next move. This can be a single player, multiple players, or no player at all. This function reports the corresponding player IDs to the framework. In return, the framework makes sure, that no other player can submit a move.
 
         Returns:
-        int: current player's ID
+        list: player IDs
         """
         raise NotImplementedError
 
-    def move(self, args):
+    def move(self, args, player_id):
         """
         Submit a move.
 
         A player's move is passed as a dictionary. The content of this dictionary entirely depends on the needs of the game. The API function to submit a move on the client side accepts the data as keyword arguments. Those keyword arguments are then converted to a dictionary. It is important to let the user of the API know about the names of these keywords and the expected data types of their values. See the documentation on how to add new games for more details.
 
-        The framework makes sure, that only the current player can submit a move. The framework also guaranties, that the argument is of type dictionary, but the validity of the contained data must be checked thoroughly by the implementer of the game class.
+        The framework makes sure, that only the current player(s) can submit a move. The framework also guaranties, that the argument is of type dictionary, but the validity of the contained data must be checked thoroughly by the implementer of the game class.
 
         In order to respond to invalid moves, error messages must be returned. These are then sent back to the client, where they are returned from an API function. So make sure to return meaningful messages. If a move is valid, None must be returned.
 
         Parameters:
         args (dict): the current player's move (must be checked)
+        player_id (int): ID of the player submitting the move (no parameter check required)
 
         Returns:
         str: error message in case the move was illegal, None otherwise

@@ -35,7 +35,7 @@ old_state = None
 while not state['gameover']:
     if state != old_state: print_board(state['board'])
 
-    if state['current'] == observed_id: # my turn
+    if observed_id in state['current']: # my turn
         print(f'Your ({symbols[observed_id]}) turn')
     else:
         if state != old_state: print("Opponent's turn ...")

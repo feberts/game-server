@@ -40,7 +40,7 @@ class TicTacToe(AbstractGame):
         """
         return {'board':self._state.board, 'winner':self._state.winner}
 
-    def move(self, args): # override
+    def move(self, args, player_id): # override
         """
         Submit a move.
 
@@ -48,6 +48,7 @@ class TicTacToe(AbstractGame):
 
         Parameters:
         args (dict): the current player's move
+        player_id (int): player ID (unused)
 
         Returns:
         str: error message in case the move was illegal, None otherwise
@@ -101,7 +102,7 @@ class TicTacToe(AbstractGame):
             self._state.gameover = True
 
     def current_player(self): # override
-        return self._state.current
+        return [self._state.current]
 
     def game_over(self): # override
         return self._state.gameover

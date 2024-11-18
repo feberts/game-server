@@ -27,7 +27,7 @@ print('Min. players:', TicTacToe.min_players())
 print('Max. players:', TicTacToe.max_players())
 
 game = TicTacToe(2)
-current = game.current_player()
+current = game.current_player()[0]
 state = game.state(current)
 
 while not game.game_over():
@@ -35,14 +35,14 @@ while not game.game_over():
 
     while True:
         pos = user_input(f'Your turn {symbols[current]}: ')
-        err = game.move({'position':pos})
+        err = game.move({'position':pos}, current)
         if err:
             print(err)
         else:
             break
 
     state = game.state(current)
-    current = game.current_player()
+    current = game.current_player()[0]
 
 print_board(state['board'])
 winner = state['winner']

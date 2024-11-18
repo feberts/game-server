@@ -24,7 +24,7 @@ class TicTacToeAPI(game_server_api.GameServerAPI):
     def state(self):
         state, err = super().state()
         if err: return None, err
-        return State(state['board'], state['current'], state['gameover'], state['winner']), None
+        return State(state['board'], state['current'][0], state['gameover'], state['winner']), None
 
     def watch(self, token, name):
         return super().watch('127.0.0.1', 4711, 'TicTacToe', token, name)

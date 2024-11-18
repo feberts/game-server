@@ -84,9 +84,8 @@ class GameSession:
 
     def get_game(self):
         """
-        Return game instance and update time of last access.
+        Return game instance.
         """
-        self._last_access = time.time()
         return self._game_instance
 
     def last_access(self):
@@ -95,11 +94,18 @@ class GameSession:
         """
         return self._last_access
 
+    def _touch(self):
+        """
+        Update time of last access.
+        """
+        self._last_access = time.time()
+
     def game_move(self, move, player_id):
         """
         Pass player's move to the game instance.
         """
         with self._lock:
+            self._touch()
             return self._game_instance.move(move, player_id)
 
     def game_state(self, player_id):
@@ -107,6 +113,7 @@ class GameSession:
         Retrieve game state from the game instance.
         """
         with self._lock:
+            self._touch()
             return self._game_instance.state(player_id)
 
     def reset_game(self):

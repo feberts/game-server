@@ -25,7 +25,7 @@ class GameSession:
         """
         self._game_class = game_class
         self._number_of_players = players
-        self._game = game_class(players)
+        self._game_instance = game_class(players)
         self._next_id = 0
         self._player_names = {} # player name -> ID
         self._last_access = time.time()
@@ -87,7 +87,7 @@ class GameSession:
         Return game instance and update time of last access.
         """
         self._last_access = time.time()
-        return self._game
+        return self._game_instance
 
     def last_access(self):
         """
@@ -99,4 +99,4 @@ class GameSession:
         """
         The game class object is replaced with a new instance.
         """
-        self._game = self._game_class(self._number_of_players)
+        self._game_instance = self._game_class(self._number_of_players)

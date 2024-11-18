@@ -34,12 +34,14 @@ class MENACE:
         return pos
     
     def win(self):
+        # backpropagation:
         for layout, pos in self.current_game.items():
             self.boxes[layout].append(pos) # old TODO
             #self.boxes[layout].extend([pos] * 3) # new TODO
         self.new_game()
 
     def loose(self):
+        # backpropagation:
         for layout, pos in self.current_game.items():
             if len(self.boxes[layout]) > 1: # keep last remaining bead
                 self.boxes[layout].remove(pos)
@@ -48,6 +50,7 @@ class MENACE:
         self.new_game()
 
     def draw(self):
+        # backpropagation:
         #for layout, pos in self.current_game.items(): # new TODO
             #self.boxes[layout].extend([pos] * 1) # new TODO
         self.new_game()

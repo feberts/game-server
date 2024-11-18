@@ -29,14 +29,16 @@ if err: fatal(err)
 
 state, err = game.state()
 if err: fatal(err)
+if err: fatal(err)
+old_state = None
 
 while not state['gameover']:
-    print_board(state['board'])
+    if state != old_state: print_board(state['board'])
 
     if state['current'] == observed_id: # my turn
         print(f'Your ({symbols[observed_id]}) turn')
     else:
-        print("Opponent's turn ...")
+        if state != old_state: print("Opponent's turn ...")
 
     state, err = game.state()
     if err: fatal(err)

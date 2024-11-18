@@ -11,6 +11,7 @@ Wikipedia article on his method: https://en.wikipedia.org/w/index.php?title=Matc
 
 from game_server_api import GameServerAPI
 import random
+import time
 
 class MENACE:
     """
@@ -76,8 +77,10 @@ if err: fatal(err)
 menace = MENACE()
 stat = Statistic()
 reinforcements = 0
-
-while True:
+start = time.time()
+n = 0
+while n < 1000:
+    n += 1
     state, err = game.state()
     if err: fatal(err)
 
@@ -115,3 +118,4 @@ while True:
     
 #print(''.join(outcome))
 #print(menace.current_game)
+print(time.time() - start)

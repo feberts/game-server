@@ -95,6 +95,20 @@ class GameSession:
         """
         return self._last_access
 
+    def game_move(self, move, player_id):
+        """
+        Pass player's move to the game instance.
+        """
+        with self._lock:
+            return self._game_instance.move(move, player_id)
+
+    def game_state(self, player_id):
+        """
+        Retrieve game state from the game instance.
+        """
+        with self._lock:
+            return self._game_instance.state(player_id)
+
     def reset_game(self):
         """
         The game class object is replaced with a new instance.

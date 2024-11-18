@@ -191,7 +191,7 @@ class GameFramework:
             return utility.framework_error('not your turn')
 
         # pass the move to the game instance:
-        err = game.move(move, player_id)
+        err = session.game_move(move, player_id)
         if err: return utility.game_error(err)
 
         return self._return_data(None)
@@ -222,7 +222,7 @@ class GameFramework:
         game = session.get_game()
 
         # retrieve the game state:
-        state = game.state(player_id)
+        state = session.game_state(player_id)
 
         # add IDs of current players and game status:
         state['current'] = game.current_player()

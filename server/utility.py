@@ -142,7 +142,7 @@ class FrameworkLogger:
         response (dict): server response
         """
         if config.log_framework_response:
-            if response != self._old_response:# or self._request_count == 1:
+            if response != self._old_response:
                 self._log(f'Response: {response}')
                 self._old_response = response
                 self._old_request = ''

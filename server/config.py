@@ -19,7 +19,7 @@ game_timeout = timeout # seconds; deletion of inactive game sessions
 # logging:
 log_server_info = False # useful only for debugging tcp connections (verbose)
 log_server_errors = True # errors during tcp connections
-log_framework_info = True # actions initiated by the framework
+log_framework_info = True # actions performed by the framework
 log_framework_request = True # client requests
 log_framework_response = True # server responses
 

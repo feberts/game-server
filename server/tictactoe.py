@@ -28,9 +28,9 @@ class TicTacToe(AbstractGame):
         """
         Returns the game state as a dictionary.
 
-        Dictionary keys and values:
-        'board'    : integer list of size 9, values: -1 = empty; 0 or 1 = player
-        'winner'   : player ID, or None if there is no winner
+        Dictionary content:
+        'board': integer list of size 9, values: -1 for empty cells, 0 or 1 for player marks
+        'winner': player ID, or None if there is no winner
 
         Parameters:
         player_id (int): player ID (unused)
@@ -66,6 +66,7 @@ class TicTacToe(AbstractGame):
         self._check_win()
         self._check_board_full()
         self._state.current ^= 1 # rotate players
+
         return None
 
     def _check_move(self, pos):
@@ -76,11 +77,12 @@ class TicTacToe(AbstractGame):
             return False, 'value must be 0..8'
         if self._state.board[pos] != -1:
             return False, 'position already occupied'
+
         return True, ''
 
     def _update_board(self, pos):
         """
-        Add current player's move to the board.
+        Add current player's mark to the board.
         """
         self._state.board[pos] = self._state.current
 

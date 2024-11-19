@@ -10,8 +10,8 @@ import time
 class GameSession:
     """
     Class GameSession.
-    
-    This is a wrapper class for game instances providing functionality for retrieving player IDs.
+
+    This is a wrapper class for game instances providing additional functionality.
     """
     def __init__(self, game_class, players):
         """
@@ -67,14 +67,14 @@ class GameSession:
         """
         Return player ID by name.
         
-        This function returns the ID that was assigned to the passed player name.
+        This function returns the ID that was assigned to the player.
 
         Parameters:
         player_name (str): name of an existing player that has already joined the game
 
         Returns:
         tuple(int, str):
-            int: player ID, None in case of an error
+            int: player ID, None if no such player exists
             str: error message, if a problem occurred, None otherwise
         """
         if not player_name in self._player_names:

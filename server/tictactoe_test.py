@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Interactive test of class TicTacToe.
+Interactive local test of class TicTacToe.
 """
 
 from tictactoe import TicTacToe

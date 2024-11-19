@@ -301,9 +301,10 @@ class GameFramework:
         session (GameSession): game session
         """
         seconds = 0
-        while not session.ready() and seconds < config.timeout:
-            time.sleep(config.game_start_poll_interval)
-            seconds += config.game_start_poll_interval
+        poll_interval = 0.1
+        while not session.ready() and seconds < config.game_timeout:
+            time.sleep(poll_interval)
+            seconds += poll_interval
 
     def _retrieve_game_session(self, game_name, token):
         """
@@ -355,12 +356,12 @@ class GameFramework:
         Deleting inactive game sessions after a defined time span without read or write access.
         """
         while True:
-            time.sleep(config.timeout)
+            time.sleep(config.game_timeout)
 
             # mark sessions for deletion:
             old_sessions = []
             for (game_name, token), session in self._game_sessions.items():
-                if session.last_access() + config.timeout < time.time():
+                if session.last_access() + config.game_timeout < time.time():
                     old_sessions.append((game_name, token))
 
             # delete old sessions:

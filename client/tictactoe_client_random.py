@@ -17,7 +17,7 @@ def random_move(board):
     return random.choice(vacant)
 
 game = GameServerAPI()
-my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='learn')
+my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
 if err: fatal(err)
     
 while True:

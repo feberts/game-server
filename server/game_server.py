@@ -2,7 +2,7 @@
 """
 Game server.
 
-This server program opens a port and handles client connections in separate threads. It passes the data received from a client to the game framework and sends the framework's reply back to the client. The connection is then closed. Parameters like IP or port number are defined in the config module.
+This server program opens a port and handles client connections in separate threads. It passes the data received from a client to the game framework and sends the framework's reply back to the client. Parameters like IP or port number are defined in the config module.
 """
 
 import json

@@ -33,7 +33,7 @@ def fatal(msg):
 game = TicTacToeAPI()
 
 # join game:
-my_id, err = game.join_game(token='mygame', name='herbert')
+my_id, err = game.join_game(token='mygame')
 
 if err: # no game started yet
     # start new game:

@@ -266,7 +266,7 @@ class GameFramework:
         """
         Request handler for resetting a game.
 
-        This function resets a game. The game class object is replaced with a new one, the game session itself stays untouched. Only the client who started the session (ID = 0) can reset the game.
+        This function resets a game. The game class object is replaced with a new one, the game session itself stays untouched. There is no need to rejoin the game, and all players will keep their IDs. This is useful when simulating many games to collect data for AI training. Only the client who started the session (ID = 0) can reset the game.
 
         Parameters:
         request (dict): containing information about the game session

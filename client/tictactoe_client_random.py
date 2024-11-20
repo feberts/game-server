@@ -2,7 +2,7 @@
 """
 Tic-tac-toe random player.
 
-This client joins a game and submits random moves. It is used in combination with the learning client to collect data for AI training.
+This client joins a game and submits random (but legal) moves. It is used in combination with the learning client to produce data for AI training.
 """
 
 from game_server_api import GameServerAPI

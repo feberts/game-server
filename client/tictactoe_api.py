@@ -33,7 +33,7 @@ class State:
     """
     Class State.
     
-    Usually, a dictionary is returned by the state function. Here, all data is encapsulated in a designated class for easy access.
+    Usually, a dictionary is returned by the state function. Here, all data is encapsulated in a class for easy access.
     """
     def __init__(self, board, current, gameover, winner):
         self.board = board

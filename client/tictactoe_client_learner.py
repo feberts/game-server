@@ -13,9 +13,11 @@ from game_server_api import GameServerAPI
 import random
 import time
 
+# TODO aufräumen
+
 class MENACE:
     """
-    Implementation of Donald Michie's method.
+    Implementation of Donald Michie's Matchbox Educable Noughts and Crosses Engine (MENACE).
     """
     def __init__(self):
         self.boxes = {} # board layout -> list of possible positions

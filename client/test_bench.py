@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test bench for client server interaction in separate threads.
+Test bench for client server interaction in separate threads. (This program has no specific purpose.)
 """
 
 import threading

@@ -27,9 +27,9 @@ class GameServerAPI:
         """
         Start a game.
 
-        This function asks the server to start a game. Other clients can use the join function to join that game. To be able to join, they need to know the chosen token. The token is used to identify the game session. It can be any string. A repeated call of this function will end the previous session.
+        This function asks the server to start a game. Other clients can use the join function to join that game. To be able to join, they need to know the chosen token. The token is used to identify the game session. It can be any string. A repeated call of this function will end the previous session and start a new one, which other players can join.
 
-        This is a blocking function. The game starts as soon as the specified number of clients has joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
+        The game starts as soon as the specified number of clients has joined the game. The function then returns the player ID. The server assigns IDs in the range 0...players-1 to all players that join the game.
 
         The optional name parameter makes it possible for other clients to passively observe your playing by joining a game using the watch function. They will be able to retrieve the same game state from the server as you.
 
@@ -65,7 +65,7 @@ class GameServerAPI:
 
         This function lets a client join a game that another client has started by calling the start function. To be able to join, the correct token must be provided. The token is used to identify a specific game session.
 
-        This is a blocking function. The game starts as soon as all clients have joined the game. The function then returns the player ID. The server assigns IDs in the range 0..players-1 to all players that join the game.
+        The game starts as soon as all clients have joined the game. The function then returns the player ID. The server assigns IDs in the range 0...players-1 to all players that join the game.
 
         The optional name parameter makes it possible for other clients to passively observe your playing by joining a game using the watch function. They will be able to retrieve the same game state from the server as you.
 
@@ -119,7 +119,7 @@ class GameServerAPI:
         """
         Request the state.
 
-        This function requests the game state from the server. The state is returned as a dictionary. Refer to the documentation of a specific game to find out about the structure and content of that dictionary.
+        This function requests the game state from the server. The state is returned as a dictionary. Refer to the documentation of a specific game to find out about the structure and content of the dictionary.
 
         Returns:
         tuple(dict, str):

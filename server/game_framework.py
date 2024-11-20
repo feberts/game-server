@@ -35,12 +35,13 @@ class GameFramework:
         self._game_classes = games.available_games
         self._game_classes_by_name = {} # game name -> game class
         self._game_sessions = {} # (game name, token) -> game session
-        self._handlers = {'start_game':self._start_game,
-                          'join_game':self._join_game,
-                          'move':self._move,
-                          'state':self._state,
-                          'watch':self._watch,
-                          'reset_game':self._reset_game}
+        self._handlers = {
+            'start_game':self._start_game,
+            'join_game':self._join_game,
+            'move':self._move,
+            'state':self._state,
+            'watch':self._watch,
+            'reset_game':self._reset_game}
         self._build_game_class_dict()
         self._start_clean_up()
 
@@ -79,7 +80,7 @@ class GameFramework:
         """
         Request handler for starting a game session.
 
-        This function instantiates the requested game and adds it to the list of active game sessions. After the required number of players has joined the game, the function sends the player ID back to the client who requested the start of the game. If not enough players have joined the game before the timeout occurs, the game session is deleted and the requesting client is informed. A repeated call of this function will end the previous game session.
+        This function instantiates the requested game and adds it to the list of active game sessions. After the required number of players has joined the game, the function sends the player ID back to the client who requested the start of the game. If not enough players have joined the game before the timeout occurs, the game session is deleted and the requesting client is informed. A repeated call of this function will end the previous game session and start a new one, which other players can join.
 
         Parameters:
         request (dict): request containing game name, token and number of players
@@ -302,6 +303,7 @@ class GameFramework:
         """
         seconds = 0
         poll_interval = 0.1
+
         while not session.ready() and seconds < config.game_timeout:
             time.sleep(poll_interval)
             seconds += poll_interval

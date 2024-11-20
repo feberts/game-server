@@ -19,7 +19,7 @@ class AbstractGame:
         """
         Constructor.
 
-        The framework assigns IDs in the range 0..players-1 to all players that join a game. It then passes the total number of players to the constructor. The framework makes sure, that only a defined number of players can join the game. The range of the number of allowed players is specified by functions min_players and max_players. The desired number of players is provided by the client starting a new game.
+        The framework assigns IDs in the range 0...players-1 to all players that join a game. It then passes the total number of players to the constructor. The framework makes sure, that only a defined number of players can join the game. The number of allowed players is specified by functions min_players and max_players. The desired number of players is provided by the client starting a new game.
 
         Parameters:
         players (int): number of players (no parameter check required)
@@ -63,14 +63,14 @@ class AbstractGame:
         """
         Submit a move.
 
-        A player's move is passed as a dictionary. The content of this dictionary entirely depends on the needs of the game. The API function to submit a move on the client side accepts the data as keyword arguments. Those keyword arguments are then converted to a dictionary. It is important to let the user of the API know about the names of these keywords and the expected data types of their values. See the documentation on how to add new games for more details.
-
+        A player's move is passed as a dictionary. The content of this dictionary entirely depends on the needs of the game. The API function to submit a move on the client side accepts the data as keyword arguments (**kwargs). Those keyword arguments are then converted to a dictionary and sent to the server. It is important to let the user of the API know about the names of these keywords and the expected data types of their values. The use of kwargs in the API function allows for a maximum of flexibility. This way there are no limitations concerning player moves. An unlimited number of different moves of any complexity is possible. See the documentation on how to add new games for more details.
+        
         The framework makes sure, that only the current player(s) can submit a move. The framework also guaranties, that the argument is of type dictionary, but the validity of the contained data must be checked thoroughly by the implementer of the game class.
 
         In order to respond to invalid moves, error messages must be returned. These are then sent back to the client, where they are returned from an API function. So make sure to return meaningful messages. If a move is valid, None must be returned.
 
         Parameters:
-        args (dict): the current player's move (must be checked)
+        args (dict): the player's move (must be checked)
         player_id (int): ID of the player submitting the move (no parameter check required)
 
         Returns:

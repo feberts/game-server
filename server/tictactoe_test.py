@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Interactive local test of class TicTacToe.
+Interactive local test of class TicTacToe. This program uses the game class directly and does not connect to the server.
 """
 
 from tictactoe import TicTacToe

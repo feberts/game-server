@@ -1,7 +1,7 @@
 """
 Server configuration.
 
-This module contains configuration data for the server.
+This file contains configuration data for the server and framework.
 """
 
 # server:
@@ -14,7 +14,7 @@ timeout = 30 # seconds
 receive_size_max = int(1e6) # bytes
 
 # framework:
-game_timeout = timeout # seconds; deletion of inactive game sessions
+game_timeout = timeout # deletion of inactive game sessions
 
 # logging:
 log_server_info = False # useful only for debugging tcp connections (verbose)

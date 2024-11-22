@@ -11,7 +11,7 @@ This module implements the game framework. The framework is responsible for mana
 - resetting a game
 TODO sind weitere neu hinzugekommen?
 
-To perform these actions, the framework calls the corresponding methods of a game class instance.
+To perform these actions, the framework calls the corresponding methods of a game class instance, if necessary.
 """
 
 import threading
@@ -182,7 +182,7 @@ class GameFramework:
             return err
 
         game = session.get_game()
-        
+
         # check if game is still active:
         if game.game_over():
             return utility.framework_error('game has ended')
@@ -279,7 +279,7 @@ class GameFramework:
         if err: return utility.framework_error(err)
 
         game_name, token, player_id = request['game'], request['token'], request['player_id']
-        
+
         if player_id != 0: return utility.framework_error('game can only be reset by starter')
 
         # retrieve the game session:
@@ -289,7 +289,7 @@ class GameFramework:
 
         # reset game instance:
         session.reset_game()
-        
+
         return self._return_data(None)
 
     def _await_game_start(self, session):
@@ -352,7 +352,7 @@ class GameFramework:
         Starting the clean up function in a separate thread.
         """
         threading.Thread(target=self._clean_up, args=(), daemon=True).start()
-        
+
     def _clean_up(self):
         """
         Deleting inactive game sessions after a defined time span without read or write access.

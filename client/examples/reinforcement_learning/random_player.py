@@ -5,8 +5,9 @@ Tic-tac-toe random player.
 This client joins a game and submits random (but legal) moves. It is used in combination with the learning client to produce data for AI training.
 """
 
-from game_server_api import GameServerAPI
 import random
+
+from game_server_api import GameServerAPI
 
 def fatal(msg):
     print(msg)
@@ -17,9 +18,10 @@ def random_move(board):
     return random.choice(vacant)
 
 game = GameServerAPI()
+
 my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
 if err: fatal(err)
-    
+
 while True:
     state, err = game.state()
     if err: fatal(err)

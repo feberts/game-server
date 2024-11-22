@@ -9,9 +9,10 @@ Article by Donald Michie describing his method: https://academic.oup.com/comjnl/
 Wikipedia article on his method: https://en.wikipedia.org/w/index.php?title=Matchbox_Educable_Noughts_and_Crosses_Engine&oldid=1242708397
 """
 
-from game_server_api import GameServerAPI
 import random
 import time
+
+from game_server_api import GameServerAPI
 
 # TODO aufräumen
 
@@ -19,6 +20,7 @@ class MENACE:
     """
     Implementation of Donald Michie's Matchbox Educable Noughts and Crosses Engine (MENACE).
     """
+
     def __init__(self):
         self.boxes = {} # board layout -> list of possible positions
         self.current_game = {} # board layout -> chosen position
@@ -34,7 +36,7 @@ class MENACE:
         self.current_game[layout] = pos
         self.stage += 1
         return pos
-    
+
     def win(self):
         # backpropagation:
         for layout, pos in self.current_game.items():
@@ -56,7 +58,7 @@ class MENACE:
         #for layout, pos in self.current_game.items(): # new TODO
             #self.boxes[layout].extend([pos] * 1) # new TODO
         self.new_game()
-        
+
     def new_game(self):
         self.current_game = {}
         self.stage = 0
@@ -114,13 +116,13 @@ while n < 1000:
         reinforcements -= 1
 
     game.reset_game()
-    
+
     stat.games += 1
     if stat.games == 1000:
         stat.show()
         stat = Statistic()
     #print(stat.games, reinforcements, sep=',')
-    
+
 #print(''.join(outcome))
 #print(menace.current_game)
 print(time.time() - start)

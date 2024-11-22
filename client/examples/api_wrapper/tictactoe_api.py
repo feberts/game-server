@@ -9,9 +9,10 @@ import game_server_api
 class TicTacToeAPI(game_server_api.GameServerAPI):
     """
     Class TicTacToeAPI.
-    
+
     This class provides API wrapper functions for tic-tac-toe.
     """
+
     def start_game(self, token, name=''):
         return super().start_game('127.0.0.1', 4711, 'TicTacToe', token, 2, name)
 
@@ -32,9 +33,10 @@ class TicTacToeAPI(game_server_api.GameServerAPI):
 class State:
     """
     Class State.
-    
+
     Usually, a dictionary is returned by the state function. Here, all data is encapsulated in a class for easy access.
     """
+
     def __init__(self, board, current, gameover, winner):
         self.board = board
         self.current = current

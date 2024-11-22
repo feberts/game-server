@@ -77,7 +77,7 @@ def check_dict(d, expected):
 class ServerLogger:
     """
     Logging server information.
-    
+
     The log level can be set in the config file. It is recommended to log errors only, as the info log is very verbose. It prints detailed information about every single connection and is only useful for debugging TCP connections.
     """
     def info(self, message, prefix=''):
@@ -91,20 +91,20 @@ class ServerLogger:
     def __init__(self, ip, port):
         self._ip = ip
         self._port = port
-        
+
     def _log(self, message, prefix):
         print(f'{prefix}[{self._ip}:{self._port}] {message}')
 
 class FrameworkLogger:
     """
     Logging framework information.
-    
+
     The log level can be set in the config file.
     """
     def info(self, message):
         """
         Log framework actions.
-        
+
         To be used to log actions initiated by the framework.
 
         Parameters:
@@ -119,7 +119,7 @@ class FrameworkLogger:
         Log client requests.
 
         Identical repeating request are not logged; a count is printed instead.
-        
+
         Parameters:
         request (dict): client request
         """
@@ -135,7 +135,7 @@ class FrameworkLogger:
     def response(self, response):
         """
         Log server responses.
-        
+
         Identical responses to repeated requests are logged only once. If no response is printed, it can be assumed that the same response was sent back as for the last request.
 
         Parameters:
@@ -155,7 +155,7 @@ class FrameworkLogger:
         self._old_request = ''
         self._old_response = ''
         self._request_count = 1
-        
+
     def _log(self, message):
         if self._request_count > 1: print('') # because there is no newline after the request count
         print(message)

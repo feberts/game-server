@@ -1,11 +1,12 @@
 """
 Tic-tac-toe game.
 
-This module provides a tic-tac-toe implementation to be executed by the framework.
+This module provides a tic-tac-toe implementation to be used by the framework.
 """
 
-from abstract_game import AbstractGame
 import random
+
+from abstract_game import AbstractGame
 
 class TicTacToe(AbstractGame):
     """

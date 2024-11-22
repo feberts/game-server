@@ -13,12 +13,13 @@ class GameSession:
 
     This is a wrapper class for game instances providing additional functionality.
     """
+
     def __init__(self, game_class, players):
         """
         Constructor.
-        
+
         Instantiating a game class object and other attributes.
-        
+
         Parameters:
         game_class (derived from AbstractGame): the game class
         players (int): number of players
@@ -47,11 +48,11 @@ class GameSession:
             # player ID:
             player_id = self._next_id
             self._next_id += 1
-            
+
             # associate player name with ID:
             if player_name != '':
                 self._player_names[player_name] = player_id
-                
+
             return player_id
 
     def ready(self):
@@ -62,11 +63,11 @@ class GameSession:
         bool: True, if session ready, else False
         """
         return self._number_of_players == self._next_id
-    
+
     def get_id(self, player_name):
         """
         Return player ID by name.
-        
+
         This function returns the ID that was assigned to the player.
 
         Parameters:

@@ -55,8 +55,8 @@ class MENACE:
         for layout, pos in self._current_game.items():
             if len(self._boxes[layout]) > 1:
                 self._boxes[layout].remove(pos) # remove one bead from box
-            # else:
-                # del self._boxes[layout] # reset box after last bead is removed
+            else:
+                del self._boxes[layout] # reset box after last bead is removed
 
         self._new_game()
 
@@ -128,4 +128,4 @@ while batches < number_of_batches:
 
     print(f'{games_total},{winrate:.3f},{drawrate:.3f},{winrate + drawrate:.3f}')
 
-print('Time:', time.time() - start)
+# print('Time:', time.time() - start)

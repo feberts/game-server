@@ -14,8 +14,8 @@ import time
 
 from game_server_api import GameServerAPI
 
-games_max = 1000 # number of games considered for sliding average
-samples_max = 1 # number of averages
+batch_size = 1000 # learning progress will be printed after each batch of games
+number_of_batches = 100
 
 class MENACE:
     """
@@ -45,25 +45,25 @@ class MENACE:
     def win(self):
         # backpropagation:
         for layout, pos in self._current_game.items():
-            self._boxes[layout].append(pos) # old TODO
-            #self._boxes[layout].extend([pos] * 3) # new TODO
+            self._boxes[layout].append(pos) # add one bead to box
+            # self._boxes[layout].extend([pos] * 3) # add three beads to box
 
         self._new_game()
 
     def loss(self):
         # backpropagation:
         for layout, pos in self._current_game.items():
-            if len(self._boxes[layout]) > 1: # keep last remaining bead
-                self._boxes[layout].remove(pos)
-            #else:
-                #del self._boxes[layout] # TODO works better?
+            if len(self._boxes[layout]) > 1:
+                self._boxes[layout].remove(pos) # remove one bead from box
+            # else:
+                # del self._boxes[layout] # reset box after last bead is removed
 
         self._new_game()
 
     def draw(self):
         # backpropagation:
-        #for layout, pos in self._current_game.items(): # new TODO
-            #self._boxes[layout].extend([pos] * 1) # new TODO
+        # for layout, pos in self._current_game.items():
+            # self._boxes[layout].append(pos) # add one bead to box
 
         self._new_game()
 
@@ -80,17 +80,17 @@ my_id, err = game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', to
 if err: fatal(err)
 
 menace = MENACE()
-samples = 0
+batches = 0
 print('games,winrate,drawrate,sum')
 start = time.time()
 
-while samples < samples_max:
+while batches < number_of_batches:
     games = 0
     win = 0
     draw = 0
 
-    # play a number of games:
-    while games < games_max:
+    # play a batch of games:
+    while games < batch_size:
         # play a single game:
         state, err = game.state()
         if err: fatal(err)
@@ -121,7 +121,7 @@ while samples < samples_max:
         games += 1
 
     # print training progress for the last batch of games:
-    samples += 1
-    print(f'{samples * games_max},{win / games:.3f},{draw / games:.3f},{win + draw:.3f}')
+    batches += 1
+    print(f'{batches * batch_size},{win / games:.3f},{draw / games:.3f},{win + draw:.3f}')
 
 print('Time:', time.time() - start)

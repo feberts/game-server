@@ -122,6 +122,10 @@ while batches < number_of_batches:
 
     # print training progress for the last batch of games:
     batches += 1
-    print(f'{batches * batch_size},{win / games:.3f},{draw / games:.3f},{win + draw:.3f}')
+    winrate = win / games
+    drawrate = draw / games
+    games_total = batches * batch_size
+
+    print(f'{games_total},{winrate:.3f},{drawrate:.3f},{winrate + drawrate:.3f}')
 
 print('Time:', time.time() - start)

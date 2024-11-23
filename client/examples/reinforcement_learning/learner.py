@@ -14,6 +14,9 @@ import time
 
 from game_server_api import GameServerAPI
 
+games_max = 1000 # number of games considered for sliding average
+samples_max = 1 # number of averages
+
 class MENACE:
     """
     Implementation of Donald Michie's Matchbox Educable Noughts and Crosses Engine (MENACE).
@@ -72,64 +75,53 @@ def fatal(msg):
     print(msg)
     exit()
 
-class Statistic:
-    def __init__(self):
-        self.games = 0
-        self.win = 0
-        self.draw = 0
-    def show(self):
-        print(f'{self.win / self.games:.3f}',
-              f'{self.draw / self.games:.3f}',
-              f'{self.win + self.draw:.3f}')
-
 game = GameServerAPI()
-
 my_id, err = game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
 if err: fatal(err)
 
 menace = MENACE()
-statistic = Statistic()
-sample_size = 100 # number of games considered for sliding average
-samples_max = 5 # number of averages
 samples = 0
-
+print('games,winrate,drawrate,sum')
 start = time.time()
 
-while samples < samples_max * sample_size:
-    # play a single game:
-    state, err = game.state()
-    if err: fatal(err)
+while samples < samples_max:
+    games = 0
+    win = 0
+    draw = 0
 
-    while not state['gameover']:
-        if my_id in state['current']:
-            pos = menace.move(state['board'])
-            err = game.move(position=pos)
-            if err: fatal(err)
-
+    # play a number of games:
+    while games < games_max:
+        # play a single game:
         state, err = game.state()
         if err: fatal(err)
 
-    # let menace know about the outcome:
-    winner = state['winner']
+        while not state['gameover']:
+            if my_id in state['current']:
+                pos = menace.move(state['board'])
+                err = game.move(position=pos)
+                if err: fatal(err)
 
-    if winner == my_id:
-        menace.win()
-        statistic.win += 1
-    elif winner == None:
-        menace.draw()
-        statistic.draw += 1
-    else:
-        menace.loss()
+            state, err = game.state()
+            if err: fatal(err)
 
-    # start new game:
-    game.reset_game()
+        # let menace know about the outcome:
+        winner = state['winner']
 
+        if winner == my_id:
+            menace.win()
+            win += 1
+        elif winner == None:
+            menace.draw()
+            draw += 1
+        else:
+            menace.loss()
+
+        # start new game:
+        game.reset_game()
+        games += 1
+
+    # print training progress for the last batch of games:
     samples += 1
-    statistic.games += 1
+    print(f'{samples * games_max},{win / games:.3f},{draw / games:.3f},{win + draw:.3f}')
 
-    # print win and draw rate for a defined number of consecutive games:
-    if statistic.games == sample_size:
-        statistic.show()
-        statistic = Statistic()
-
-print(time.time() - start)
+print('Time:', time.time() - start)

@@ -75,11 +75,12 @@ def fatal(msg):
 class Statistic:
     def __init__(self):
         self.games = 0
-        self.won = 0
+        self.win = 0
         self.draw = 0
     def show(self):
-        print(f'win: {self.won / self.games:.3f}',
-              f'draw: {self.draw / self.games:.3f}')
+        print(f'{self.win / self.games:.3f}',
+              f'{self.draw / self.games:.3f}',
+              f'{self.win + self.draw:.3f}')
 
 game = GameServerAPI()
 
@@ -88,14 +89,14 @@ if err: fatal(err)
 
 menace = MENACE()
 statistic = Statistic()
-sample_size = 1000
-samples_max = 10
+sample_size = 100 # number of games considered for sliding average
+samples_max = 5 # number of averages
 samples = 0
 
 start = time.time()
 
-while samples < 1000:
-    samples += 1
+while samples < samples_max * sample_size:
+    # play a single game:
     state, err = game.state()
     if err: fatal(err)
 
@@ -108,21 +109,25 @@ while samples < 1000:
         state, err = game.state()
         if err: fatal(err)
 
+    # let menace know about the outcome:
     winner = state['winner']
 
     if winner == my_id:
         menace.win()
-        statistic.won += 1
+        statistic.win += 1
     elif winner == None:
         menace.draw()
         statistic.draw += 1
     else:
         menace.loss()
 
+    # start new game:
     game.reset_game()
 
+    samples += 1
     statistic.games += 1
 
+    # print win and draw rate for a defined number of consecutive games:
     if statistic.games == sample_size:
         statistic.show()
         statistic = Statistic()

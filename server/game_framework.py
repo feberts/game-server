@@ -210,10 +210,10 @@ class GameFramework:
         dict: containing the game state
         """
         # check and parse request:
-        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int})
+        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'blocking':bool})
         if err: return utility.framework_error(err)
 
-        game_name, token, player_id = request['game'], request['token'], request['player_id']
+        game_name, token, player_id, blocking = request['game'], request['token'], request['player_id'], request['blocking']
 
         # retrieve the game:
         session, err = self._retrieve_game_session(game_name, token)
@@ -223,7 +223,7 @@ class GameFramework:
         game = session.get_game()
 
         # retrieve the game state:
-        state = session.game_state(player_id)
+        state = session.game_state(player_id, blocking) # TODO
 
         # add IDs of current players and game status:
         state['current'] = game.current_player()

@@ -56,10 +56,10 @@ while not state['gameover']:
             else: break
     else:
         if state != old_state: print("Opponent's turn ...")
-        time.sleep(0.5)
+        #time.sleep(0.5) # TODO
 
     old_state = state
-    state, err = game.state()
+    state, err = game.state(blocking=True) # TODO
     if err: fatal(err)
 
 print_board(state['board'])

@@ -101,7 +101,7 @@ while batches < number_of_batches:
                 err = game.move(position=pos)
                 if err: fatal(err)
 
-            state, err = game.state()
+            state, err = game.state(blocking=True)#TODO
             if err: fatal(err)
 
         # let menace know about the outcome:

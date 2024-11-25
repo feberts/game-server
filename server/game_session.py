@@ -31,6 +31,7 @@ class GameSession:
         self._player_names = {} # player name -> ID
         self._last_access = time.time()
         self._lock = threading.Lock()
+        self._state_change = threading.Event()
 
     def next_id(self, player_name):
         """
@@ -106,13 +107,19 @@ class GameSession:
         Pass player's move to the game instance.
         """
         with self._lock:
+            ret = self._game_instance.move(move, player_id)
             self._touch()
-            return self._game_instance.move(move, player_id)
+            self._state_change.set() # TODO
+            return ret
 
-    def game_state(self, player_id):
+    def game_state(self, player_id, blocking):
         """
         Retrieve game state from the game instance.
         """
+        if blocking and not self._game_instance.game_over() and not player_id in self._game_instance.current_player(): # TODO
+            self._state_change.clear() # TODO
+            self._state_change.wait()
+            
         with self._lock:
             self._touch()
             return self._game_instance.state(player_id)

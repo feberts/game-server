@@ -115,7 +115,7 @@ class GameServerAPI:
 
         return None
 
-    def state(self):
+    def state(self, blocking=False):# TODO comment blocking
         """
         Request the state.
 
@@ -128,7 +128,7 @@ class GameServerAPI:
         """
         if self._player_id == None: return self._api_error('start or join a game first')
 
-        state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id})
+        state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'blocking':blocking})
 
         if err: return None, err
 

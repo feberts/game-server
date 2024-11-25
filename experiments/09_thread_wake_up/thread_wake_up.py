@@ -1,41 +1,27 @@
 #!/usr/bin/env python3
 """
-Test bench for client server interaction in separate threads. (This program has no specific purpose.)
+Waking up a thread from within another thread.
 """
 
 import threading
 import time
 
-a = 13
-
-dummy_event = [threading.Event(), threading.Event()]
-
-def condition():
-    global a
-    return a == 42
+event = threading.Event()
 
 def func1():
-    global dummy_event
-    dummy_event[0].wait() 
-    print('func1() says hello')
-
-cond = threading.Condition()
+    global event
+    while True:
+        event.clear()
+        event.wait()
+        print('func1() says hello')
 
 def func2():
+    global event
+    while True:
+        time.sleep(1)
+        event.set()
 
-    global cond
-    #with cond:
-    cond.wait_for(condition)
-    print('func2() says hello')
-
-
-#threading.Thread(target=func1, args=(), daemon=True).start()
-
+threading.Thread(target=func1, args=(), daemon=True).start()
 threading.Thread(target=func2, args=(), daemon=True).start()
 
-
-
-time.sleep(1)
-#dummy_event[0].set()
-a = 42
-time.sleep(1)
+time.sleep(10)

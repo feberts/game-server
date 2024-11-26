@@ -128,4 +128,5 @@ class GameSession:
         """
         The game class object is replaced with a new instance.
         """
+        self._state_change.set() # TODO
         self._game_instance = self._game_class(self._number_of_players)

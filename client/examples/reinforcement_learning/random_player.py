@@ -23,7 +23,7 @@ my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', tok
 if err: fatal(err)
 
 while True:
-    state, err = game.state(blocking=True)#TODO
+    state, err = game.state(blocking=True)
     if err: fatal(err)
 
     if my_id in state['current'] and not state['gameover']:

@@ -22,8 +22,8 @@ class TicTacToeAPI(game_server_api.GameServerAPI):
     def move(self, position):
         return super().move(position=position)
 
-    def state(self):
-        state, err = super().state()
+    def state(self, blocking=False):
+        state, err = super().state(blocking)
         if err: return None, err
         return State(state['board'], state['current'][0], state['gameover'], state['winner']), None
 

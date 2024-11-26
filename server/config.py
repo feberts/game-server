@@ -24,6 +24,6 @@ log_framework_request = True # client requests
 log_framework_response = True # server responses
 
 # TODO rm
-log_framework_info = False
-log_framework_request = False
+#log_framework_info = False
+#log_framework_request = False
 log_framework_response = False

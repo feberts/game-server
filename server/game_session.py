@@ -119,9 +119,12 @@ class GameSession:
         Retrieve game state from the game instance.
         """
         
-        if blocking and not self._game_instance.game_over() and not player_id in self._game_instance.current_player(): # TODO
+        if (blocking and not self._game_instance.game_over()
+            and not player_id in self._game_instance.current_player()
+            and not player_id in self._old_state): # TODO
             self._state_change.clear() # TODO
             self._state_change.wait()
+
         if player_id in self._old_state: # TODO new
             ret = self._old_state[player_id]
             del self._old_state[player_id]

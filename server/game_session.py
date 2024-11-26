@@ -32,6 +32,7 @@ class GameSession:
         self._last_access = time.time()
         self._lock = threading.Lock()
         self._state_change = threading.Event()
+        self._old_state = {} # player ID -> game state
 
     def next_id(self, player_name):
         """
@@ -116,9 +117,14 @@ class GameSession:
         """
         Retrieve game state from the game instance.
         """
+        
         if blocking and not self._game_instance.game_over() and not player_id in self._game_instance.current_player(): # TODO
             self._state_change.clear() # TODO
             self._state_change.wait()
+        if player_id in self._old_state: # TODO new
+            ret = self._old_state[player_id]
+            del self._old_state[player_id]
+            return ret
             
         with self._lock:
             self._touch()
@@ -128,5 +134,10 @@ class GameSession:
         """
         The game class object is replaced with a new instance.
         """
+        if self._game_instance.game_over(): # TODO new
+            for player_id in range(1, self._number_of_players):
+                self._old_state[player_id] = self._game_instance.state(player_id).copy()
+                self._old_state[player_id]['reset'] = True
+
         self._state_change.set() # TODO
         self._game_instance = self._game_class(self._number_of_players)

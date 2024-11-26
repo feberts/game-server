@@ -30,20 +30,17 @@ if err: fatal(err)
 
 state, err = game.state()
 if err: fatal(err)
-if err: fatal(err)
-old_state = None
 
 while not state['gameover']:
-    if state != old_state: print_board(state['board'])
+    print_board(state['board'])
 
     if observed_id in state['current']: # my turn
         print(f'Your ({symbols[observed_id]}) turn')
     else:
-        if state != old_state: print("Opponent's turn ...")
+        print("Opponent's turn ...")
 
-    state, err = game.state()
+    state, err = game.state(blocking=True) # TODO blockiert nicht, wenn der beobachtete Spieler an der Reihe ist
     if err: fatal(err)
-    time.sleep(0.5)
 
 print_board(state['board'])
 winner = state['winner']

@@ -4,6 +4,7 @@ Game session.
 This module provides a class that contains all data associated with a specific game session.
 """
 
+import copy
 import threading
 import time
 
@@ -136,7 +137,7 @@ class GameSession:
         """
         if self._game_instance.game_over(): # TODO new
             for player_id in range(1, self._number_of_players):
-                self._old_state[player_id] = self._game_instance.state(player_id).copy()
+                self._old_state[player_id] = copy.deepcopy(self._game_instance.state(player_id))
                 self._old_state[player_id]['reset'] = True
 
         self._state_change.set() # TODO

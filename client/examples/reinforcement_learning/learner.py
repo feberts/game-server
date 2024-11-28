@@ -17,7 +17,7 @@ from game_server_api import GameServerAPI
 batch_size = 1000 # learning progress will be printed after each batch of games
 number_of_batches = 100
 
-class MENACE:
+class MENACE: # TODO in modul auslagern
     """
     Implementation of Donald Michie's Matchbox Educable Noughts and Crosses Engine (MENACE).
     """

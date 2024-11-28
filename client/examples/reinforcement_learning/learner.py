@@ -2,15 +2,11 @@
 """
 Tic-tac-toe learner.
 
-This client learns how to play tic-tac-toe. It uses a method designed by British researcher Donald Michie in 1961 to develop a strategy. During training, a statistic is printed showing how the performance improves over time.
-
-Article by Donald Michie describing his method: https://academic.oup.com/comjnl/article/6/3/232/360077
-
-Wikipedia article on his method: https://en.wikipedia.org/w/index.php?title=Matchbox_Educable_Noughts_and_Crosses_Engine&oldid=1242708397
+This client learns how to play tic-tac-toe using a method designed by Donald Michie (see module menace). During training, a statistic is printed showing how the performance develops over time.
 """
 
 import random
-import time
+import time # TODO rm
 
 from game_server_api import GameServerAPI
 from menace import MENACE
@@ -29,7 +25,7 @@ if err: fatal(err)
 menace = MENACE()
 batches = 0
 print('games,winrate,drawrate,sum')
-start = time.time()
+start = time.time() # TODO rm
 
 while batches < number_of_batches:
     games = 0
@@ -75,4 +71,4 @@ while batches < number_of_batches:
 
     print(f'{games_total},{winrate:.3f},{drawrate:.3f},{winrate + drawrate:.3f}')
 
-# print('Time:', time.time() - start)
+# print('Time:', time.time() - start) # TODO rm

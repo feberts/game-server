@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
-TODO
+Tic-tac-toe opponent.
+
+This client can be used in combination with the learner. It joins the game and uses the same learning method.
 """
 
 import random

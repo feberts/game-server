@@ -220,7 +220,7 @@ class GameFramework:
         if err: # no such game or game session
             return err
 
-        game = session.get_game()
+        game = session.get_game(player_id)
 
         # retrieve the game state:
         state = session.game_state(player_id, blocking) # TODO
@@ -228,7 +228,6 @@ class GameFramework:
         # add IDs of current players and game status:
         state['current'] = game.current_player()
         state['gameover'] = game.game_over()
-        if 'reset' in state: state['gameover'] = True # TODO new
 
         return self._return_data(state)
 

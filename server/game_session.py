@@ -34,6 +34,8 @@ class GameSession:
         self._lock = threading.Lock()
         self._state_change = threading.Event()
         self._old_state = {} # player ID -> game state
+        self._old_game = None
+        self._old_ids = []
 
     def next_id(self, player_name):
         """
@@ -86,10 +88,12 @@ class GameSession:
 
         return self._player_names[player_name], None
 
-    def get_game(self):
+    def get_game(self, player_id=None):
         """
         Return game instance.
         """
+        if player_id in self._old_ids:
+            return self._old_game
         return self._game_instance
 
     def last_access(self):
@@ -121,13 +125,13 @@ class GameSession:
         
         if (blocking and not self._game_instance.game_over()
             and not player_id in self._game_instance.current_player()
-            and not player_id in self._old_state): # TODO
+            and not player_id in self._old_ids): # TODO
             self._state_change.clear() # TODO
             self._state_change.wait()
 
-        if player_id in self._old_state: # TODO new
-            ret = self._old_state[player_id]
-            del self._old_state[player_id]
+        if player_id in self._old_ids: # TODO new
+            ret = self._old_game.state(player_id)
+            self._old_ids.remove(player_id)
             return ret
             
         with self._lock:
@@ -139,9 +143,8 @@ class GameSession:
         The game class object is replaced with a new instance.
         """
         if self._game_instance.game_over(): # TODO new
-            for player_id in range(1, self._number_of_players):
-                self._old_state[player_id] = copy.deepcopy(self._game_instance.state(player_id))
-                self._old_state[player_id]['reset'] = True
+            self._old_ids = [player_id for player_id in range(1, self._number_of_players)]
+            self._old_game = copy.deepcopy(self._game_instance)
 
         self._state_change.set() # TODO
         self._game_instance = self._game_class(self._number_of_players)

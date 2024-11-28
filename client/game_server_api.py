@@ -115,11 +115,16 @@ class GameServerAPI:
 
         return None
 
-    def state(self, blocking=False):# TODO comment blocking
+    def state(self, blocking=False):
         """
         Request the state.
 
         This function requests the game state from the server. The state is returned as a dictionary. Refer to the documentation of a specific game to find out about the structure and content of the dictionary.
+
+        If parameter blocking is set to True, this function will block until the game state has actually changed, which is more efficient than polling.
+
+        Parameters:
+        blocking (bool): use blocking mode
 
         Returns:
         tuple(dict, str):

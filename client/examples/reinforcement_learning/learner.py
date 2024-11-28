@@ -92,7 +92,7 @@ while batches < number_of_batches:
     # play a batch of games:
     while games < batch_size:
         # play a single game:
-        state, err = game.state() # TODO blocking?
+        state, err = game.state()
         if err: fatal(err)
 
         while not state['gameover']:

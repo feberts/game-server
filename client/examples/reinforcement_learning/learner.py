@@ -6,7 +6,6 @@ This client learns how to play tic-tac-toe using a method designed by Donald Mic
 """
 
 import random
-import time # TODO rm
 
 from game_server_api import GameServerAPI
 from menace import MENACE
@@ -25,7 +24,6 @@ if err: fatal(err)
 menace = MENACE()
 batches = 0
 print('games,winrate,drawrate,sum')
-start = time.time() # TODO rm
 
 while batches < number_of_batches:
     games = 0
@@ -70,5 +68,3 @@ while batches < number_of_batches:
     games_total = batches * batch_size
 
     print(f'{games_total},{winrate:.3f},{drawrate:.3f},{winrate + drawrate:.3f}')
-
-# print('Time:', time.time() - start) # TODO rm

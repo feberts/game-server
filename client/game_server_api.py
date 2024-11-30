@@ -133,7 +133,7 @@ class GameServerAPI:
         """
         if self._player_id == None: return self._api_error('start or join a game first')
 
-        state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'blocking':blocking})
+        state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'blocking':blocking, 'observer':self._watch_mode})
 
         if err: return None, err
 
@@ -171,7 +171,7 @@ class GameServerAPI:
         self._player_id = response['player_id']
         self._watch_mode = True
 
-        return abs(self._player_id), None # TODO new
+        return self._player_id, None
 
     def reset_game(self):
         """

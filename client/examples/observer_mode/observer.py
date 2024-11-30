@@ -25,7 +25,7 @@ def fatal(msg):
 game = GameServerAPI()
 
 # observe game:
-observed_id, err = game.watch(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', name='bob')
+observed_id, err = game.watch(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', name='alice')
 if err: fatal(err)
 
 state, err = game.state(blocking=False)
@@ -39,7 +39,7 @@ while not state['gameover']:
     else:
         print("Opponent's turn ...")
 
-    state, err = game.state() # TODO blockiert nicht, wenn der beobachtete Spieler an der Reihe ist
+    state, err = game.state()
     if err: fatal(err)
 
 print_board(state['board'])

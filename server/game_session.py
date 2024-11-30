@@ -118,12 +118,12 @@ class GameSession:
             self._state_change.set() # TODO
             return ret
 
-    def game_state(self, player_id, blocking):
+    def game_state(self, player_id, blocking, observer):
         """
         Retrieve game state from the game instance.
         """
         if (blocking and not self._game_instance.game_over()
-            and not player_id in self._game_instance.current_player()
+            and not (player_id in self._game_instance.current_player() and not observer)
             and not player_id in self._old_ids): # TODO
             self._state_change.clear() # TODO
             self._state_change.wait()
@@ -132,7 +132,7 @@ class GameSession:
             ret = self._old_game.state(player_id)
             self._old_ids.remove(player_id)
             return ret
-        player_id = abs(player_id) # TODO new
+
         with self._lock:
             self._touch()
             return self._game_instance.state(player_id)

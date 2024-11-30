@@ -40,7 +40,7 @@ while True:
     err = game.move(position=pos)
     if err: print(err)
 
-    state, err = game.state(blocking=True)
+    state, err = game.state()
     if err: fatal(err)
     if state['gameover']: break
 

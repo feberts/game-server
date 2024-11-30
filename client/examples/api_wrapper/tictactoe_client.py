@@ -41,7 +41,7 @@ if err: # no game started yet
     my_id, err = game.start_game(token='mygame')
     if err: fatal(err)
 
-state, err = game.state()
+state, err = game.state(blocking=False)
 if err: fatal(err)
 
 while not state.gameover:

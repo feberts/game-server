@@ -31,7 +31,7 @@ while True:
             err = game.move(position=pos)
             if err: fatal(err)
 
-        state, err = game.state(blocking=True)
+        state, err = game.state()
         if err: fatal(err)
 
     # let menace know about the outcome:

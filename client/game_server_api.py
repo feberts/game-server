@@ -171,7 +171,7 @@ class GameServerAPI:
         self._player_id = response['player_id']
         self._watch_mode = True
 
-        return self._player_id, None
+        return abs(self._player_id), None # TODO new
 
     def reset_game(self):
         """

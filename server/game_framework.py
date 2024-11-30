@@ -220,7 +220,7 @@ class GameFramework:
         if err: # no such game or game session
             return err
 
-        game = session.get_game(player_id)
+        game = session.get_game(abs(player_id)) # observers have negative IDs # TODO new
 
         # retrieve the game state:
         state = session.game_state(player_id, blocking) # TODO
@@ -241,7 +241,7 @@ class GameFramework:
         request (dict): request containing game name, token and player to be observed
 
         Returns:
-        dict: containing the ID of the observed player
+        dict: containing the ID (with negative sign) of the observed player
         """
         # check and parse request:
         err = utility.check_dict(request, {'game':str, 'token':str, 'name':str})
@@ -260,7 +260,7 @@ class GameFramework:
         player_id, err = session.get_id(player_name)
         if err: return utility.framework_error(err)
 
-        return self._return_data({'player_id':player_id})
+        return self._return_data({'player_id':-player_id}) # TODO new
 
     def _reset_game(self, request):
         """

@@ -201,7 +201,7 @@ class GameFramework:
         """
         Request handler for game state requests.
 
-        This function retrieves the game state from a game instance and sends it back to the client. It calls the game instance's state function and passes the ID of the player requesting the state. In addition to the information returned from the game instance, the framework also adds the IDs of the current players and the game status.
+        This function retrieves the game state from a game instance and sends it back to the client. It calls the game instance's state function and passes the ID of the player requesting the state to it. In addition to the information returned from the game instance, the framework also adds the IDs of the current players and the game status.
 
         Parameters:
         request (dict): containing information about the game session and the player
@@ -223,7 +223,7 @@ class GameFramework:
         game = session.get_game(player_id)
 
         # retrieve the game state:
-        state = session.game_state(player_id, blocking, observer) # TODO
+        state = session.game_state(player_id, blocking, observer)
 
         # add IDs of current players and game status:
         state['current'] = game.current_player()

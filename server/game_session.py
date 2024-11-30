@@ -19,10 +19,10 @@ class GameSession:
         """
         Constructor.
 
-        Instantiating a game class object and other attributes.
+        Instantiating a game class object and initializing other attributes.
 
         Parameters:
-        game_class (derived from AbstractGame): the game class
+        game_class (class AbstractGame): the game class itself (not an instance of it)
         players (int): number of players
         """
         self._game_class = game_class
@@ -41,7 +41,7 @@ class GameSession:
         """
         Returning a player ID.
 
-        This function returns a new ID for each player joining a game session. If a none empty string is passed as the player name, this name together with the assigned ID will be added to a dictionary.
+        This function returns a new ID for each player joining a game session. If a none empty string is passed as the player name, this name together with the assigned ID are added to a dictionary.
 
         Parameters:
         player_name (str): player name, can be an empty string
@@ -90,10 +90,17 @@ class GameSession:
 
     def get_game(self, player_id=None):
         """
-        Return game instance.
+        Return the game instance.
+        
+        Parameters:
+        player_id (int): player ID
+
+        Returns:
+        AbstractGame: game instance
         """
         if player_id in self._old_ids:
             return self._old_game
+
         return self._game_instance
 
     def last_access(self):
@@ -102,7 +109,7 @@ class GameSession:
         """
         return self._last_access
 
-    def _touch(self):
+    def _touch(self): # TODO rename
         """
         Update time of last access.
         """
@@ -111,39 +118,72 @@ class GameSession:
     def game_move(self, move, player_id):
         """
         Pass player's move to the game instance.
+        
+        When this function is called, an event is triggered to wake up other threads waiting for the game state to change.
+
+        Parameters:
+        move (dict): the player's move
+        player_id (int): ID of the player submitting the move
+
+        Returns:
+        str: error message in case the move was illegal, None otherwise
         """
         with self._lock:
             ret = self._game_instance.move(move, player_id)
             self._touch()
-            self._state_change.set() # TODO
+            self._state_change.set()
             return ret
 
     def game_state(self, player_id, blocking, observer):
         """
-        Retrieve game state from the game instance.
+        Retrieve the game state from the game instance.
+
+        If the corresponding API function is called in blocking mode, then this thread's execution is paused until the game state changes. To achieve this, the thread that changes the state triggers an event to wake up other threads waiting for that event. This function does not block, if it is the client's turn to submit a move, or if the game has ended.
+
+        If the game has been reset by some client, then for a single time the state of the previous game is returned to each client. This is necessary for a client to be able to detect the end of the previous game. See function reset_game for details.
+
+        Parameters:
+        player_id (int): player ID
+        blocking (bool): if True, API function was called in blocking mode
+        observer (bool): if True, client requesting the state is a passive observer
+
+        Returns:
+        dict: game state
         """
-        if (blocking and not self._game_instance.game_over()
+        # wait for game state to change:
+        if (blocking
+            and not self._game_instance.game_over()
             and not (player_id in self._game_instance.current_player() and not observer)
-            and not player_id in self._old_ids): # TODO
-            self._state_change.clear() # TODO
+            and not player_id in self._old_ids):
+            self._state_change.clear()
             self._state_change.wait()
 
-        if player_id in self._old_ids: # TODO new
+        # if required, return the previous game's state:
+        if player_id in self._old_ids:
             ret = self._old_game.state(player_id)
             self._old_ids.remove(player_id)
             return ret
 
+        # return current game's state:
         with self._lock:
             self._touch()
             return self._game_instance.state(player_id)
 
     def reset_game(self):
         """
-        The game class object is replaced with a new instance.
+        Reset the game.
+
+        The game instance is replaced with a new one. The old instance is stored. This is necessary to allow the other clients to detect the end of the previous game. Otherwise, they would suddenly find themselves in a new game without being notified about it. To achieve this, a list of client IDs is created upon resetting a game. When a client then calls the state function, the old game state is returned a single time. Then the client is removed from the list. After that, he will receive the game state of the new game instance.
+
+        Only the client who started the game can reset it.
         """
-        if self._game_instance.game_over(): # TODO new
+        # store old game instance and a list of player IDs:
+        if self._game_instance.game_over():
             self._old_ids = [player_id for player_id in range(1, self._number_of_players)]
             self._old_game = copy.deepcopy(self._game_instance)
 
-        self._state_change.set() # TODO
+        # wake up other threads waiting for the game state to change:
+        self._state_change.set()
+
+        # create new game instance:
         self._game_instance = self._game_class(self._number_of_players)

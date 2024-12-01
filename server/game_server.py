@@ -39,7 +39,7 @@ def handle_connection(conn, ip, port):
     log = utility.ServerLogger(ip, port)
     log.info('connection accepted', '\n')
 
-    conn.settimeout(config.timeout)
+    conn.settimeout(config.connection_timeout)
 
     try:
         try:

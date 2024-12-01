@@ -26,16 +26,15 @@ class GameSession:
         players (int): number of players
         """
         self._game_class = game_class
-        self._number_of_players = players
-        self._game_instance = game_class(players)
+        self._n_players = players
+        self._game = game_class(players)
         self._next_id = 0
         self._player_names = {} # player name -> ID
         self._last_access = time.time()
         self._lock = threading.Lock()
         self._state_change = threading.Event()
-        self._old_state = {} # player ID -> game state
-        self._old_game = None
-        self._old_ids = []
+        self._previous_game = None # stored upon reset
+        self._previous_ids = [] # will receive the status of the previous game once
 
     def next_id(self, player_name):
         """
@@ -67,7 +66,7 @@ class GameSession:
         Returns:
         bool: True, if session ready, else False
         """
-        return self._number_of_players == self._next_id
+        return self._n_players == self._next_id
 
     def get_id(self, player_name):
         """
@@ -98,10 +97,10 @@ class GameSession:
         Returns:
         AbstractGame: game instance
         """
-        if player_id in self._old_ids:
-            return self._old_game
+        if player_id in self._previous_ids:
+            return self._previous_game
 
-        return self._game_instance
+        return self._game
 
     def last_access(self):
         """
@@ -109,7 +108,7 @@ class GameSession:
         """
         return self._last_access
 
-    def _touch(self): # TODO rename
+    def _update_last_access(self):
         """
         Update time of last access.
         """
@@ -129,8 +128,8 @@ class GameSession:
         str: error message in case the move was illegal, None otherwise
         """
         with self._lock:
-            ret = self._game_instance.move(move, player_id)
-            self._touch()
+            ret = self._game.move(move, player_id)
+            self._update_last_access()
             self._state_change.set()
             return ret
 
@@ -152,22 +151,22 @@ class GameSession:
         """
         # wait for game state to change:
         if (blocking
-            and not self._game_instance.game_over()
-            and not (player_id in self._game_instance.current_player() and not observer)
-            and not player_id in self._old_ids):
+            and not self._game.game_over()
+            and not (player_id in self._game.current_player() and not observer)
+            and not player_id in self._previous_ids):
             self._state_change.clear()
             self._state_change.wait()
 
         # if required, return the previous game's state:
-        if player_id in self._old_ids:
-            ret = self._old_game.state(player_id)
-            self._old_ids.remove(player_id)
+        if player_id in self._previous_ids:
+            ret = self._previous_game.state(player_id)
+            self._previous_ids.remove(player_id)
             return ret
 
         # return current game's state:
         with self._lock:
-            self._touch()
-            return self._game_instance.state(player_id)
+            self._update_last_access()
+            return self._game.state(player_id)
 
     def reset_game(self):
         """
@@ -178,12 +177,12 @@ class GameSession:
         Only the client who started the game can reset it.
         """
         # store old game instance and a list of player IDs:
-        if self._game_instance.game_over():
-            self._old_ids = [player_id for player_id in range(1, self._number_of_players)]
-            self._old_game = copy.deepcopy(self._game_instance)
+        if self._game.game_over():
+            self._previous_ids = [player_id for player_id in range(1, self._n_players)]
+            self._previous_game = copy.deepcopy(self._game)
 
         # wake up other threads waiting for the game state to change:
         self._state_change.set()
 
         # create new game instance:
-        self._game_instance = self._game_class(self._number_of_players)
+        self._game = self._game_class(self._n_players)

@@ -90,7 +90,7 @@ class GameSession:
     def get_game(self, player_id=None):
         """
         Return the game instance.
-        
+
         Parameters:
         player_id (int): player ID
 
@@ -117,7 +117,7 @@ class GameSession:
     def game_move(self, move, player_id):
         """
         Pass player's move to the game instance.
-        
+
         When this function is called, an event is triggered to wake up other threads waiting for the game state to change.
 
         Parameters:

@@ -5,8 +5,6 @@ Tic-tac-toe opponent.
 This client can be used in combination with the learner. It joins the game and uses the same learning method.
 """
 
-import random
-
 from game_server_api import GameServerAPI
 from menace import MENACE
 

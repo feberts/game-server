@@ -181,8 +181,8 @@ class GameSession:
             self._previous_ids = [player_id for player_id in range(1, self._n_players)]
             self._previous_game = copy.deepcopy(self._game)
 
-        # wake up other threads waiting for the game state to change:
-        self._state_change.set()
-
         # create new game instance:
         self._game = self._game_class(self._n_players)
+
+        # wake up other threads waiting for the game state to change:
+        self._state_change.set()

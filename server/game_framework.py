@@ -304,7 +304,7 @@ class GameFramework:
         poll_interval = 0.1
 
         while not session.ready() and seconds < config.game_timeout:
-            time.sleep(poll_interval) # TODO besser mit event statt polling?
+            time.sleep(poll_interval) # TODO besser mit event statt polling? import time kann dann weg
             seconds += poll_interval
 
     def _retrieve_game_session(self, game_name, token):

@@ -9,7 +9,6 @@ This module provides an API for communicating with the game server. The API can 
 - request the game state
 - passively observe other players
 - reset a game without starting a new session
-TODO sind weitere neu hinzugekommen?
 """
 
 import json

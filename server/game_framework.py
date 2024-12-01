@@ -9,7 +9,6 @@ This module implements the game framework. The framework is responsible for mana
 - requesting the game state
 - observing a game
 - resetting a game
-TODO sind weitere neu hinzugekommen?
 
 To perform these actions, the framework calls the corresponding methods of a game class instance, if necessary.
 """

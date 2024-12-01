@@ -10,11 +10,11 @@ port = 4711
 
 # tcp connections:
 buffer_size = 4096 # bytes
-timeout = 30 # seconds
+timeout = 60 # seconds
 receive_size_max = int(1e6) # bytes
 
 # framework:
-game_timeout = timeout # deletion of inactive game sessions
+game_timeout = timeout # deletion of inactive games
 
 # logging:
 log_server_info = False # useful only for debugging tcp connections (verbose)

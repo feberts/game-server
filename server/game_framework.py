@@ -14,7 +14,7 @@ To perform these actions, the framework calls the corresponding methods of a gam
 """
 
 import threading
-import time # TODO nötig?
+import time
 
 import config
 import games
@@ -43,6 +43,7 @@ class GameFramework:
             'reset_game':self._reset_game}
         self._build_game_class_dict()
         self._start_clean_up()
+        self._player_joins = threading.Event()
 
     def _build_game_class_dict(self):
         """
@@ -114,7 +115,8 @@ class GameFramework:
         self._await_game_start(session)
 
         if not session.ready(): # timeout reached
-            del self._game_sessions[(game_name, token)] # remove game session
+            if (game_name, token) in self._game_sessions:
+                del self._game_sessions[(game_name, token)] # remove game session
             return utility.framework_error('timeout while waiting for others to join')
 
         self._log_sessions()
@@ -150,6 +152,7 @@ class GameFramework:
         player_id = session.next_id(name)
 
         # wait for others to join:
+        self._player_joins.set()
         self._await_game_start(session)
 
         if not session.ready(): # timeout reached
@@ -300,12 +303,11 @@ class GameFramework:
         Parameters:
         session (GameSession): game session
         """
-        seconds = 0
-        poll_interval = 0.1
+        start = session.last_access()
 
-        while not session.ready() and seconds < config.game_timeout:
-            time.sleep(poll_interval) # TODO besser mit event statt polling? import time kann dann weg
-            seconds += poll_interval
+        while not session.ready() and time.time() - start < config.game_timeout:
+            self._player_joins.clear()
+            self._player_joins.wait(config.game_timeout)
 
     def _retrieve_game_session(self, game_name, token):
         """

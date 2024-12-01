@@ -14,7 +14,7 @@ To perform these actions, the framework calls the corresponding methods of a gam
 """
 
 import threading
-import time
+import time # TODO nötig?
 
 import config
 import games

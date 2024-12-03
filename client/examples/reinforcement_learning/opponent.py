@@ -13,7 +13,7 @@ def fatal(msg):
     exit()
 
 game = GameServerAPI()
-my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
+my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='training')
 if err: fatal(err)
 
 menace = MENACE()

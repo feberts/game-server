@@ -103,59 +103,33 @@ class FrameworkLogger:
     """
     def info(self, message):
         """
-        Log framework actions.
-
-        To be used to log actions initiated by the framework.
+        Logging actions initiated by the framework.
 
         Parameters:
         message (str): message
         """
         if config.log_framework_info:
-            self._log(f'{message}')
-            self._reset()
+            self._log(message)
 
     def request(self, request):
         """
-        Log client requests.
-
-        Identical repeating request are not logged; a count is printed instead.
+        Logging client requests.
 
         Parameters:
         request (dict): client request
         """
         if config.log_framework_request:
-            if request != self._old_request:
-                self._log(f'Request:  {request}')
-                self._old_request = request
-                self._request_count = 1
-            else:
-                self._request_count += 1
-                print(f'\rx{self._request_count} ', end='', flush=True)
+            self._log(f'Request:  {request}')
 
     def response(self, response):
         """
-        Log server responses.
-
-        Identical responses to repeated requests are logged only once. If no response is printed, it can be assumed that the same response was sent back as for the last request.
+        Logging server responses.
 
         Parameters:
         response (dict): server response
         """
         if config.log_framework_response:
-            if response != self._old_response:
-                self._log(f'Response: {response}')
-                self._old_response = response
-                self._old_request = ''
-                self._request_count = 1
-
-    def __init__(self):
-        self._reset()
-
-    def _reset(self):
-        self._old_request = ''
-        self._old_response = ''
-        self._request_count = 1
+            self._log(f'Response: {response}')
 
     def _log(self, message):
-        if self._request_count > 1: print('') # because there is no newline after the request count
         print(message)

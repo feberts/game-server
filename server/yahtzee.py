@@ -24,6 +24,7 @@ class Yahtzee(AbstractGame):
         self.gameover = False
         self.players = players
         self.dice = [None] * 5
+        self._dice_rolls = 0
         self._roll_dice()
         self.scorecards = dict.fromkeys(list(range(0, players)), self._ScoreCard()) # player ID -> scorecard
 
@@ -34,6 +35,7 @@ class Yahtzee(AbstractGame):
             self.combinations = dict.fromkeys(Yahtzee.upper_section, None) # combination -> points
 
     def _roll_dice(self, dice='all'):
+        if self._dice_rolls >= 3: return 'dice were rolled three times already'
         if dice == 'all': dice = [0, 1, 2, 3, 4]
         if len(dice) == 0: return 'no selection of dice entered'
         
@@ -44,6 +46,8 @@ class Yahtzee(AbstractGame):
         for d in dice:
             self.dice[d] = random.choice([1, 2, 3, 4, 5, 6])
                 
+        self._dice_rolls += 1
+
         return None
     
     def _add_points(self, combination):
@@ -56,12 +60,19 @@ class Yahtzee(AbstractGame):
             val = self.upper_section.index(combination) + 1
             combs[combination] = self.dice.count(val) * val
 
+        self._rotate_players()
+
         return None
+    
 
     def _cross_out(self, combination):
         self.dice = [0] * 5
         return self._add_points(combination)
         
+    def _rotate_players(self):
+        self._dice_rolls = 0
+        self._roll_dice()
+        self.current = (self.current + 1) % self.players
 
     def move(self, args, player_id): # override
         """

@@ -68,24 +68,24 @@ while not state['gameover']:
     if my_id in state['current']: # my turn
         print_dice(state['dice'])
         
-        while True:
-            option = menu(['roll all dice again', 'roll some dice again', 'add points to score', 'cross out a combination'])
+        #while True:
+        option = menu(['roll all dice again', 'roll some dice again', 'add points to score', 'cross out a combination'])
 
-            if option == 0:
-                err = game.move(roll_dice='all')
-            elif option == 1:
-                err = game.move(roll_dice=select_dice())
-            elif option == 2:
-                option = menu(combinations)
-                err = game.move(score='add points', combination=combinations[option])
-            elif option == 3:
-                option = menu(combinations)
-                err = game.move(score='cross out', combination=combinations[option])
+        if option == 0:
+            err = game.move(roll_dice='all')
+        elif option == 1:
+            err = game.move(roll_dice=select_dice())
+        elif option == 2:
+            option = menu(combinations)
+            err = game.move(score='add points', combination=combinations[option])
+        elif option == 3:
+            option = menu(combinations)
+            err = game.move(score='cross out', combination=combinations[option])
 
-            if err:
-                print(err)
-                input('\n<press enter>')
-            else: break
+        if err:
+            print(err)
+            input('\n<press enter>')
+            #else: break
         blocking = False
     else:
         print("Opponent's turn ...")

@@ -43,7 +43,7 @@ class Yahtzee(AbstractGame):
         Returns:
         str: error message in case the move was illegal, None otherwise
         """
-        raise NotImplementedError
+        return None
 
     def state(self, player_id): # override
         """
@@ -57,7 +57,7 @@ class Yahtzee(AbstractGame):
         Returns:
         dict: game state
         """
-        raise NotImplementedError
+        return {'scorecard':{'einser':3, 'zweier':6}}
 
     def current_player(self): # override
         return [self._state.current]

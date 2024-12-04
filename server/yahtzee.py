@@ -57,7 +57,7 @@ class Yahtzee(AbstractGame):
         Returns:
         dict: game state
         """
-        return {'scorecard':{'einser':3, 'zweier':6}}
+        return {'scorecard':{'einser':123, 'zweierrr':6, 'abcde': None}}
 
     def current_player(self): # override
         return [self._state.current]

@@ -9,7 +9,10 @@ from game_server_api import GameServerAPI
 
 def print_scorecard(scorecard):
     print('\n' * 100)
-    print(scorecard)
+    print('Your score\n')
+    for combination, score in scorecard.items():
+        score = str(score) if score else '___'
+        print(f"{combination:10s}{score:>4s}")
 
 def user_input(prompt):
     while True:

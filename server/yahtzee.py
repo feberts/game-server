@@ -29,6 +29,7 @@ class Yahtzee(AbstractGame):
             self.current = random.randint(0, players - 1)
             self.gameover = False
             self.players = players
+            self.dice = [random.choice([1, 2, 3, 4, 5, 6]) for _ in range(5)]
             self.scorecards = dict.fromkeys(list(range(0, players)), Yahtzee._ScoreCard()) # player ID -> scorecard
 
     class _ScoreCard:
@@ -65,7 +66,7 @@ class Yahtzee(AbstractGame):
         Returns:
         dict: game state
         """
-        return {'scorecard':self._state.scorecards[player_id].combinations}
+        return {'scorecard':self._state.scorecards[player_id].combinations, 'dice':self._state.dice}
 
     def current_player(self): # override
         return [self._state.current]

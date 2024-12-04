@@ -13,6 +13,12 @@ def print_scorecard(scorecard):
     for combination, score in scorecard.items():
         score = str(score) if score else '___'
         print(f"{combination:10s}{score:>4s}")
+
+def print_dice(dice):
+    print('')
+    for d in dice:
+        print(f'[{d}] ', end='')
+    print('\n a   b   c   d   e')
 """
 def input_int(prompt):
     while True:
@@ -26,11 +32,13 @@ def input_int(prompt):
 
 def menu(options):
     print('\nOptions:')
+
     for i in range(len(options)):
         print(f'{i:3} - {options[i]}')
+
     while True:
         try:
-            option = int(input('\nYour option:'))
+            option = int(input('\nYour option: '))
             if option < 0 or option >= len(options): raise Exception
             return option
         except KeyboardInterrupt:
@@ -60,8 +68,10 @@ while not state['gameover']:
     print_scorecard(state['scorecard'])
 
     if my_id in state['current']: # my turn
+        print_dice(state['dice'])
+        
         while True:
-            option = menu(['roll all dice', 'roll some dice', 'usw'])
+            option = menu(['roll all dice again', 'roll some dice', 'add to Ones', 'add to Twos', 'add to Threes'])
             err = game.move(position=42)
             if err: print(err)
             else: break

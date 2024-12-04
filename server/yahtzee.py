@@ -27,9 +27,11 @@ class Yahtzee(AbstractGame):
         self._roll_dice()
         self.scorecards = dict.fromkeys(list(range(0, players)), self._ScoreCard()) # player ID -> scorecard
 
+    upper_section = ['Ones','Twos','Threes'] # upper part of Yahtzee scorecard
+
     class _ScoreCard:
         def __init__(self):
-            self.combinations = dict.fromkeys(['Ones','Twos','Threes'], None) # combination -> score
+            self.combinations = dict.fromkeys(Yahtzee.upper_section, None) # combination -> points
 
     def _roll_dice(self, dice='all'):
         if dice == 'all':
@@ -45,6 +47,15 @@ class Yahtzee(AbstractGame):
         return None
     
     def _add_points(self, combination):
+        combs = self.scorecards[self.current].combinations
+        
+        if combination not in combs: return 'no such combination'
+        if combs[combination] != None: return 'combination was already used'
+
+        if combination in self.upper_section:
+            val = self.upper_section.index(combination) + 1
+            combs[combination] = self.dice.count(val) * val
+
         return None
 
     def _cross_out(self, combination):
@@ -53,7 +64,7 @@ class Yahtzee(AbstractGame):
         if combination not in combs: return 'no such combination'
         if combs[combination] != None: return 'combination was already used'
         
-        combs[combination] = 0
+        combs[combination] = 0 # TODO hier _add_points() aufrufen
         
         return None
         

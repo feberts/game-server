@@ -22,7 +22,7 @@ def print_dice(dice):
 
 def menu(options):
     print('\nOptions:')
-    for i in range(len(options)):
+    for i in range(1, len(options) + 1):
         print(f'{i:3} - {options[i]}')
     while True:
         try:

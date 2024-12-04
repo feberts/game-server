@@ -43,6 +43,19 @@ class Yahtzee(AbstractGame):
                     return 'selection of dice not valid'
                 self.dice[index_map[i]] = random.choice([1, 2, 3, 4, 5, 6])
         return None
+    
+    def _add_points(self, combination):
+        return None
+
+    def _cross_out(self, combination):
+        combs = self.scorecards[self.current].combinations
+        if combination not in combs:
+            return 'no such combination'
+        if combs[combination] != None:
+            return 'cannot cross out this combination'
+        combs[combination] = 0
+        return None
+        
 
     def move(self, args, player_id): # override
         """
@@ -52,13 +65,22 @@ class Yahtzee(AbstractGame):
 
         Parameters:
         args (dict): the current player's move
-        player_id (int): player ID
+        player_id (int): player ID (unused)
 
         Returns:
         str: error message in case the move was illegal, None otherwise
         """
-        if 'roll' in args:
-            return self._roll_dice(args['roll'])
+        if 'roll_dice' in args:
+            return self._roll_dice(args['roll_dice'])
+        elif 'score' in args:
+            if 'combination' not in args:
+                return 'a combination must be passed'
+            if args['score'] == 'add points':
+                return self._add_points(args['combination'])
+            elif args['score'] == 'cross out':
+                return self._cross_out(args['combination'])
+            else:
+                return 'no such score operation'
         else:
             return 'no such move'
         return None

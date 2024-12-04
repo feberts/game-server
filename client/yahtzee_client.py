@@ -9,9 +9,9 @@ from game_server_api import GameServerAPI
 
 def print_scorecard(scorecard):
     print('\n' * 100)
-    print('Your score:')
+    print('Your score:\n')
     for combination, score in scorecard.items():
-        score = str(score) if score else '___'
+        score = str(score) if score != None else '___'
         print(f"{combination:10s}{score:>4s}")
 
 def print_dice(dice):
@@ -19,16 +19,6 @@ def print_dice(dice):
     for d in dice:
         print(f'[{d}] ', end='')
     print('\n a   b   c   d   e')
-"""
-def input_int(prompt):
-    while True:
-        try:
-            return int(input(prompt))
-        except KeyboardInterrupt:
-            exit()
-        except:
-            print('Invalid option!')
-"""
 
 def menu(options):
     print('\nOptions:')
@@ -61,6 +51,8 @@ if err: # no game started yet
 state, err = game.state(blocking=False)
 if err: fatal(err)
 
+combinations = ['Ones', 'Twos', 'Threes']
+
 while not state['gameover']:
     print_scorecard(state['scorecard'])
 
@@ -68,12 +60,18 @@ while not state['gameover']:
         print_dice(state['dice'])
         
         while True:
-            option = menu(['roll all dice again', 'roll some dice again', 'add to Ones', 'add to Twos', 'add to Threes'])
+            option = menu(['roll all dice again', 'roll some dice again', 'add points to score', 'cross out a combination'])
 
             if option == 0:
-                err = game.move(roll='all')
+                err = game.move(roll_dice='all')
             elif option == 1:
-                err = game.move(roll=input('Select one or more dice (e.g.: cde): '))
+                err = game.move(roll_dice=input('Select one or more dice (e.g.: cde): '))
+            elif option == 2:
+                option = menu(combinations)
+                err = game.move(score='add points', combination=combinations[option])
+            elif option == 3:
+                option = menu(combinations)
+                err = game.move(score='cross out', combination=combinations[option])
 
             if err: print(err)
             else: break

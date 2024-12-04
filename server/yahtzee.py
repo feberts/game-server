@@ -59,14 +59,7 @@ class Yahtzee(AbstractGame):
         return None
 
     def _cross_out(self, combination):
-        combs = self.scorecards[self.current].combinations
-        
-        if combination not in combs: return 'no such combination'
-        if combs[combination] != None: return 'combination was already used'
-        
-        combs[combination] = 0 # TODO hier _add_points() aufrufen
-        
-        return None
+        return self._add_points(combination)
         
 
     def move(self, args, player_id): # override

@@ -59,6 +59,7 @@ class Yahtzee(AbstractGame):
         return None
 
     def _cross_out(self, combination):
+        self.dice = [0] * 5
         return self._add_points(combination)
         
 

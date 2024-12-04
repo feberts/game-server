@@ -11,8 +11,8 @@ def print_scorecard(scorecard):
     print('\n' * 100)
     print('Your score:\n')
     for combination, score in scorecard.items():
-        score = str(score) if score != None else '___'
-        print(f"{combination:10s}{score:>4s}")
+        score = str(score) if score != None else ''
+        print(f"{combination:10s}{score:_>3s}")
 
 def print_dice(dice):
     print('')
@@ -22,7 +22,7 @@ def print_dice(dice):
 
 def menu(options):
     print('\nOptions:')
-    for i in range(1, len(options) + 1):
+    for i in range(len(options)):
         print(f'{i:3} - {options[i]}')
     while True:
         try:

@@ -15,12 +15,6 @@ class Yahtzee(AbstractGame):
     This class implements a Yahtzee game.
     """
 
-    class _State:
-        def __init__(self, players):
-            self.current = random.randint(0, players - 1)
-            self.gameover = False
-            self.players = players
-
     def __init__(self, players): # override
         """
         Constructor.
@@ -29,6 +23,20 @@ class Yahtzee(AbstractGame):
         players (int): number of players
         """
         self._state = self._State(players)
+
+    class _State:
+        def __init__(self, players):
+            self.current = random.randint(0, players - 1)
+            self.gameover = False
+            self.players = players
+            self.scorecards = dict.fromkeys(list(range(0, players)), Yahtzee._ScoreCard()) # player ID -> scorecard
+
+    class _ScoreCard:
+        def __init__(self):
+            self.combinations = dict.fromkeys(['Ones','Twos','Threes'], None) # combination -> score
+
+
+
 
     def move(self, args, player_id): # override
         """
@@ -57,7 +65,7 @@ class Yahtzee(AbstractGame):
         Returns:
         dict: game state
         """
-        return {'scorecard':{'einser':123, 'zweierrr':6, 'abcde': None}}
+        return {'scorecard':self._state.scorecards[player_id].combinations}
 
     def current_player(self): # override
         return [self._state.current]

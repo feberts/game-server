@@ -54,7 +54,7 @@ if err: fatal(err)
 combinations = ['Ones', 'Twos', 'Threes']
 
 def select_dice():
-    selection = input('Select one or more dice (e.g.: cde): ')
+    selection = input('\nSelect one or more dice (e.g.: cde): ')
     indices = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4}
     dice = []
     for s in selection:
@@ -82,7 +82,9 @@ while not state['gameover']:
                 option = menu(combinations)
                 err = game.move(score='cross out', combination=combinations[option])
 
-            if err: print(err)
+            if err:
+                print(err)
+                input('\n<press enter>')
             else: break
         blocking = False
     else:

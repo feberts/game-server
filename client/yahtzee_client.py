@@ -69,7 +69,7 @@ while not state['gameover']:
         
         while True:
             option = menu(['roll all dice again', 'roll some dice', 'add to Ones', 'add to Twos', 'add to Threes'])
-            err = game.move(position=42)
+            if option == 0: err = game.move(roll='all')
             if err: print(err)
             else: break
         blocking = False

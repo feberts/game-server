@@ -17,8 +17,6 @@ class Yahtzee(AbstractGame):
 
     def __init__(self, players): # override
         """
-        Constructor.
-
         Parameters:
         players (int): number of players
         """
@@ -50,6 +48,10 @@ class Yahtzee(AbstractGame):
         Returns:
         str: error message in case the move was illegal, None otherwise
         """
+        if 'roll' in args:
+            self._roll_dice()
+        else:
+            return 'no such move'
         return None
 
     def state(self, player_id): # override

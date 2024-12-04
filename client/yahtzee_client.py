@@ -9,7 +9,7 @@ from game_server_api import GameServerAPI
 
 def print_scorecard(scorecard):
     print('\n' * 100)
-    print('Your score:\n')
+    print('Yahtzee\n')
     for combination, score in scorecard.items():
         score = str(score) if score != None else ''
         print(f"{combination:10s}{score:_>3s}")
@@ -91,7 +91,7 @@ while not state['gameover']:
         print("Opponent's turn ...")
         blocking = True
 
-    state, err = game.state(blocking)
+    state, err = game.state(blocking) # TODO param blocking nötig?
     if err: fatal(err)
 
 print_scorecard(state['scorecard'])

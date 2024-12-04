@@ -51,23 +51,29 @@ class Yahtzee(AbstractGame):
         return None
     
     def _add_points(self, combination):
+        if combination in self.upper_section:
+            face_value = self.upper_section.index(combination) + 1
+            count = self.dice.count(face_value)
+            if count == 0: return f'there are no {face_value}s'
+            points = count * face_value
+            return self._update_scorecard(combination, points)
+        else:
+            # implement lower section of Yahtzee scorecard here
+            return None
+
+    def _update_scorecard(self, combination, points):
         combs = self.scorecards[self.current].combinations
         
         if combination not in combs: return 'no such combination'
         if combs[combination] != None: return 'combination was already used'
-
-        if combination in self.upper_section:
-            val = self.upper_section.index(combination) + 1
-            combs[combination] = self.dice.count(val) * val
-
-        self._rotate_players()
-
-        return None
     
+        combs[combination] = points
+        self._rotate_players()
+        
+        return None
 
     def _cross_out(self, combination):
-        self.dice = [0] * 5
-        return self._add_points(combination)
+        return self._update_scorecard(combination, 0)
         
     def _rotate_players(self):
         self._dice_rolls = 0

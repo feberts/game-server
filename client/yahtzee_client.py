@@ -53,6 +53,15 @@ if err: fatal(err)
 
 combinations = ['Ones', 'Twos', 'Threes']
 
+def select_dice():
+    selection = input('Select one or more dice (e.g.: cde): ')
+    indices = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4}
+    dice = []
+    for s in selection:
+        dice.append(indices.get(s))
+    return dice
+    
+
 while not state['gameover']:
     print_scorecard(state['scorecard'])
 
@@ -65,7 +74,7 @@ while not state['gameover']:
             if option == 0:
                 err = game.move(roll_dice='all')
             elif option == 1:
-                err = game.move(roll_dice=input('Select one or more dice (e.g.: cde): '))
+                err = game.move(roll_dice=select_dice())
             elif option == 2:
                 option = menu(combinations)
                 err = game.move(score='add points', combination=combinations[option])

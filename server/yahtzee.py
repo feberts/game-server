@@ -23,7 +23,7 @@ class Yahtzee(AbstractGame):
         self.current = random.randint(0, players - 1)
         self.gameover = False
         self.players = players
-        self.dice = []
+        self.dice = [None] * 5
         self._roll_dice()
         self.scorecards = dict.fromkeys(list(range(0, players)), self._ScoreCard()) # player ID -> scorecard
 
@@ -34,15 +34,15 @@ class Yahtzee(AbstractGame):
             self.combinations = dict.fromkeys(Yahtzee.upper_section, None) # combination -> points
 
     def _roll_dice(self, dice='all'):
-        if dice == 'all':
-            self.dice = [random.choice([1, 2, 3, 4, 5, 6]) for _ in range(5)]
-        else:
-            if len(dice) == 0: return 'no selection of dice entered'
-            index_map = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4}
-            
-            for i in list(dice):
-                if i not in index_map: return 'selection of dice not valid'
-                self.dice[index_map[i]] = random.choice([1, 2, 3, 4, 5, 6])
+        if dice == 'all': dice = [0, 1, 2, 3, 4]
+        if len(dice) == 0: return 'no selection of dice entered'
+        
+        for d in dice:
+            if type(d) != int or d < 0 or d > 4:
+                return 'selection of dice not valid'
+
+        for d in dice:
+            self.dice[d] = random.choice([1, 2, 3, 4, 5, 6])
                 
         return None
     

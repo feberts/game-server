@@ -35,13 +35,13 @@ class Yahtzee(AbstractGame):
         if dice == 'all':
             self.dice = [random.choice([1, 2, 3, 4, 5, 6]) for _ in range(5)]
         else:
-            if len(dice) == 0:
-                return 'no selection of dice entered'
+            if len(dice) == 0: return 'no selection of dice entered'
             index_map = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4}
+            
             for i in list(dice):
-                if i not in index_map:
-                    return 'selection of dice not valid'
+                if i not in index_map: return 'selection of dice not valid'
                 self.dice[index_map[i]] = random.choice([1, 2, 3, 4, 5, 6])
+                
         return None
     
     def _add_points(self, combination):
@@ -49,11 +49,12 @@ class Yahtzee(AbstractGame):
 
     def _cross_out(self, combination):
         combs = self.scorecards[self.current].combinations
-        if combination not in combs:
-            return 'no such combination'
-        if combs[combination] != None:
-            return 'cannot cross out this combination'
+        
+        if combination not in combs: return 'no such combination'
+        if combs[combination] != None: return 'combination was already used'
+        
         combs[combination] = 0
+        
         return None
         
 
@@ -83,6 +84,7 @@ class Yahtzee(AbstractGame):
                 return 'no such score operation'
         else:
             return 'no such move'
+
         return None
 
     def state(self, player_id): # override

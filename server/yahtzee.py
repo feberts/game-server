@@ -22,21 +22,19 @@ class Yahtzee(AbstractGame):
         Parameters:
         players (int): number of players
         """
-        self._state = self._State(players)
-
-    class _State:
-        def __init__(self, players):
-            self.current = random.randint(0, players - 1)
-            self.gameover = False
-            self.players = players
-            self.dice = [random.choice([1, 2, 3, 4, 5, 6]) for _ in range(5)]
-            self.scorecards = dict.fromkeys(list(range(0, players)), Yahtzee._ScoreCard()) # player ID -> scorecard
+        self.current = random.randint(0, players - 1)
+        self.gameover = False
+        self.players = players
+        self.dice = []
+        self._roll_dice()
+        self.scorecards = dict.fromkeys(list(range(0, players)), self._ScoreCard()) # player ID -> scorecard
 
     class _ScoreCard:
         def __init__(self):
             self.combinations = dict.fromkeys(['Ones','Twos','Threes'], None) # combination -> score
 
-
+    def _roll_dice(self, dice=None):
+        self.dice = [random.choice([1, 2, 3, 4, 5, 6]) for _ in range(5)]
 
 
     def move(self, args, player_id): # override
@@ -66,13 +64,13 @@ class Yahtzee(AbstractGame):
         Returns:
         dict: game state
         """
-        return {'scorecard':self._state.scorecards[player_id].combinations, 'dice':self._state.dice}
+        return {'scorecard':self.scorecards[player_id].combinations, 'dice':self.dice}
 
     def current_player(self): # override
-        return [self._state.current]
+        return [self.current]
 
     def game_over(self): # override
-        return self._state.gameover
+        return self.gameover
 
     def min_players(): # override
         return 1

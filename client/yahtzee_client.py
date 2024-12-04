@@ -32,10 +32,8 @@ def input_int(prompt):
 
 def menu(options):
     print('\nOptions:')
-
     for i in range(len(options)):
         print(f'{i:3} - {options[i]}')
-
     while True:
         try:
             option = int(input('\nYour option: '))
@@ -46,7 +44,6 @@ def menu(options):
         except:
             print('Invalid option!')
         
-
 def fatal(msg):
     print(msg)
     exit()

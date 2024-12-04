@@ -9,19 +9,35 @@ from game_server_api import GameServerAPI
 
 def print_scorecard(scorecard):
     print('\n' * 100)
-    print('Your score\n')
+    print('Your score:')
     for combination, score in scorecard.items():
         score = str(score) if score else '___'
         print(f"{combination:10s}{score:>4s}")
-
-def user_input(prompt):
+"""
+def input_int(prompt):
     while True:
         try:
             return int(input(prompt))
         except KeyboardInterrupt:
             exit()
         except:
-            print('Integers only!')
+            print('Invalid option!')
+"""
+
+def menu(options):
+    print('\nOptions:')
+    for i in range(len(options)):
+        print(f'{i:3} - {options[i]}')
+    while True:
+        try:
+            option = int(input('\nYour option:'))
+            if option < 0 or option >= len(options): raise Exception
+            return option
+        except KeyboardInterrupt:
+            exit()
+        except:
+            print('Invalid option!')
+        
 
 def fatal(msg):
     print(msg)
@@ -45,8 +61,8 @@ while not state['gameover']:
 
     if my_id in state['current']: # my turn
         while True:
-            pos = user_input(f'\nYour turn: ')
-            err = game.move(position=pos)
+            option = menu(['roll all dice', 'roll some dice', 'usw'])
+            err = game.move(position=42)
             if err: print(err)
             else: break
         blocking = False

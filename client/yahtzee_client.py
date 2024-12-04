@@ -34,6 +34,10 @@ def menu(options):
         except:
             print('Invalid option!')
         
+def print_ranking(ranking):
+    for name, points in ranking.items(): # TODO sortiert ausgeben
+        print(name, points)
+
 def fatal(msg):
     print(msg)
     exit()
@@ -95,6 +99,6 @@ while not state['gameover']:
     if err: fatal(err)
 
 print_scorecard(state['scorecard'])
-print(state['ranking'])
+print_ranking(state['ranking'])
 
 print('end')

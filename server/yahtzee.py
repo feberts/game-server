@@ -27,12 +27,28 @@ class Yahtzee(AbstractGame):
         self._dice_rolls = 0
         self._roll_dice()
         self.scorecards = dict.fromkeys(list(range(0, players)), self._ScoreCard()) # player ID -> scorecard
+        self.ranking = {} # name -> total points
 
-    upper_section = ['Ones','Twos','Threes'] # upper part of Yahtzee scorecard
+    upper_section = ['Ones', 'Twos', 'Threes'] # upper part of Yahtzee scorecard
 
     class _ScoreCard:
         def __init__(self):
             self.combinations = dict.fromkeys(Yahtzee.upper_section, None) # combination -> points
+            self.player_name = 'Bob'
+            
+        def full(self):
+            full = True
+            for point in self.combinations.values():
+                if point == None:
+                    full = False
+                    break
+            return full
+        
+        def total_points(self):
+            points = 0
+            for point in self.combinations.values():
+                points += point
+            return points
 
     def _roll_dice(self, dice='all'):
         if self._dice_rolls >= 3: return 'dice were rolled three times already'
@@ -68,9 +84,29 @@ class Yahtzee(AbstractGame):
         if combs[combination] != None: return 'combination was already used'
     
         combs[combination] = points
-        self._rotate_players()
+
+        self._check_game_over()
+
+        if self.gameover:
+            self.current = []
+            self._build_ranking()
+        else:
+            self._rotate_players()
         
         return None
+
+    def _build_ranking(self):
+        for sc in self.scorecards.values():
+            self.ranking[sc.player_name] = sc.total_points()
+        
+    def _check_game_over(self):
+        over = True
+        for sc in self.scorecards.values():
+            if not sc.full():
+                over = False
+                break
+        self.gameover = over
+            
 
     def _cross_out(self, combination):
         return self._update_scorecard(combination, 0)
@@ -121,7 +157,14 @@ class Yahtzee(AbstractGame):
         Returns:
         dict: game state
         """
-        return {'scorecard':self.scorecards[player_id].combinations, 'dice':self.dice}
+        state = {'scorecard':self.scorecards[player_id].combinations}
+
+        if self.gameover:
+            state['ranking'] = self.ranking
+        else:
+            state['dice'] = self.dice
+            
+        return state
 
     def current_player(self): # override
         return [self.current]

@@ -95,5 +95,6 @@ while not state['gameover']:
     if err: fatal(err)
 
 print_scorecard(state['scorecard'])
+print(state['ranking'])
 
 print('end')

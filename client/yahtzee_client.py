@@ -68,8 +68,13 @@ while not state['gameover']:
         print_dice(state['dice'])
         
         while True:
-            option = menu(['roll all dice again', 'roll some dice', 'add to Ones', 'add to Twos', 'add to Threes'])
-            if option == 0: err = game.move(roll='all')
+            option = menu(['roll all dice again', 'roll some dice again', 'add to Ones', 'add to Twos', 'add to Threes'])
+
+            if option == 0:
+                err = game.move(roll='all')
+            elif option == 1:
+                err = game.move(roll=input('Select one or more dice (e.g.: cde): '))
+
             if err: print(err)
             else: break
         blocking = False

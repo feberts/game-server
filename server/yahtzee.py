@@ -31,9 +31,18 @@ class Yahtzee(AbstractGame):
         def __init__(self):
             self.combinations = dict.fromkeys(['Ones','Twos','Threes'], None) # combination -> score
 
-    def _roll_dice(self, dice=None):
-        self.dice = [random.choice([1, 2, 3, 4, 5, 6]) for _ in range(5)]
-
+    def _roll_dice(self, dice='all'):
+        if dice == 'all':
+            self.dice = [random.choice([1, 2, 3, 4, 5, 6]) for _ in range(5)]
+        else:
+            if len(dice) == 0:
+                return 'no selection of dice entered'
+            index_map = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4}
+            for i in list(dice):
+                if i not in index_map:
+                    return 'selection of dice not valid'
+                self.dice[index_map[i]] = random.choice([1, 2, 3, 4, 5, 6])
+        return None
 
     def move(self, args, player_id): # override
         """
@@ -49,7 +58,7 @@ class Yahtzee(AbstractGame):
         str: error message in case the move was illegal, None otherwise
         """
         if 'roll' in args:
-            self._roll_dice()
+            return self._roll_dice(args['roll'])
         else:
             return 'no such move'
         return None

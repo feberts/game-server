@@ -60,6 +60,9 @@ while True:
     if err: print(err)
     else: break
 
+err = game.move(name=input('Enter name: '))
+if err: fatal(err)
+
 state, err = game.state(blocking=False)
 if err: fatal(err)
 

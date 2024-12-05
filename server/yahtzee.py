@@ -9,6 +9,8 @@ import random
 from abstract_game import AbstractGame
 
 #TODO make some attributes functions private
+#TODO mit 1,2 und 3 clients testen
+# TODO NOTEs entfernrn
 
 class Yahtzee(AbstractGame):
     """
@@ -22,7 +24,7 @@ class Yahtzee(AbstractGame):
         Parameters:
         players (int): number of players
         """
-        self.current = random.randint(0, players - 1)
+        self.current = list(range(0, players)) # random.randint(0, players - 1) # NOTE neu
         self.gameover = False
         self.players = players
         self.scorecards = {} # player ID -> scorecard
@@ -123,13 +125,19 @@ class Yahtzee(AbstractGame):
         self.current = (self.current + 1) % self.players
 
     def _set_name(self, name, player_id):
-        if name == '': return 'name must not be empty'
+        if not name:
+            return 'name must not be empty'
     
+        if self.scorecards[player_id].player_name:
+            return 'you cannot change your name'
+
         for sc in self.scorecards.values():
             if sc.player_name == name:
                 return 'name already in use'
         
         self.scorecards[player_id].player_name = name
+        self.current.remove(player_id) # NOTE neu
+        if not self.current: self.current = random.randint(0, self.players - 1) # NOTE neu
         
         return None
     

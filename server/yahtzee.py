@@ -167,7 +167,10 @@ class Yahtzee(AbstractGame):
         return state
 
     def current_player(self): # override
-        return [self.current]
+        if type(self.current) == list:
+            return self.current
+        else:
+            return [self.current]
 
     def game_over(self): # override
         return self.gameover

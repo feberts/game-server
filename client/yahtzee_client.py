@@ -102,5 +102,3 @@ while not state['gameover']:
 
 print_scorecard(state['scorecard'])
 print_ranking(state['ranking'])
-
-print('end')

@@ -8,6 +8,8 @@ import random
 
 from abstract_game import AbstractGame
 
+#TODO make some attributes functions private
+
 class Yahtzee(AbstractGame):
     """
     Class Yahtzee.

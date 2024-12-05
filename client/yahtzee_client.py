@@ -35,8 +35,11 @@ def menu(options):
             print('Invalid option!')
         
 def print_ranking(ranking):
-    for name, points in ranking.items(): # TODO sortiert ausgeben
-        print(name, points)
+    print('Ranking:')
+    ranking = [(name, points) for name, points in ranking.items()]
+    ranking = sorted(ranking, key=lambda t: t[1], reverse=True)
+    for name, points in ranking:
+        print(f'{name:10s}{points:5}')
 
 def fatal(msg):
     print(msg)

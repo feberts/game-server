@@ -88,7 +88,7 @@ while not state['gameover']:
 
         if err:
             print(err)
-            input('\n<press enter>')
+            input('\n<press enter>') # TODO woanders hin?
             #else: break
         blocking = False
     else:

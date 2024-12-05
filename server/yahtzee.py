@@ -34,7 +34,7 @@ class Yahtzee(AbstractGame):
     class _ScoreCard:
         def __init__(self):
             self.combinations = dict.fromkeys(Yahtzee.upper_section, None) # combination -> points
-            self.player_name = 'Bob'
+            self.player_name = 'Bob' # TODO
             
         def full(self):
             full = True

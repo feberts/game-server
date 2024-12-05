@@ -23,13 +23,18 @@ class Yahtzee(AbstractGame):
         self.current = random.randint(0, players - 1)
         self.gameover = False
         self.players = players
+        self.scorecards = {} # player ID -> scorecard
+        self._init_scorecards()
         self.dice = [None] * 5
         self._dice_rolls = 0
         self._roll_dice()
-        self.scorecards = dict.fromkeys(list(range(0, players)), self._ScoreCard()) # player ID -> scorecard
         self.ranking = {} # name -> total points
 
     upper_section = ['Ones', 'Twos', 'Threes'] # upper part of Yahtzee scorecard
+
+    def _init_scorecards(self):
+        for player_id in range(0, self.players):
+            self.scorecards[player_id] = self._ScoreCard()
 
     class _ScoreCard:
         def __init__(self):
@@ -84,7 +89,6 @@ class Yahtzee(AbstractGame):
         if combs[combination] != None: return 'combination was already used'
     
         combs[combination] = points
-
         self._check_game_over()
 
         if self.gameover:

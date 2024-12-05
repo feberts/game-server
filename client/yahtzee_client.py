@@ -35,7 +35,7 @@ def menu(options):
             print('Invalid option!')
         
 def print_ranking(ranking):
-    print('Ranking:')
+    print('\nRanking:')
     ranking = [(name, points) for name, points in ranking.items()]
     ranking = sorted(ranking, key=lambda t: t[1], reverse=True)
     for name, points in ranking:
@@ -52,7 +52,7 @@ my_id, err = game.join_game(server='127.0.0.1', port=4711, game='Yahtzee', token
 
 if err: # no game started yet
     # start new game:
-    my_id, err = game.start_game(server='127.0.0.1', port=4711, game='Yahtzee', token='mygame', players=1)
+    my_id, err = game.start_game(server='127.0.0.1', port=4711, game='Yahtzee', token='mygame', players=2)
     if err: fatal(err)
 
 state, err = game.state(blocking=False)
@@ -91,13 +91,13 @@ while not state['gameover']:
         if err:
             print(err)
             input('\n<press enter>')
-
+        
         blocking = False
     else:
-        print("Opponent's turn ...")
+        print("\nOpponent's turn ...")
         blocking = True
 
-    state, err = game.state(blocking) # TODO param blocking nötig?
+    state, err = game.state(blocking=blocking)
     if err: fatal(err)
 
 print_scorecard(state['scorecard'])

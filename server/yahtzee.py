@@ -41,7 +41,7 @@ class Yahtzee(AbstractGame):
     class _ScoreCard:
         def __init__(self):
             self.combinations = dict.fromkeys(Yahtzee.upper_section, None) # combination -> points
-            self.player_name = 'Bob' # TODO
+            self.player_name = None
             
         def full(self):
             full = True
@@ -122,6 +122,17 @@ class Yahtzee(AbstractGame):
         self._roll_dice()
         self.current = (self.current + 1) % self.players
 
+    def _set_name(self, name, player_id):
+        if name == '': return 'name must not be empty'
+    
+        for sc in self.scorecards.values():
+            if sc.player_name == name:
+                return 'name already in use'
+        
+        self.scorecards[player_id].player_name = name
+        
+        return None
+    
     def move(self, args, player_id): # override
         """
         Submit a move.
@@ -146,6 +157,8 @@ class Yahtzee(AbstractGame):
                 return self._cross_out(args['combination'])
             else:
                 return 'no such score operation'
+        elif 'name' in args:
+            return self._set_name(args['name'], player_id)
         else:
             return 'no such move'
 

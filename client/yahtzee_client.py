@@ -55,6 +55,11 @@ if err: # no game started yet
     my_id, err = game.start_game(server='127.0.0.1', port=4711, game='Yahtzee', token='mygame', players=2)
     if err: fatal(err)
 
+while True:
+    err = game.move(name=input('Enter name: '))
+    if err: print(err)
+    else: break
+
 state, err = game.state(blocking=False)
 if err: fatal(err)
 

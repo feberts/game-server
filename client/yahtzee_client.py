@@ -75,7 +75,6 @@ while not state['gameover']:
     if my_id in state['current']: # my turn
         print_dice(state['dice'])
         
-        #while True:
         option = menu(['roll all dice again', 'roll some dice again', 'add points to score', 'cross out a combination'])
 
         if option == 0:
@@ -91,8 +90,8 @@ while not state['gameover']:
 
         if err:
             print(err)
-            input('\n<press enter>') # TODO woanders hin?
-            #else: break
+            input('\n<press enter>')
+
         blocking = False
     else:
         print("Opponent's turn ...")

@@ -12,7 +12,7 @@ def print_scorecard(scorecard):
     print('Yahtzee\n')
     for category, points in scorecard.items():
         points = str(points) if points != None else ''
-        print(f"{category:10s}{points:_>3s}")
+        print(f'{category:10s}{points:_>3s}')
 
 def print_dice(dice):
     print('')
@@ -33,7 +33,7 @@ def menu(options):
             exit()
         except:
             print('Invalid option!')
-        
+
 def select_dice():
     selection = input('\nSelect one or more dice (e.g.: cde): ')
     indices = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4}
@@ -41,9 +41,9 @@ def select_dice():
     for s in selection:
         dice.append(indices.get(s))
     return dice
-    
+
 def print_ranking(ranking):
-    print('\nRanking:')
+    print('\nRanking:\n')
     ranking = [(name, points) for name, points in ranking.items()]
     ranking = sorted(ranking, key=lambda t: t[1], reverse=True)
     for name, points in ranking:
@@ -79,8 +79,8 @@ while not state['gameover']:
 
     if my_id in state['current']: # my turn
         print_dice(state['dice'])
-        
-        option = menu(['roll all dice again', 'roll some dice again', 'add points to score', 'cross out a category'])
+
+        option = menu(['roll all dice again', 'roll some dice again', 'add points to category', 'cross out a category'])
 
         if option == 0:
             err = game.move(roll_dice='all')
@@ -96,10 +96,13 @@ while not state['gameover']:
         if err:
             print(err)
             input('\n<press enter>')
-        
+
         blocking = False
     else:
-        print("\nOpponent's turn ...") # TODO print name
+        if 'current_name' in state:
+            print(f"\n{state['current_name']}'s turn ...")
+        else:
+            print('\nOpponents are choosing their names...')
         blocking = True
 
     state, err = game.state(blocking=blocking)

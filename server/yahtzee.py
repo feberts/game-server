@@ -188,6 +188,11 @@ class Yahtzee(AbstractGame):
         """
         state = {'scorecard':self._scorecards[player_id].categories}
 
+        if type(self._current) != list:
+            current_name = self._scorecards[self._current].player_name
+            if current_name:
+                state['current_name'] = current_name
+            
         if self._gameover:
             state['ranking'] = self._ranking
         else:

@@ -10,9 +10,9 @@ from game_server_api import GameServerAPI
 def print_scorecard(scorecard):
     print('\n' * 100)
     print('Yahtzee\n')
-    for combination, score in scorecard.items():
+    for category, score in scorecard.items():
         score = str(score) if score != None else ''
-        print(f"{combination:10s}{score:_>3s}")
+        print(f"{category:10s}{score:_>3s}")
 
 def print_dice(dice):
     print('')
@@ -66,7 +66,7 @@ while True:
 state, err = game.state(blocking=False)
 if err: fatal(err)
 
-combinations = ['Ones', 'Twos', 'Threes']
+categories = ['Ones', 'Twos', 'Threes']
 
 def select_dice():
     selection = input('\nSelect one or more dice (e.g.: cde): ')
@@ -83,18 +83,18 @@ while not state['gameover']:
     if my_id in state['current']: # my turn
         print_dice(state['dice'])
         
-        option = menu(['roll all dice again', 'roll some dice again', 'add points to score', 'cross out a combination'])
+        option = menu(['roll all dice again', 'roll some dice again', 'add points to score', 'cross out a category'])
 
         if option == 0:
             err = game.move(roll_dice='all')
         elif option == 1:
             err = game.move(roll_dice=select_dice())
         elif option == 2:
-            option = menu(combinations)
-            err = game.move(score='add points', combination=combinations[option])
+            option = menu(categories)
+            err = game.move(score='add points', category=categories[option])
         elif option == 3:
-            option = menu(combinations)
-            err = game.move(score='cross out', combination=combinations[option])
+            option = menu(categories)
+            err = game.move(score='cross out', category=categories[option])
 
         if err:
             print(err)

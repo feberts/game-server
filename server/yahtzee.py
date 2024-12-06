@@ -45,14 +45,13 @@ class Yahtzee(AbstractGame):
     class _ScoreCard:
         def __init__(self):
             self.player_name = None
-            self.combinations = dict.fromkeys(Yahtzee._upper_section
+            self.categories = dict.fromkeys(Yahtzee._upper_section
                                               + Yahtzee._lower_section,
-                                              None) # combination -> points
-            #TODO rename combinations to categories ?
+                                              None) # category -> points
             
         def full(self):
             full = True
-            for point in self.combinations.values():
+            for point in self.categories.values():
                 if point == None:
                     full = False
                     break
@@ -60,7 +59,7 @@ class Yahtzee(AbstractGame):
         
         def total_points(self):
             points = 0
-            for point in self.combinations.values():
+            for point in self.categories.values():
                 points += point
             return points
 
@@ -80,24 +79,24 @@ class Yahtzee(AbstractGame):
 
         return None
     
-    def _add_points(self, combination):
-        if combination in self._upper_section:
-            face_value = self._upper_section.index(combination) + 1
+    def _add_points(self, category):
+        if category in self._upper_section:
+            face_value = self._upper_section.index(category) + 1
             count = self._dice.count(face_value)
             if count == 0: return f'there are no {face_value}s'
             points = count * face_value
-            return self._update_scorecard(combination, points)
+            return self._update_scorecard(category, points)
         else:
             # NOTE implement lower section of Yahtzee scorecard here
             return 'not implemented'
 
-    def _update_scorecard(self, combination, points):
-        combs = self._scorecards[self._current].combinations
+    def _update_scorecard(self, category, points):
+        combs = self._scorecards[self._current].categories
         
-        if combination not in combs: return 'no such combination'
-        if combs[combination] != None: return 'combination was already used'
+        if category not in combs: return 'no such category'
+        if combs[category] != None: return 'category was already used'
     
-        combs[combination] = points
+        combs[category] = points
         self._check_game_over()
 
         if self._gameover:
@@ -121,8 +120,8 @@ class Yahtzee(AbstractGame):
         self._gameover = over
             
 
-    def _cross_out(self, combination):
-        return self._update_scorecard(combination, 0)
+    def _cross_out(self, category):
+        return self._update_scorecard(category, 0)
         
     def _rotate_players(self):
         self._dice_rolls = 0
@@ -162,12 +161,12 @@ class Yahtzee(AbstractGame):
         if 'roll_dice' in args:
             return self._roll_dice(args['roll_dice'])
         elif 'score' in args:
-            if 'combination' not in args:
-                return 'a combination must be passed'
+            if 'category' not in args:
+                return 'a category must be passed'
             if args['score'] == 'add points':
-                return self._add_points(args['combination'])
+                return self._add_points(args['category'])
             elif args['score'] == 'cross out':
-                return self._cross_out(args['combination'])
+                return self._cross_out(args['category'])
             else:
                 return 'no such score operation'
         elif 'name' in args:
@@ -189,7 +188,7 @@ class Yahtzee(AbstractGame):
         Returns:
         dict: game state
         """
-        state = {'scorecard':self._scorecards[player_id].combinations}
+        state = {'scorecard':self._scorecards[player_id].categories}
 
         if self._gameover:
             state['ranking'] = self._ranking

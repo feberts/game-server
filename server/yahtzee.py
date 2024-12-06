@@ -8,9 +8,7 @@ import random
 
 from abstract_game import AbstractGame
 
-#TODO make some attributes functions private
 #TODO mit 1,2 und 3 clients testen
-# TODO NOTEs entfernrn
 
 class Yahtzee(AbstractGame):
     """
@@ -24,7 +22,7 @@ class Yahtzee(AbstractGame):
         Parameters:
         players (int): number of players
         """
-        self._current = list(range(0, players)) # random.randint(0, players - 1) # NOTE neu
+        self._current = list(range(0, players)) # all players
         self._gameover = False
         self._players = players
         self._scorecards = {} # player ID -> scorecard
@@ -140,8 +138,8 @@ class Yahtzee(AbstractGame):
                 return 'name already in use'
         
         self._scorecards[player_id].player_name = name
-        self._current.remove(player_id) # NOTE neu
-        if not self._current: self._current = random.randint(0, self._players - 1) # NOTE neu
+        self._current.remove(player_id)
+        if not self._current: self._current = random.randint(0, self._players - 1)
         
         return None
     

@@ -10,9 +10,9 @@ from game_server_api import GameServerAPI
 def print_scorecard(scorecard):
     print('\n' * 100)
     print('Yahtzee\n')
-    for category, score in scorecard.items():
-        score = str(score) if score != None else ''
-        print(f"{category:10s}{score:_>3s}")
+    for category, points in scorecard.items():
+        points = str(points) if points != None else ''
+        print(f"{category:10s}{points:_>3s}")
 
 def print_dice(dice):
     print('')
@@ -34,6 +34,14 @@ def menu(options):
         except:
             print('Invalid option!')
         
+def select_dice():
+    selection = input('\nSelect one or more dice (e.g.: cde): ')
+    indices = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4}
+    dice = []
+    for s in selection:
+        dice.append(indices.get(s))
+    return dice
+    
 def print_ranking(ranking):
     print('\nRanking:')
     ranking = [(name, points) for name, points in ranking.items()]
@@ -55,27 +63,16 @@ if err: # no game started yet
     my_id, err = game.start_game(server='127.0.0.1', port=4711, game='Yahtzee', token='mygame', players=1)
     if err: fatal(err)
 
+# submit name:
 while True:
     err = game.move(name=input('Enter name: '))
     if err: print(err)
     else: break
 
-#err = game.move(name=input('Enter name: '))
-#if err: fatal(err)
+categories = ['Ones', 'Twos', 'Threes']
 
 state, err = game.state(blocking=False)
 if err: fatal(err)
-
-categories = ['Ones', 'Twos', 'Threes']
-
-def select_dice():
-    selection = input('\nSelect one or more dice (e.g.: cde): ')
-    indices = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4}
-    dice = []
-    for s in selection:
-        dice.append(indices.get(s))
-    return dice
-    
 
 while not state['gameover']:
     print_scorecard(state['scorecard'])
@@ -102,7 +99,7 @@ while not state['gameover']:
         
         blocking = False
     else:
-        print("\nOpponent's turn ...")
+        print("\nOpponent's turn ...") # TODO print name
         blocking = True
 
     state, err = game.state(blocking=blocking)

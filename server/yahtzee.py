@@ -128,7 +128,7 @@ class Yahtzee(AbstractGame):
 
         return None
 
-    def _roll_dice(self, dice=list(range(0, 5))):
+    def _roll_dice(self, dice=None):
         """
         Rolling all or just a selection of dice.
 
@@ -139,7 +139,8 @@ class Yahtzee(AbstractGame):
         str: error message in case the move was illegal, None otherwise
         """
         if self._dice_rolls >= 3: return 'dice were rolled three times already'
-        if len(dice) == 0: return 'no selection of dice entered'
+        if dice == []: return 'no selection of dice entered'
+        if dice is None: dice=list(range(0, 5))
 
         for d in dice:
             if d not in [0, 1, 2, 3, 4]:

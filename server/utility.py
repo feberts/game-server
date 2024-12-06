@@ -10,7 +10,7 @@ def generic_error(sender, message):
     """
     Create an error message.
 
-    The message is embedded into a dictionary, which is sent back to the client. To let the client know where the error was detected, the sender is prepended to the message. If the parameter message is of a type other than string, then the sender is omitted.
+    The message is embedded into a dictionary, which is sent back to the client. To let the client know where the error was detected, the sender is prepended to the message. The sender is omitted, if the message parameter is of a type other than string.
 
     Parameters:
     sender (str): let client know where the error was detected

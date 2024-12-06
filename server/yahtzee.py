@@ -19,10 +19,12 @@ class Yahtzee(AbstractGame):
 
     def __init__(self, players): # override
         """
+        Constructor.
+        
         Parameters:
         players (int): number of players
         """
-        self._current = list(range(0, players)) # all players
+        self._current = list(range(0, players))
         self._gameover = False
         self._players = players
         self._scorecards = {} # player ID -> scorecard
@@ -43,9 +45,8 @@ class Yahtzee(AbstractGame):
     class _ScoreCard:
         def __init__(self):
             self.player_name = None
-            self.categories = dict.fromkeys(Yahtzee._upper_section
-                                              + Yahtzee._lower_section,
-                                              None) # category -> points
+            self.categories = dict.fromkeys(
+                Yahtzee._upper_section + Yahtzee._lower_section, None) # category -> points
             
         def full(self):
             full = True
@@ -56,15 +57,12 @@ class Yahtzee(AbstractGame):
             return full
         
         def total_points(self):
-            points = 0
-            for point in self.categories.values():
-                points += point
-            return points
+            return sum(self.categories.values())
 
     def _roll_dice(self, dice='all'):
         if self._dice_rolls >= 3: return 'dice were rolled three times already'
-        if dice == 'all': dice = [0, 1, 2, 3, 4]
         if len(dice) == 0: return 'no selection of dice entered'
+        if dice == 'all': dice = [0, 1, 2, 3, 4]
         
         for d in dice:
             if type(d) != int or d < 0 or d > 4:
@@ -83,18 +81,19 @@ class Yahtzee(AbstractGame):
             count = self._dice.count(face_value)
             if count == 0: return f'there are no {face_value}s'
             points = count * face_value
+            
             return self._update_scorecard(category, points)
         else:
             # NOTE implement lower section of Yahtzee scorecard here
             return 'not implemented'
 
     def _update_scorecard(self, category, points):
-        combs = self._scorecards[self._current].categories
+        categories = self._scorecards[self._current].categories
         
-        if category not in combs: return 'no such category'
-        if combs[category] != None: return 'category was already used'
+        if category not in categories: return 'no such category'
+        if categories[category] != None: return 'category was already used'
     
-        combs[category] = points
+        categories[category] = points
         self._check_game_over()
 
         if self._gameover:
@@ -111,10 +110,12 @@ class Yahtzee(AbstractGame):
         
     def _check_game_over(self):
         over = True
+        
         for sc in self._scorecards.values():
             if not sc.full():
                 over = False
                 break
+            
         self._gameover = over
             
 
@@ -139,7 +140,9 @@ class Yahtzee(AbstractGame):
         
         self._scorecards[player_id].player_name = name
         self._current.remove(player_id)
-        if not self._current: self._current = random.randint(0, self._players - 1)
+        
+        if not self._current:
+            self._current = random.randint(0, self._players - 1)
         
         return None
     

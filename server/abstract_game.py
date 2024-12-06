@@ -71,6 +71,8 @@ class AbstractGame:
 
         In order to respond to invalid moves, error messages must be returned. These are then sent back to the client, where they are returned from an API function. So make sure to return meaningful messages. If a move is valid, None must be returned.
 
+        Instead of returning a string, any object that is compatible with JSON can be returned. For example, an error code or a tuple containing both, a message and an error code. In such a case, it is important to let the API user know about the structure of the error object.
+
         Parameters:
         args (dict): the player's move (must be checked)
         player_id (int): ID of the player submitting the move (no parameter check required)

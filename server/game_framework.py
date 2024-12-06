@@ -344,7 +344,7 @@ class GameFramework:
         """
         if not config.log_framework_info: return
         msg = 'Sessions:'
-        for (game_name, token), session in self._game_sessions.items():
+        for game_name, token in self._game_sessions.keys():
             msg += f'\n{game_name}:{token}'
         log.info(msg)
 

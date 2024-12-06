@@ -34,7 +34,9 @@ class Yahtzee(AbstractGame):
         self._roll_dice()
         self.ranking = {} # name -> total points
 
-    upper_section = ['Ones', 'Twos', 'Threes'] # upper part of Yahtzee scorecard
+    # upper and lower sections of Yahtzee scorecard:
+    upper_section = ['Ones', 'Twos', 'Threes']
+    lower_section = []
 
     def _init_scorecards(self):
         for player_id in range(0, self.players):
@@ -42,8 +44,11 @@ class Yahtzee(AbstractGame):
 
     class _ScoreCard:
         def __init__(self):
-            self.combinations = dict.fromkeys(Yahtzee.upper_section, None) # combination -> points
             self.player_name = None
+            self.combinations = dict.fromkeys(Yahtzee.upper_section
+                                              + Yahtzee.lower_section,
+                                              None) # combination -> points
+            #TODO rename combinations to categories ?
             
         def full(self):
             full = True
@@ -83,8 +88,8 @@ class Yahtzee(AbstractGame):
             points = count * face_value
             return self._update_scorecard(combination, points)
         else:
-            # implement lower section of Yahtzee scorecard here
-            return None
+            # NOTE implement lower section of Yahtzee scorecard here
+            return 'not implemented'
 
     def _update_scorecard(self, combination, points):
         combs = self.scorecards[self.current].combinations

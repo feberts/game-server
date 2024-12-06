@@ -52,7 +52,7 @@ my_id, err = game.join_game(server='127.0.0.1', port=4711, game='Yahtzee', token
 
 if err: # no game started yet
     # start new game:
-    my_id, err = game.start_game(server='127.0.0.1', port=4711, game='Yahtzee', token='mygame', players=2)
+    my_id, err = game.start_game(server='127.0.0.1', port=4711, game='Yahtzee', token='mygame', players=1)
     if err: fatal(err)
 
 while True:
@@ -60,8 +60,8 @@ while True:
     if err: print(err)
     else: break
 
-err = game.move(name=input('Enter name: '))
-if err: fatal(err)
+#err = game.move(name=input('Enter name: '))
+#if err: fatal(err)
 
 state, err = game.state(blocking=False)
 if err: fatal(err)

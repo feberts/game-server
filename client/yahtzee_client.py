@@ -83,7 +83,7 @@ while not state['gameover']:
         option = menu(['roll all dice again', 'roll some dice again', 'add points to category', 'cross out a category'])
 
         if option == 0:
-            err = game.move(roll_dice='all') # TODO list
+            err = game.move(roll_dice=list(range(0, 5)))
         elif option == 1:
             err = game.move(roll_dice=select_dice())
         elif option == 2:

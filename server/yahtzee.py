@@ -128,23 +128,22 @@ class Yahtzee(AbstractGame):
 
         return None
 
-    def _roll_dice(self, dice='all'):
+    def _roll_dice(self, dice=list(range(0, 5))):
         """
         Rolling all or just a selection of dice.
 
         Parameters:
-        dice (int list): list of up to five dice (0..4) to be rolled # TODO
+        dice (int list): list of up to five dice (0..4) to be rolled
 
         Returns:
         str: error message in case the move was illegal, None otherwise
         """
         if self._dice_rolls >= 3: return 'dice were rolled three times already'
         if len(dice) == 0: return 'no selection of dice entered'
-        if dice == 'all': dice = [0, 1, 2, 3, 4]
 
-        for d in dice:# TODO eleganter mit liste
-            if type(d) != int or d < 0 or d > 4:
-                return 'selection of dice not valid'
+        for d in dice:
+            if d not in [0, 1, 2, 3, 4]:
+                return 'invalid selection of dice'
 
         for d in dice:
             self._dice[d] = random.choice([1, 2, 3, 4, 5, 6])

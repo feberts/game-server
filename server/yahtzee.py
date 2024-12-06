@@ -24,29 +24,29 @@ class Yahtzee(AbstractGame):
         Parameters:
         players (int): number of players
         """
-        self.current = list(range(0, players)) # random.randint(0, players - 1) # NOTE neu
-        self.gameover = False
-        self.players = players
-        self.scorecards = {} # player ID -> scorecard
+        self._current = list(range(0, players)) # random.randint(0, players - 1) # NOTE neu
+        self._gameover = False
+        self._players = players
+        self._scorecards = {} # player ID -> scorecard
         self._init_scorecards()
-        self.dice = [None] * 5
+        self._dice = [None] * 5
         self._dice_rolls = 0
         self._roll_dice()
-        self.ranking = {} # name -> total points
+        self._ranking = {} # name -> total points
 
     # upper and lower sections of Yahtzee scorecard:
-    upper_section = ['Ones', 'Twos', 'Threes']
-    lower_section = []
+    _upper_section = ['Ones', 'Twos', 'Threes']
+    _lower_section = []
 
     def _init_scorecards(self):
-        for player_id in range(0, self.players):
-            self.scorecards[player_id] = self._ScoreCard()
+        for player_id in range(0, self._players):
+            self._scorecards[player_id] = self._ScoreCard()
 
     class _ScoreCard:
         def __init__(self):
             self.player_name = None
-            self.combinations = dict.fromkeys(Yahtzee.upper_section
-                                              + Yahtzee.lower_section,
+            self.combinations = dict.fromkeys(Yahtzee._upper_section
+                                              + Yahtzee._lower_section,
                                               None) # combination -> points
             #TODO rename combinations to categories ?
             
@@ -74,16 +74,16 @@ class Yahtzee(AbstractGame):
                 return 'selection of dice not valid'
 
         for d in dice:
-            self.dice[d] = random.choice([1, 2, 3, 4, 5, 6])
+            self._dice[d] = random.choice([1, 2, 3, 4, 5, 6])
                 
         self._dice_rolls += 1
 
         return None
     
     def _add_points(self, combination):
-        if combination in self.upper_section:
-            face_value = self.upper_section.index(combination) + 1
-            count = self.dice.count(face_value)
+        if combination in self._upper_section:
+            face_value = self._upper_section.index(combination) + 1
+            count = self._dice.count(face_value)
             if count == 0: return f'there are no {face_value}s'
             points = count * face_value
             return self._update_scorecard(combination, points)
@@ -92,7 +92,7 @@ class Yahtzee(AbstractGame):
             return 'not implemented'
 
     def _update_scorecard(self, combination, points):
-        combs = self.scorecards[self.current].combinations
+        combs = self._scorecards[self._current].combinations
         
         if combination not in combs: return 'no such combination'
         if combs[combination] != None: return 'combination was already used'
@@ -100,8 +100,8 @@ class Yahtzee(AbstractGame):
         combs[combination] = points
         self._check_game_over()
 
-        if self.gameover:
-            self.current = []
+        if self._gameover:
+            self._current = []
             self._build_ranking()
         else:
             self._rotate_players()
@@ -109,16 +109,16 @@ class Yahtzee(AbstractGame):
         return None
 
     def _build_ranking(self):
-        for sc in self.scorecards.values():
-            self.ranking[sc.player_name] = sc.total_points()
+        for sc in self._scorecards.values():
+            self._ranking[sc.player_name] = sc.total_points()
         
     def _check_game_over(self):
         over = True
-        for sc in self.scorecards.values():
+        for sc in self._scorecards.values():
             if not sc.full():
                 over = False
                 break
-        self.gameover = over
+        self._gameover = over
             
 
     def _cross_out(self, combination):
@@ -127,22 +127,22 @@ class Yahtzee(AbstractGame):
     def _rotate_players(self):
         self._dice_rolls = 0
         self._roll_dice()
-        self.current = (self.current + 1) % self.players
+        self._current = (self._current + 1) % self._players
 
     def _set_name(self, name, player_id):
         if not name:
             return 'name must not be empty'
     
-        if self.scorecards[player_id].player_name:
+        if self._scorecards[player_id].player_name:
             return 'you cannot change your name'
 
-        for sc in self.scorecards.values():
+        for sc in self._scorecards.values():
             if sc.player_name == name:
                 return 'name already in use'
         
-        self.scorecards[player_id].player_name = name
-        self.current.remove(player_id) # NOTE neu
-        if not self.current: self.current = random.randint(0, self.players - 1) # NOTE neu
+        self._scorecards[player_id].player_name = name
+        self._current.remove(player_id) # NOTE neu
+        if not self._current: self._current = random.randint(0, self._players - 1) # NOTE neu
         
         return None
     
@@ -189,23 +189,23 @@ class Yahtzee(AbstractGame):
         Returns:
         dict: game state
         """
-        state = {'scorecard':self.scorecards[player_id].combinations}
+        state = {'scorecard':self._scorecards[player_id].combinations}
 
-        if self.gameover:
-            state['ranking'] = self.ranking
+        if self._gameover:
+            state['ranking'] = self._ranking
         else:
-            state['dice'] = self.dice
+            state['dice'] = self._dice
             
         return state
 
     def current_player(self): # override
-        if type(self.current) == list:
-            return self.current
+        if type(self._current) == list:
+            return self._current
         else:
-            return [self.current]
+            return [self._current]
 
     def game_over(self): # override
-        return self.gameover
+        return self._gameover
 
     def min_players(): # override
         return 1

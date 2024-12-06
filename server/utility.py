@@ -10,18 +10,19 @@ def generic_error(sender, message):
     """
     Create an error message.
 
-    The message is embedded into a dictionary, to be sent back to the client.
+    The message is embedded into a dictionary, which is sent back to the client. To let the client know where the error was detected, the sender is prepended to the message. If the parameter message is of a type other than string, then the sender is omitted.
 
     Parameters:
-    sender (str): to let the client know where the error was detected
+    sender (str): let client know where the error was detected
     message (str): error message
 
     Returns:
     dict: contains the message
     """
-    assert type(sender) == str and len(sender) > 0
-    assert type(message) == str and len(message) > 0
-    return {'status':'error', 'message':sender + ': ' + message}
+    if type(message) == str:
+        message = sender + ': ' + message
+
+    return {'status':'error', 'message':message}
 
 def server_error(message):
     """

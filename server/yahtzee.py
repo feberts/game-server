@@ -273,8 +273,10 @@ class Yahtzee(AbstractGame):
         for sc in self._scorecards.values():
             self._ranking[sc.player_name] = sc.total_points()
 
+    @staticmethod
     def min_players(): # override
         return 1
 
+    @staticmethod
     def max_players(): # override
         return 8

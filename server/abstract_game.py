@@ -26,7 +26,8 @@ class AbstractGame:
         """
         raise NotImplementedError
 
-    def min_players(): # no self parameter
+    @staticmethod
+    def min_players():
         """
         Returns the minimal number of players.
 
@@ -37,7 +38,8 @@ class AbstractGame:
         """
         raise NotImplementedError
 
-    def max_players(): # no self parameter
+    @staticmethod
+    def max_players():
         """
         Returns the maximal number of players.
 

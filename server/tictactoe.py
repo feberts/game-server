@@ -110,8 +110,10 @@ class TicTacToe(AbstractGame):
     def game_over(self): # override
         return self._state.gameover
 
+    @staticmethod
     def min_players(): # override
         return 2
 
+    @staticmethod
     def max_players(): # override
         return 2

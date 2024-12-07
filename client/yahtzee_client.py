@@ -45,7 +45,7 @@ def select_dice():
 
 def print_ranking(ranking):
     print('\nRanking:\n')
-    ranking = [(name, points) for name, points in ranking.items()]
+    ranking = list(ranking.items())
     ranking = sorted(ranking, key=lambda t: t[1], reverse=True)
     for name, points in ranking:
         print(f'{name:10s}{points:5}')

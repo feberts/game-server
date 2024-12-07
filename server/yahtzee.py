@@ -243,8 +243,7 @@ class Yahtzee(AbstractGame):
     def current_player(self): # override
         if type(self._current) == list:
             return self._current
-        else:
-            return [self._current]
+        return [self._current]
 
     def _rotate_players(self):
         self._dice_rolls = 0

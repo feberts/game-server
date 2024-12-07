@@ -14,7 +14,7 @@ connection_timeout = 60 # seconds
 receive_size_max = int(1e6) # bytes
 
 # framework:
-game_timeout = 180 # deletion of inactive games; starting/joining a game
+game_timeout = 180 # deletion of inactive games; waiting for others to join
 
 # logging:
 log_server_info = False # useful only for debugging tcp connections (verbose)

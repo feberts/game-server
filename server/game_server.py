@@ -53,7 +53,7 @@ def handle_connection(conn, ip, port):
                 if len(request) > config.receive_size_max:
                     raise MessageSizeExceeded
 
-            if not len(request): raise ClientDisconnect
+            if not request: raise ClientDisconnect
 
             log.info(f'received {len(request)} bytes from client')
             request = str(request, 'utf-8')

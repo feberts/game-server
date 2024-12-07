@@ -112,21 +112,17 @@ class Yahtzee(AbstractGame):
         """
         if 'roll_dice' in args:
             return self._roll_dice(args['roll_dice'])
-        elif 'score' in args:
+        if 'score' in args:
             if 'category' not in args:
                 return 'a category must be passed'
             if args['score'] == 'add points':
                 return self._add_points(args['category'])
-            elif args['score'] == 'cross out':
+            if args['score'] == 'cross out':
                 return self._cross_out(args['category'])
-            else:
-                return 'no such score operation'
-        elif 'name' in args:
+            return 'no such score operation'
+        if 'name' in args:
             return self._set_name(args['name'], player_id)
-        else:
-            return 'no such move'
-
-        return None
+        return 'no such move'
 
     def _roll_dice(self, dice=None):
         """

@@ -49,7 +49,7 @@ while batches < number_of_batches:
         if winner == my_id:
             menace.win()
             win += 1
-        elif winner == None:
+        elif winner is None:
             menace.draw()
             draw += 1
         else:

@@ -36,7 +36,7 @@ while True:
     winner = state['winner']
     if winner == my_id:
         menace.win()
-    elif winner == None:
+    elif winner is None:
         menace.draw()
     else:
         menace.loss()

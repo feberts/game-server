@@ -48,7 +48,7 @@ while not game.game_over():
 print_board(state['board'])
 winner = state['winner']
 
-if winner == None:
+if winner is None:
     print('No winner!')
 else:
     print(f'Player {symbols[winner]} wins!')

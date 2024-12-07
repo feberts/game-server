@@ -11,7 +11,7 @@ def print_scorecard(scorecard):
     print('\n' * 100)
     print('Yahtzee\n')
     for category, points in scorecard.items():
-        points = str(points) if points != None else ''
+        points = str(points) if points is not None else ''
         print(f'{category:10s}{points:_>3s}')
 
 def print_dice(dice):

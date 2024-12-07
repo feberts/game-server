@@ -52,7 +52,7 @@ class Yahtzee(AbstractGame):
             """
             full = True
             for point in self.categories.values():
-                if point == None:
+                if point is None:
                     full = False
                     break
             return full

@@ -6,29 +6,32 @@ This is a demonstration of how one could implement an API with wrapper functions
 
 import game_server_api
 
-class TicTacToeAPI(game_server_api.GameServerAPI):
+class TicTacToeAPI:
     """
     Class TicTacToeAPI.
 
     This class provides API wrapper functions for tic-tac-toe.
     """
 
+    def __init__(self):
+        self._api = game_server_api.GameServerAPI()
+
     def start_game(self, token, name=''):
-        return super().start_game('127.0.0.1', 4711, 'TicTacToe', token, 2, name)
+        return self._api.start_game('127.0.0.1', 4711, 'TicTacToe', token, 2, name)
 
     def join_game(self, token, name=''):
-        return super().join_game('127.0.0.1', 4711, 'TicTacToe', token, name)
+        return self._api.join_game('127.0.0.1', 4711, 'TicTacToe', token, name)
 
     def move(self, position):
-        return super().move(position=position)
+        return self._api.move(position=position)
 
     def state(self, blocking=True):
-        state, err = super().state(blocking)
+        state, err = self._api.state(blocking)
         if err: return None, err
         return State(state['board'], state['current'][0], state['gameover'], state['winner']), None
 
     def watch(self, token, name):
-        return super().watch('127.0.0.1', 4711, 'TicTacToe', token, name)
+        return self._api.watch('127.0.0.1', 4711, 'TicTacToe', token, name)
 
 class State:
     """

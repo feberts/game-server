@@ -165,11 +165,12 @@ class Yahtzee(AbstractGame):
             count = self._dice.count(face_value)
             if count == 0: return f'there are no {face_value}s'
             points = count * face_value
-
-            return self._update_scorecard(category, points)
         else:
             # NOTE implement lower section of Yahtzee scorecard here
+            points = None
             return 'not implemented'
+
+        return self._update_scorecard(category, points)
 
     def _cross_out(self, category):
         """

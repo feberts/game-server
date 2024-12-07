@@ -12,8 +12,9 @@ def user_input(prompt):
         try:
             return int(input(prompt))
         except KeyboardInterrupt:
+            print('')
             exit()
-        except:
+        except ValueError:
             print('Integers only!')
 
 def fatal(msg):
@@ -41,5 +42,3 @@ while True:
     state, err = game.state()
     if err: fatal(err)
     if state['gameover']: break
-
-print('End')

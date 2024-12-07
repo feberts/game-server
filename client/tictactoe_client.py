@@ -21,8 +21,9 @@ def user_input(prompt):
         try:
             return int(input(prompt))
         except KeyboardInterrupt:
+            print('')
             exit()
-        except:
+        except ValueError:
             print('Integers only!')
 
 def fatal(msg):

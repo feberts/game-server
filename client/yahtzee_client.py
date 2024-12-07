@@ -30,8 +30,9 @@ def menu(options):
             if option < 0 or option >= len(options): raise Exception
             return option
         except KeyboardInterrupt:
+            print('')
             exit()
-        except:
+        except ValueError:
             print('Invalid option!')
 
 def select_dice():

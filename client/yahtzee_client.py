@@ -22,8 +22,8 @@ def print_dice(dice):
 
 def menu(options):
     print('\nOptions:')
-    for i in range(len(options)):
-        print(f'{i:3} - {options[i]}')
+    for i, opt in enumerate(options):
+        print(f'{i:3} - {opt}')
     while True:
         try:
             option = int(input('\nYour option: '))

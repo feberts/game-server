@@ -63,7 +63,7 @@ while not state.gameover:
 print_board(state.board)
 winner = state.winner
 
-if winner == None:
+if winner is None:
     print('No winner...')
 elif winner == my_id:
     print(f'You ({symbols[my_id]}) win!')

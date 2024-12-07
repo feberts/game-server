@@ -178,7 +178,7 @@ class GameSession:
         """
         # store old game instance and a list of player IDs:
         if self._game.game_over():
-            self._previous_ids = [player_id for player_id in range(1, self._n_players)]
+            self._previous_ids = list(range(1, self._n_players))
             self._previous_game = copy.deepcopy(self._game)
 
         # create new game instance:

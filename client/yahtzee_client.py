@@ -27,7 +27,7 @@ def menu(options):
     while True:
         try:
             option = int(input('\nYour option: '))
-            if option < 0 or option >= len(options): raise Exception
+            if option < 0 or option >= len(options): raise ValueError
             return option
         except KeyboardInterrupt:
             print('')

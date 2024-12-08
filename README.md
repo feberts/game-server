@@ -28,7 +28,15 @@ To run the server in a network, edit IP and port in the configuration file (`ser
 
 Adding a new game is quite easy:
 
-1. ...
+1. Add a new module to `server/`
+2. In this module, add a class that is derived from `abstract_game.AbstractGame`
+3. Implement all the base class's methods
+4. Add the new class to the list of games (`server/games.py`)
+5. Write a documentation for the client
+
+Notes:
+
+- 
 
 ## Using the API
 

@@ -3,18 +3,17 @@
 This project provides a server for multiplayer games. The main features are:
 
 - a framework that allows new games to be added easily
-- a unified but flexible API for all games
+- a uniform yet flexible API for all games
 
-Areas of application include
+Possible areas of application include:
 
 - programming courses in which students implement game clients
-- projects in the area of machine learning
-- competitive programming contests
+- projects in the area of reinforcement learning
 - multiplayer game development in general
 
-## Quick start
+## Quickstart
 
-If you want to try this project on your machine, start the server by running `server/game_server.py`. Then run two tic-tac-toe clients (`client/tictactoe_client.py`) in separate shells. No further configuration is required.
+To try this project on your machine, start the server by running `server/game_server.py`. Then run two tic-tac-toe clients (`client/tictactoe_client.py`) in separate shells. No further configuration is required.
 
 ## Operating the server
 

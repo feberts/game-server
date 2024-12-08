@@ -1,7 +1,7 @@
 """
 Tic-tac-toe game.
 
-This module provides a tic-tac-toe implementation to be used by the framework.
+This module provides a tic-tac-toe implementation that is used by the framework.
 """
 
 import random

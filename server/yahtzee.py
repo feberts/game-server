@@ -1,7 +1,7 @@
 """
 Yahtzee game.
 
-This module provides a Yahtzee implementation to be used by the framework.
+This module provides a Yahtzee implementation that is used by the framework.
 """
 
 import random

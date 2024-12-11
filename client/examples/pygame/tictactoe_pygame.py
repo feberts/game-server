@@ -82,6 +82,8 @@ class TicTacToe():
         try:
             x, y = pos[0] // self.cell_size, pos[1] // self.cell_size
             if self.table[x][y] == "-":
+                #print(x,y)
+                self.game.move(position=y * 3 + x)
                 self.table[x][y] = self.player
                 self._draw_char(x,y,self.player)
                 self._game_check()

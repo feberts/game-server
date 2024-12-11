@@ -83,9 +83,9 @@ class TicTacToe():
             x, y = pos[0] // self.cell_size, pos[1] // self.cell_size
             if self.table[x][y] == "-":
                 #print(x,y)
-                self.game.move(position=y * 3 + x)
+                self.game.move(position=y * 3 + x) # TODO check if valid
                 self.table[x][y] = self.player
-                self._draw_char(x,y,self.player)
+                #self._draw_char(x,y,self.player)
                 self._game_check()
                 self._change_player()
         except:
@@ -95,9 +95,9 @@ class TicTacToe():
 
     # draws character of the recent player to the selected table cell
     def _draw_char(self, x, y, player):
-        if self.player == "O":
+        if player == 0:
             img = pygame.image.load("mark_o.png")
-        elif self.player == "X":
+        elif player == 1:
             img = pygame.image.load("mark_x.png")
         img = pygame.transform.scale(img, (self.cell_size, self.cell_size))
         screen.blit(img, (x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size))
@@ -212,11 +212,20 @@ class TicTacToe():
         # draws the line strike
         line_strike = pygame.draw.line(screen, self.line_color, [start_x, start_y], [end_x, end_y], 8)
 
+    def draw_marks(self):
+        self.state, err = self.game.state(blocking=False)
+        if err: fatal(err)
+        for y in range(3):
+            for x in range(3):
+                player = self.state['board'][y * 3 + x]
+                if player in (0, 1):
+                    self._draw_char(x,y,player)
 
     def main(self):
         screen.fill(self.background_color)
         self._draw_table()
         while self.running:
+            self.draw_marks()
             self._message()
             for self.event in pygame.event.get():
                 if self.event.type == pygame.QUIT:

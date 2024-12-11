@@ -20,20 +20,24 @@ window_size = (450, 500)
 screen = pygame.display.set_mode(window_size)
 pygame.display.set_caption("Tic Tac Toe")
 
+def fatal(msg):
+    print(msg)
+    exit()
 
 class TicTacToe():
 
     def __init__(self, table_size):
         self.game = GameServerAPI()
         # join game:
-        my_id, err = self.game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
+        self.my_id, err = self.game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
 
         if err: # no game started yet
             # start new game:
             my_id, err = self.game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
-            if err:
-                print(msg)
-                exit()
+            if err: fatal(err)
+
+        self.state, err = game.state(blocking=False)
+        if err: fatal(err)
 
         self.table_size = table_size
         self.cell_size = table_size // 3

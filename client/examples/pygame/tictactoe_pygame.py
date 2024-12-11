@@ -10,6 +10,7 @@ https://github.com/x4nth055/pythoncode-tutorials/tree/master/gui-programming/tic
 """
 import pygame
 from pygame.locals import *
+from game_server_api import GameServerAPI
 
 pygame.init()
 pygame.font.init()
@@ -23,6 +24,17 @@ pygame.display.set_caption("Tic Tac Toe")
 class TicTacToe():
 
     def __init__(self, table_size):
+        self.game = GameServerAPI()
+        # join game:
+        my_id, err = self.game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
+
+        if err: # no game started yet
+            # start new game:
+            my_id, err = self.game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
+            if err:
+                print(msg)
+                exit()
+
         self.table_size = table_size
         self.cell_size = table_size // 3
         self.table_space = 20

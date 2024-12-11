@@ -28,12 +28,13 @@ class TicTacToe():
 
     def __init__(self, table_size):
         self.game = GameServerAPI() # feb
+        self.my_id = None # feb
         # join game:
         self.my_id, err = self.game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame') # feb
 
         if err: # no game started yet # feb
             # start new game: # feb
-            my_id, err = self.game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2) # feb
+            self.my_id, err = self.game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2) # feb
             if err: fatal(err) # feb
 
         self.state, err = self.game.state(blocking=False) # feb

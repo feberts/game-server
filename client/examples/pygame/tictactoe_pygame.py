@@ -10,7 +10,7 @@ https://github.com/x4nth055/pythoncode-tutorials/tree/master/gui-programming/tic
 """
 import pygame
 from pygame.locals import *
-from game_server_api import GameServerAPI
+from game_server_api import GameServerAPI # feb
 
 pygame.init()
 pygame.font.init()
@@ -20,24 +20,24 @@ window_size = (450, 500)
 screen = pygame.display.set_mode(window_size)
 pygame.display.set_caption("Tic Tac Toe")
 
-def fatal(msg):
-    print(msg)
-    exit()
+def fatal(msg): # feb
+    print(msg) # feb
+    exit() # feb
 
 class TicTacToe():
 
     def __init__(self, table_size):
-        self.game = GameServerAPI()
+        self.game = GameServerAPI() # feb
         # join game:
-        self.my_id, err = self.game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
+        self.my_id, err = self.game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame') # feb
 
-        if err: # no game started yet
-            # start new game:
-            my_id, err = self.game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
-            if err: fatal(err)
+        if err: # no game started yet # feb
+            # start new game: # feb
+            my_id, err = self.game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2) # feb
+            if err: fatal(err) # feb
 
-        self.state, err = self.game.state(blocking=False)
-        if err: fatal(err)
+        self.state, err = self.game.state(blocking=False) # feb
+        if err: fatal(err) # feb
 
         self.table_size = table_size
         self.cell_size = table_size // 3
@@ -82,8 +82,7 @@ class TicTacToe():
         try:
             x, y = pos[0] // self.cell_size, pos[1] // self.cell_size
             if self.table[x][y] == "-":
-                #print(x,y)
-                self.game.move(position=y * 3 + x) # TODO check if valid
+                self.game.move(position=y * 3 + x) #  # feb # TODO check if valid
                 self.table[x][y] = self.player
                 #self._draw_char(x,y,self.player)
                 self._game_check()
@@ -212,20 +211,20 @@ class TicTacToe():
         # draws the line strike
         line_strike = pygame.draw.line(screen, self.line_color, [start_x, start_y], [end_x, end_y], 8)
 
-    def draw_marks(self):
-        self.state, err = self.game.state(blocking=False)
-        if err: fatal(err)
-        for y in range(3):
-            for x in range(3):
-                player = self.state['board'][y * 3 + x]
-                if player in (0, 1):
-                    self._draw_char(x,y,player)
+    def draw_marks(self): # feb
+        self.state, err = self.game.state(blocking=False) # feb
+        if err: fatal(err) # feb
+        for y in range(3): # feb
+            for x in range(3): # feb
+                player = self.state['board'][y * 3 + x] # feb
+                if player in (0, 1): # feb
+                    self._draw_char(x,y,player) # feb
 
     def main(self):
         screen.fill(self.background_color)
         self._draw_table()
         while self.running:
-            self.draw_marks()
+            self.draw_marks() # feb
             self._message()
             for self.event in pygame.event.get():
                 if self.event.type == pygame.QUIT:

@@ -95,7 +95,7 @@ class TicTacToe():
                 self.game.move(position=y * 3 + x) #  # feb # TODO check if valid
                 self.table[x][y] = self.player
                 #self._draw_char(x,y,self.player)
-                self._game_check()
+                #self._game_check()
                 self._change_player()
         except:
             print("Click inside the table only")
@@ -114,14 +114,22 @@ class TicTacToe():
 
     # instructions and game-state messages
     def _message(self):
-        if self.winner is not None:
-            screen.fill(self.game_over_bg_color, (130, 445, 193, 35))
-            msg = self.font.render(f'{self.winner} WINS!!', True, self.game_over_color)
-            screen.blit(msg,(144,445))
-        elif not self.taking_move:
-            screen.fill(self.game_over_bg_color, (130, 445, 193, 35))
-            instructions = self.font.render('DRAW!!', True, self.game_over_color)
-            screen.blit(instructions,(165,445))
+        #if self.winner is not None:
+        if self.state['gameover']: # feb
+            screen.fill(self.game_over_bg_color, (135, 445, 188, 35))
+            #msg = self.font.render(f'{self.winner} WINS!!', True, self.game_over_color)
+            if self.state['winner'] == self.my_id: # feb
+                msg = f'You ({self.marks[self.my_id]}) win! ' # feb
+            elif self.state['winner'] is None: # feb
+                msg = 'No winner ...' # feb
+            else: # feb
+                msg = f'You ({self.marks[self.my_id]}) lose...' # feb
+            msg = self.font.render(msg, True, self.instructions_color,self.background_color) # feb
+            screen.blit(msg,(75,445))
+        #elif not self.taking_move:
+            #screen.fill(self.game_over_bg_color, (130, 445, 193, 35))
+            #instructions = self.font.render('DRAW!!', True, self.game_over_color)
+            #screen.blit(instructions,(165,445))
         else:
             screen.fill(self.background_color, (135, 445, 188, 35))
             

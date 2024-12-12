@@ -70,16 +70,7 @@ class TicTacToe():
         self.table_space = 20
 
         self.marks = ('X', 'O') # feb
-        self.player = None # feb
-        self._change_player()
-        self.winner = None
-        self.taking_move = True
-        self.running = True
-        self.table = []
-        for col in range(3):
-            self.table.append([])
-            for row in range(3):
-                self.table[col].append("-")
+        self._request_state()
 
         self.background_color = (255, 174, 66)
         self.table_color = (50, 50, 50)
@@ -99,23 +90,16 @@ class TicTacToe():
         r2 = pygame.draw.line(screen, self.table_color, [tb_space_point[0], cell_space_point[1]], [tb_space_point[1], cell_space_point[1]], 8)
         c2 = pygame.draw.line(screen, self.table_color, [cell_space_point[1], tb_space_point[0]], [cell_space_point[1], tb_space_point[1]], 8)
 
-    def _change_player(self):
+    def _request_state(self): # feb
         self.state, err = self.game.state(blocking=False) # feb
         if err: fatal(err) # feb
-
-        if 0 in self.state['current']: # feb
-            self.player = "X" # feb
-        else: # feb
-            self.player = "O" # feb
 
     # processing clicks to move
     def _move(self, pos):
         try:
             x, y = pos[0] // self.cell_size, pos[1] // self.cell_size
-            if self.table[x][y] == "-":
-                self.game.move(position=y * 3 + x) # feb
-                self.table[x][y] = self.player
-                self._change_player()
+            self.game.move(position=y * 3 + x) # feb
+            self._request_state()
         except:
             print("Click inside the table only")
             raise
@@ -150,7 +134,6 @@ class TicTacToe():
             else: # feb
                 instr = 'Opponent ... ' # feb
             instructions = self.font.render(instr, True, self.instructions_color,self.background_color)
-            #instructions = self.font.render(f'{self.player} to move', True, self.instructions_color)
             screen.blit(instructions,(75,445))
 
     def strike(self):
@@ -213,25 +196,25 @@ class TicTacToe():
     def main(self):
         screen.fill(self.background_color)
         self._draw_table()
+        running = True
 
-        while self.running:
+        while running:
             self.draw_marks() # feb
             self._message()
 
             for self.event in pygame.event.get():
                 if self.event.type == pygame.QUIT:
-                    self.running = False
+                    running = False
 
                 if self.event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.taking_move:
-                        self._move(self.event.pos)
+                    self._move(self.event.pos)
 
             pygame.display.flip()
             self.FPS.tick(60)
 
             self.state, err = self.game.state(blocking=False) # feb
             if err: fatal(err) # feb
-            self._change_player()
+            self._request_state()
 
 if __name__ == "__main__":
     g = TicTacToe(window_size[0])

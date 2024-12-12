@@ -44,7 +44,8 @@ class TicTacToe():
         self.cell_size = table_size // 3
         self.table_space = 20
 
-        self.player = "X"
+        self.player = None # feb
+        self._change_player() # feb
         self.winner = None
         self.taking_move = True
         self.running = True
@@ -75,7 +76,13 @@ class TicTacToe():
 
 
     def _change_player(self):
-        self.player = "O" if self.player == "X" else "X"
+        #self.player = "O" if self.player == "X" else "X"
+        self.state, err = self.game.state(blocking=False) # feb
+        if err: fatal(err) # feb
+        if 0 in self.state['current']: # feb
+            self.player = "X" # feb
+        else: # feb
+            self.player = "O" # feb
 
 
     # processing clicks to move
@@ -96,9 +103,9 @@ class TicTacToe():
     # draws character of the recent player to the selected table cell
     def _draw_char(self, x, y, player):
         if player == 0:
-            img = pygame.image.load("mark_o.png")
-        elif player == 1:
             img = pygame.image.load("mark_x.png")
+        elif player == 1:
+            img = pygame.image.load("mark_o.png")
         img = pygame.transform.scale(img, (self.cell_size, self.cell_size))
         screen.blit(img, (x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size))
 
@@ -237,6 +244,10 @@ class TicTacToe():
 
             pygame.display.flip()
             self.FPS.tick(60)
+            
+            self.state, err = self.game.state(blocking=False) # feb
+            if err: fatal(err) # feb
+            self._change_player() # feb
 
 
 if __name__ == "__main__":

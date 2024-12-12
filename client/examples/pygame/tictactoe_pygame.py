@@ -43,7 +43,9 @@ class TicTacToe():
         self.table_size = table_size
         self.cell_size = table_size // 3
         self.table_space = 20
+        
 
+        self.marks = ('X', 'O') # feb
         self.player = None # feb
         self._change_player() # feb
         self.winner = None
@@ -122,8 +124,14 @@ class TicTacToe():
             screen.blit(instructions,(165,445))
         else:
             screen.fill(self.background_color, (135, 445, 188, 35))
-            instructions = self.font.render(f'{self.player} to move', True, self.instructions_color)
-            screen.blit(instructions,(135,445))
+            
+            if self.my_id in self.state['current']: # feb
+                instr = f'Your ({self.marks[self.my_id]}) turn' # feb
+            else: # feb
+                instr = 'Opponent ... ' # feb
+            instructions = self.font.render(instr, True, self.instructions_color,self.background_color) # feb
+            #instructions = self.font.render(f'{self.player} to move', True, self.instructions_color)
+            screen.blit(instructions,(75,445))
 
 
     def _game_check(self):

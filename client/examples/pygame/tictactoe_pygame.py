@@ -1,13 +1,38 @@
 #!/usr/bin/env python3
 """
-TODO Kommentar
+This is a graphical tic-tac-toe client using Pygame (www.pygame.org). It is based on an implementation found on GitHub.
 
-Michael Maranan
-https://thepythoncode.com/article/make-a-tic-tac-toe-game-pygame-in-python
+The original implementation is a stand-alone program to be used by two human players on the same machine. It was reworked by me (Fabian Eberts) to use my game server API and play against a remote client. Most of the game logic was removed and replaced by calls to API functions.
 
-Rockikz (GitHub user)
+Lines added by me are marked with a 'feb' comment.
+
+
+Source of the original implementation:
+GitHub user 'x4nth055' (Rockikz)
 https://github.com/x4nth055/pythoncode-tutorials/tree/master/gui-programming/tictactoe-game
+Accessed: 2024-12-12
+
+The implementation is also presented on this website:
+Author: Michael Maranan
+https://thepythoncode.com/article/make-a-tic-tac-toe-game-pygame-in-python
+Accessed: 2024-12-12
+
+
+MIT License
+
+Copyright (c) 2019 Rockikz
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 """
+
 import pygame
 from pygame.locals import *
 from game_server_api import GameServerAPI # feb

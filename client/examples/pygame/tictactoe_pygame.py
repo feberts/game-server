@@ -126,6 +126,7 @@ class TicTacToe():
                 msg = f'You ({self.marks[self.my_id]}) lose...' # feb
             msg = self.font.render(msg, True, self.instructions_color,self.background_color) # feb
             screen.blit(msg,(75,445))
+            self.strike() # feb
         #elif not self.taking_move:
             #screen.fill(self.game_over_bg_color, (130, 445, 193, 35))
             #instructions = self.font.render('DRAW!!', True, self.game_over_color)
@@ -141,7 +142,34 @@ class TicTacToe():
             #instructions = self.font.render(f'{self.player} to move', True, self.instructions_color)
             screen.blit(instructions,(75,445))
 
+    def strike(self): # feb
+        # 0 1 2
+        # 3 4 5
+        # 6 7 8
+        #self._pattern_strike(pattern_list[0],pattern_list[-1],"ver")
+        #self._pattern_strike(pattern_list[0],pattern_list[-1],"hor")
+        #self._pattern_strike((0,0),(2,2),"left-diag")
+        #self._pattern_strike((2,0),(0,2),"right-diag")
+        if self.state['gameover'] and self.state['winner'] is not None:
+            b = self.state['board']
+            if b[0] == b[1] == b[2] and b[2] != -1:
+                self._pattern_strike((0,0),(2,0),"hor")
+            elif b[3] == b[4] == b[5] and b[5] != -1:
+                self._pattern_strike((0,1),(2,1),"hor")
+            elif b[6] == b[7] == b[8] and b[8] != -1:
+                self._pattern_strike((0,2),(2,2),"hor")
+            elif b[0] == b[3] == b[6] and b[6] != -1:
+                self._pattern_strike((0,0),(0,2),"ver")
+            elif b[1] == b[4] == b[7] and b[7] != -1:
+                self._pattern_strike((1,0),(1,2),"ver")
+            elif b[2] == b[5] == b[8] and b[8] != -1:
+                self._pattern_strike((2,0),(2,2),"ver")
+            elif b[0] == b[4] == b[8] and b[8] != -1:
+                self._pattern_strike((0,0),(2,2),"left-diag")
+            elif b[2] == b[4] == b[6] and b[6] != -1:
+                self._pattern_strike((2,0),(0,2),"right-diag")
 
+        
     def _game_check(self):
         # vertical check
         for x_index, col in enumerate(self.table):

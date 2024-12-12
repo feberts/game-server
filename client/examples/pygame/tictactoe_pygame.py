@@ -91,8 +91,9 @@ class TicTacToe():
         c2 = pygame.draw.line(screen, self.table_color, [cell_space_point[1], tb_space_point[0]], [cell_space_point[1], tb_space_point[1]], 8)
 
     def _request_state(self): # feb
-        self.state, err = self.game.state(blocking=False) # feb
-        if err: fatal(err) # feb
+        #self.state, err = self.game.state(blocking=False) # feb
+        #if err: fatal(err) # feb
+        pass
 
     # processing clicks to move
     def _move(self, pos):
@@ -185,8 +186,8 @@ class TicTacToe():
         line_strike = pygame.draw.line(screen, self.line_color, [start_x, start_y], [end_x, end_y], 8)
 
     def draw_marks(self): # feb
-        self.state, err = self.game.state(blocking=False) # feb
-        if err: fatal(err) # feb
+        #self.state, err = self.game.state(blocking=False) # feb
+        #if err: fatal(err) # feb
         for y in range(3): # feb
             for x in range(3): # feb
                 player = self.state['board'][y * 3 + x] # feb
@@ -197,6 +198,7 @@ class TicTacToe():
         screen.fill(self.background_color)
         self._draw_table()
         running = True
+        blocking = True # feb
 
         while running:
             self.draw_marks() # feb
@@ -208,12 +210,14 @@ class TicTacToe():
 
                 if self.event.type == pygame.MOUSEBUTTONDOWN:
                     self._move(self.event.pos)
+                    blocking = False # feb
 
             pygame.display.flip()
             self.FPS.tick(60)
 
-            self.state, err = self.game.state(blocking=False) # feb
+            self.state, err = self.game.state(blocking=False) # feb # TODO separate thread
             if err: fatal(err) # feb
+            blocking = True # feb
             self._request_state()
 
 if __name__ == "__main__":

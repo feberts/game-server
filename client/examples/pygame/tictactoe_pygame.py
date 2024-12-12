@@ -32,8 +32,8 @@ class TicTacToe():
         # join game:
         self.my_id, err = self.game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame') # feb
 
-        if err: # no game started yet # feb
-            # start new game: # feb
+        if err: # no game started yet
+            # start new game:
             self.my_id, err = self.game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2) # feb
             if err: fatal(err) # feb
 
@@ -43,11 +43,10 @@ class TicTacToe():
         self.table_size = table_size
         self.cell_size = table_size // 3
         self.table_space = 20
-        
 
         self.marks = ('X', 'O') # feb
         self.player = None # feb
-        self._change_player() # feb
+        self._change_player()
         self.winner = None
         self.taking_move = True
         self.running = True
@@ -66,7 +65,6 @@ class TicTacToe():
         self.font = pygame.font.SysFont("Courier New", 35)
         self.FPS = pygame.time.Clock()
 
-
     # draws table representation
     def _draw_table(self):
         tb_space_point = (self.table_space, self.table_size - self.table_space)
@@ -76,31 +74,26 @@ class TicTacToe():
         r2 = pygame.draw.line(screen, self.table_color, [tb_space_point[0], cell_space_point[1]], [tb_space_point[1], cell_space_point[1]], 8)
         c2 = pygame.draw.line(screen, self.table_color, [cell_space_point[1], tb_space_point[0]], [cell_space_point[1], tb_space_point[1]], 8)
 
-
     def _change_player(self):
-        #self.player = "O" if self.player == "X" else "X"
         self.state, err = self.game.state(blocking=False) # feb
         if err: fatal(err) # feb
+
         if 0 in self.state['current']: # feb
             self.player = "X" # feb
         else: # feb
             self.player = "O" # feb
-
 
     # processing clicks to move
     def _move(self, pos):
         try:
             x, y = pos[0] // self.cell_size, pos[1] // self.cell_size
             if self.table[x][y] == "-":
-                self.game.move(position=y * 3 + x) #  # feb # TODO check if valid
+                self.game.move(position=y * 3 + x) # feb
                 self.table[x][y] = self.player
-                #self._draw_char(x,y,self.player)
-                #self._game_check()
                 self._change_player()
         except:
             print("Click inside the table only")
             raise
-
 
     # draws character of the recent player to the selected table cell
     def _draw_char(self, x, y, player):
@@ -111,46 +104,32 @@ class TicTacToe():
         img = pygame.transform.scale(img, (self.cell_size, self.cell_size))
         screen.blit(img, (x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size))
 
-
     # instructions and game-state messages
     def _message(self):
-        #if self.winner is not None:
         if self.state['gameover']: # feb
             screen.fill(self.game_over_bg_color, (135, 445, 188, 35))
-            #msg = self.font.render(f'{self.winner} WINS!!', True, self.game_over_color)
             if self.state['winner'] == self.my_id: # feb
                 msg = f'You ({self.marks[self.my_id]}) win! ' # feb
             elif self.state['winner'] is None: # feb
                 msg = 'No winner ...' # feb
             else: # feb
                 msg = f'You ({self.marks[self.my_id]}) lose...' # feb
-            msg = self.font.render(msg, True, self.instructions_color,self.background_color) # feb
+            msg = self.font.render(msg, True, self.instructions_color,self.background_color)
             screen.blit(msg,(75,445))
             self.strike() # feb
-        #elif not self.taking_move:
-            #screen.fill(self.game_over_bg_color, (130, 445, 193, 35))
-            #instructions = self.font.render('DRAW!!', True, self.game_over_color)
-            #screen.blit(instructions,(165,445))
         else:
             screen.fill(self.background_color, (135, 445, 188, 35))
-            
+
             if self.my_id in self.state['current']: # feb
                 instr = f'Your ({self.marks[self.my_id]}) turn' # feb
             else: # feb
                 instr = 'Opponent ... ' # feb
-            instructions = self.font.render(instr, True, self.instructions_color,self.background_color) # feb
+            instructions = self.font.render(instr, True, self.instructions_color,self.background_color)
             #instructions = self.font.render(f'{self.player} to move', True, self.instructions_color)
             screen.blit(instructions,(75,445))
 
-    def strike(self): # feb
-        # 0 1 2
-        # 3 4 5
-        # 6 7 8
-        #self._pattern_strike(pattern_list[0],pattern_list[-1],"ver")
-        #self._pattern_strike(pattern_list[0],pattern_list[-1],"hor")
-        #self._pattern_strike((0,0),(2,2),"left-diag")
-        #self._pattern_strike((2,0),(0,2),"right-diag")
-        if self.state['gameover'] and self.state['winner'] is not None:
+    def strike(self):
+        if self.state['gameover'] and self.state['winner'] is not None: # feb
             b = self.state['board']
             if b[0] == b[1] == b[2] and b[2] != -1:
                 self._pattern_strike((0,0),(2,0),"hor")
@@ -168,72 +147,6 @@ class TicTacToe():
                 self._pattern_strike((0,0),(2,2),"left-diag")
             elif b[2] == b[4] == b[6] and b[6] != -1:
                 self._pattern_strike((2,0),(0,2),"right-diag")
-
-        
-    def _game_check(self):
-        # vertical check
-        for x_index, col in enumerate(self.table):
-            win = True
-            pattern_list = []
-            for y_index, content in enumerate(col):
-                if content != self.player:
-                    win = False
-                    break
-                else:
-                    pattern_list.append((x_index, y_index))
-            if win == True:
-                self._pattern_strike(pattern_list[0],pattern_list[-1],"ver")
-                self.winner = self.player
-                self.taking_move = False
-                break
-
-        # horizontal check
-        for row in range(len(self.table)):
-            win = True
-            pattern_list = []
-            for col in range(len(self.table)):
-                if self.table[col][row] != self.player:
-                    win = False
-                    break
-                else:
-                    pattern_list.append((col, row))
-            if win == True:
-                self._pattern_strike(pattern_list[0],pattern_list[-1],"hor")
-                self.winner = self.player
-                self.taking_move = False
-                break
-
-        # left diagonal check
-        for index, row in enumerate(self.table):
-            win = True
-            if row[index] != self.player:
-                win = False
-                break
-        if win == True:
-            self._pattern_strike((0,0),(2,2),"left-diag")
-            self.winner = self.player
-            self.taking_move = False
-
-        # right diagonal check
-        for index, row in enumerate(self.table[::-1]):
-            win = True
-            if row[index] != self.player:
-                win = False
-                break
-        if win == True:
-            self._pattern_strike((2,0),(0,2),"right-diag")
-            self.winner = self.player
-            self.taking_move = False
-
-        # blank table cells check
-        blank_cells = 0
-        for row in self.table:
-            for cell in row:
-                if cell == "-":
-                    blank_cells += 1
-        if blank_cells == 0:
-            self.taking_move = False
-
 
     # strikes a line to winning patterns if already has
     def _pattern_strike(self, start_point, end_point, line_type):
@@ -270,14 +183,16 @@ class TicTacToe():
             for x in range(3): # feb
                 player = self.state['board'][y * 3 + x] # feb
                 if player in (0, 1): # feb
-                    self._draw_char(x,y,player) # feb
+                    self._draw_char(x,y,player)
 
     def main(self):
         screen.fill(self.background_color)
         self._draw_table()
+
         while self.running:
             self.draw_marks() # feb
             self._message()
+
             for self.event in pygame.event.get():
                 if self.event.type == pygame.QUIT:
                     self.running = False
@@ -288,11 +203,10 @@ class TicTacToe():
 
             pygame.display.flip()
             self.FPS.tick(60)
-            
+
             self.state, err = self.game.state(blocking=False) # feb
             if err: fatal(err) # feb
-            self._change_player() # feb
-
+            self._change_player()
 
 if __name__ == "__main__":
     g = TicTacToe(window_size[0])

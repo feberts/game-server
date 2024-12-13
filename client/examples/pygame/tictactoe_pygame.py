@@ -17,6 +17,8 @@ Author: Michael Maranan
 https://thepythoncode.com/article/make-a-tic-tac-toe-game-pygame-in-python
 Accessed: 2024-12-12
 
+The two PNG files were downloaded from the same website.
+
 
 MIT License
 
@@ -123,7 +125,7 @@ class TicTacToe():
                 msg = f'You ({self.marks[self.my_id]}) lose...' # feb
             msg = self.font.render(msg, True, self.instructions_color,self.background_color)
             screen.blit(msg,(75,445))
-            self.strike() # feb
+            self._strike()
         else:
             screen.fill(self.background_color, (135, 445, 188, 35))
 
@@ -134,7 +136,7 @@ class TicTacToe():
             instructions = self.font.render(instr, True, self.instructions_color,self.background_color)
             screen.blit(instructions,(75,445))
 
-    def strike(self):
+    def _strike(self):
         if self.state['gameover'] and self.state['winner'] is not None: # feb
             b = self.state['board'] # feb
             if b[0] == b[1] == b[2] and b[2] != -1:
@@ -182,9 +184,9 @@ class TicTacToe():
         # draws the line strike
         line_strike = pygame.draw.line(screen, self.line_color, [start_x, start_y], [end_x, end_y], 16)
 
-    def draw_marks(self):
-        for y in range(3): # feb
-            for x in range(3): # feb
+    def _draw_marks(self):
+        for y in range(3):
+            for x in range(3):
                 player = self.state['board'][y * 3 + x] # feb
                 if player in (0, 1): # feb
                     self._draw_char(x,y,player)
@@ -209,7 +211,7 @@ class TicTacToe():
         threading.Thread(target=self._request_state, args=(), daemon=True).start() # feb
 
         while running:
-            self.draw_marks()
+            self._draw_marks()
             self._message()
 
             for self.event in pygame.event.get():

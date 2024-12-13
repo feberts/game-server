@@ -78,7 +78,7 @@ class TicTacToe():
 
         self.background_color = (255, 174, 66)
         self.table_color = (50, 50, 50)
-        self.line_color = (190, 0, 10)
+        self.line_color = (0, 175, 0)
         self.instructions_color = (17, 53, 165)
         self.game_over_bg_color = (47, 98, 162)
         self.game_over_color = (255, 179, 1)
@@ -180,7 +180,7 @@ class TicTacToe():
             end_x, end_y = self.table_space, self.table_size - self.table_space
 
         # draws the line strike
-        line_strike = pygame.draw.line(screen, self.line_color, [start_x, start_y], [end_x, end_y], 8)
+        line_strike = pygame.draw.line(screen, self.line_color, [start_x, start_y], [end_x, end_y], 16)
 
     def draw_marks(self):
         for y in range(3): # feb

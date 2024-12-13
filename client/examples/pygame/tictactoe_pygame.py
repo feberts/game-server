@@ -4,7 +4,7 @@ This is a graphical tic-tac-toe client using Pygame (www.pygame.org). It is base
 
 The original implementation is a stand-alone program to be used by two human players on the same machine. It was reworked by me (Fabian Eberts) to use my game server API and play against a remote client. Most of the game logic was removed and replaced by calls to API functions.
 
-Lines added by me are marked with a 'feb' comment.
+Code added by me is marked with a 'feb' comment.
 
 
 Source of the original implementation:
@@ -46,33 +46,35 @@ window_size = (450, 500)
 screen = pygame.display.set_mode(window_size)
 pygame.display.set_caption("Tic Tac Toe")
 
-def fatal(msg): # feb
-    print(msg) # feb
-    exit() # feb
+def fatal(msg): # feb (function)
+    print(msg)
+    exit()
 
 class TicTacToe():
 
     def __init__(self, table_size):
-        self.game = GameServerAPI() # feb
-        self.my_id = None # feb
+        # feb start
+        self.game = GameServerAPI()
+        self.my_id = None
+
         # join game:
-        self.my_id, err = self.game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame') # feb
+        self.my_id, err = self.game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
 
         if err: # no game started yet
             # start new game:
-            self.my_id, err = self.game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2) # feb
-            if err: fatal(err) # feb
+            self.my_id, err = self.game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
+            if err: fatal(err)
 
-        self.state, err = self.game.state(blocking=False) # feb
-        if err: fatal(err) # feb
+        self.state, err = self.game.state(blocking=False)
+        if err: fatal(err)
+
+        self.marks = ('X', 'O')
+        self._sending_move = threading.Event()
+        # feb end
 
         self.table_size = table_size
         self.cell_size = table_size // 3
         self.table_space = 20
-
-        self.marks = ('X', 'O') # feb
-        self._submitted_move = threading.Event() # feb
-        #self._request_state()
 
         self.background_color = (255, 174, 66)
         self.table_color = (50, 50, 50)
@@ -92,13 +94,11 @@ class TicTacToe():
         r2 = pygame.draw.line(screen, self.table_color, [tb_space_point[0], cell_space_point[1]], [tb_space_point[1], cell_space_point[1]], 8)
         c2 = pygame.draw.line(screen, self.table_color, [cell_space_point[1], tb_space_point[0]], [cell_space_point[1], tb_space_point[1]], 8)
 
-
     # processing clicks to move
     def _move(self, pos):
         try:
             x, y = pos[0] // self.cell_size, pos[1] // self.cell_size
             self.game.move(position=y * 3 + x) # feb
-            #self._request_state()
         except:
             print("Click inside the table only")
 
@@ -136,7 +136,7 @@ class TicTacToe():
 
     def strike(self):
         if self.state['gameover'] and self.state['winner'] is not None: # feb
-            b = self.state['board']
+            b = self.state['board'] # feb
             if b[0] == b[1] == b[2] and b[2] != -1:
                 self._pattern_strike((0,0),(2,0),"hor")
             elif b[3] == b[4] == b[5] and b[5] != -1:
@@ -182,24 +182,22 @@ class TicTacToe():
         # draws the line strike
         line_strike = pygame.draw.line(screen, self.line_color, [start_x, start_y], [end_x, end_y], 8)
 
-    def draw_marks(self): # feb
-        #self.state, err = self.game.state(blocking=False) # feb
-        #if err: fatal(err) # feb
+    def draw_marks(self):
         for y in range(3): # feb
             for x in range(3): # feb
                 player = self.state['board'][y * 3 + x] # feb
                 if player in (0, 1): # feb
                     self._draw_char(x,y,player)
 
-    def _request_state(self): # feb (whole function)
+    def _request_state(self): # feb (function)
         blocking = True
         while True:
             self.state, err = self.game.state(blocking=blocking)
             blocking = True
-            if err: fatal(err) # feb
+            if err: fatal(err)
             if self.my_id in self.state['current']:
-                self._submitted_move.clear()
-                self._submitted_move.wait()
+                self._sending_move.clear()
+                self._sending_move.wait()
                 blocking = False
             if self.state['gameover']:
                 return
@@ -208,11 +206,10 @@ class TicTacToe():
         screen.fill(self.background_color)
         self._draw_table()
         running = True
-        #blocking = True # feb
         threading.Thread(target=self._request_state, args=(), daemon=True).start() # feb
 
         while running:
-            self.draw_marks() # feb
+            self.draw_marks()
             self._message()
 
             for self.event in pygame.event.get():
@@ -221,16 +218,10 @@ class TicTacToe():
 
                 if self.event.type == pygame.MOUSEBUTTONDOWN:
                     self._move(self.event.pos)
-                    self._submitted_move.set()
-                    #blocking = False # feb
+                    self._sending_move.set()
 
             pygame.display.flip()
             self.FPS.tick(60)
-
-            #self.state, err = self.game.state(blocking=False) # feb # TODO separate thread
-            #if err: fatal(err) # feb
-            #blocking = True # feb
-            #self._request_state()
 
 if __name__ == "__main__":
     g = TicTacToe(window_size[0])

@@ -82,9 +82,7 @@ class TicTacToe():
         self.table_color = (50, 50, 50)
         self.line_color = (0, 175, 0)
         self.instructions_color = (17, 53, 165)
-        self.game_over_bg_color = (47, 98, 162)
-        self.game_over_color = (255, 179, 1)
-        self.font = pygame.font.SysFont("Courier New", 35)
+        self.font = pygame.font.SysFont(["Courier New", pygame.font.get_default_font()], 35, True)
         self.FPS = pygame.time.Clock()
 
     # draws table representation
@@ -116,7 +114,7 @@ class TicTacToe():
     # instructions and game-state messages
     def _message(self):
         if self.state['gameover']: # feb
-            screen.fill(self.game_over_bg_color, (135, 445, 188, 35))
+            screen.fill(self.background_color, (135, 445, 188, 35))
             if self.state['winner'] == self.my_id: # feb
                 msg = f'You ({self.marks[self.my_id]}) win! ' # feb
             elif self.state['winner'] is None: # feb

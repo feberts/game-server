@@ -35,7 +35,7 @@ Adding a new game is quite easy:
 
 Notes:
 
-- The documentation of the game base class should give you a good idea of how the framework operates. Use that as a guide, while implementing your game.
+- The documentation of the game base class (`AbstractGame`) should give you a good idea of how the framework operates. Use that as a guide, while implementing your game.
 - It is not necessary to add any code to the API. It was designed to be compatible with any game. What you can do, optionally, is to implement an API wrapper for your game. Use the tic-tac-toe API wrapper as an example.
 
 ## API documentation

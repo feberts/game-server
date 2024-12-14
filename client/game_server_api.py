@@ -120,6 +120,11 @@ class GameServerAPI:
 
         This function requests the game state from the server. The state is returned as a dictionary. Refer to the documentation of a specific game to find out about the structure and content of the dictionary.
 
+        Independent of the game, the dictionary always contains these two keys:
+
+        - current: a list of player IDs, indicating whose player's turn it is
+        - gameover: a boolean value indicating whether the game is over or still active
+
         This function will block until the game state changes. Only then the server will respond with the updated state. This is more efficient than polling. The function can also be used in a non-blocking way. Furthermore, the function does not block, if it is the client's turn to submit a move, or if the game has ended.
 
         Parameters:

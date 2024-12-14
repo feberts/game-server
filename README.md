@@ -125,7 +125,7 @@ move(**kwargs)
     error message.
 
     Parameters:
-    kwargs (dict): player move as keyword arguments
+    kwargs (keyword arguments): a player's move
 
     Returns:
     str: error message, if a problem occurred, None otherwise

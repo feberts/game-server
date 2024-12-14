@@ -100,7 +100,7 @@ class GameServerAPI:
         This function is used to submit a move to the game server. The move must be passed as keyword arguments. Refer to the documentation of a specific game to find out about the required or available arguments. If it is not your turn to submit a move or if the move is invalid, the server replies with an error message.
 
         Parameters:
-        kwargs (dict): player move as keyword arguments
+        kwargs (keyword arguments): a player's move
 
         Returns:
         str: error message, if a problem occurred, None otherwise

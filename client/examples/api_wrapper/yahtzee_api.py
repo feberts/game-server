@@ -40,12 +40,7 @@ class YahtzeeAPI:
     def state(self, blocking=True):
         state, err = self._api.state(blocking)
         if err: return None, err
-        gameover = state['gameover']
-        return State(state['current'][0] if state['current'] else None,
-                     gameover, state['scorecard'],
-                     state['dice'] if gameover == False else None,
-                     state['current_name'] if 'current_name' in state else None,
-                     state['ranking'] if gameover == True else None), None
+        return State(state), None
 
     def watch(self, token, name):
         return self._api.watch('127.0.0.1', 4711, 'Yahtzee', token, name)
@@ -57,10 +52,11 @@ class State:
     Usually, a dictionary is returned by the state function. Here, all data is encapsulated in a class for easy access.
     """
 
-    def __init__(self, current, gameover, scorecard, dice, current_name, ranking):
-        self.current = current
+    def __init__(self, state):
+        gameover = state['gameover']
+        self.current = state['current'][0] if state['current'] else None
         self.gameover = gameover
-        self.scorecard = scorecard
-        self.dice = dice
-        self.current_name = current_name
-        self.ranking = ranking
+        self.scorecard = state['scorecard']
+        self.dice = state['dice'] if gameover == False else None
+        self.current_name = state['current_name'] if 'current_name' in state else None
+        self.ranking = state['ranking'] if gameover == True else None

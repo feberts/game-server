@@ -61,7 +61,7 @@ my_id, err = game.join_game(token='mygame')
 
 if err: # no game started yet
     # start new game:
-    my_id, err = game.start_game(token='mygame', players=1)
+    my_id, err = game.start_game(token='mygame', players=2)
     if err: fatal(err)
 
 # submit name:

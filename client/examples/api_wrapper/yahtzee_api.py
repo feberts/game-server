@@ -15,12 +15,15 @@ class YahtzeeAPI:
 
     def __init__(self):
         self._api = game_server_api.GameServerAPI()
+        self.my_id = None
 
     def start_game(self, token, players=1, name=''):
-        return self._api.start_game('127.0.0.1', 4711, 'Yahtzee', token, players, name)
+        self.my_id, err = self._api.start_game('127.0.0.1', 4711, 'Yahtzee', token, players, name)
+        return self.my_id, err
 
     def join_game(self, token, name=''):
-        return self._api.join_game('127.0.0.1', 4711, 'Yahtzee', token, name)
+        self.my_id, err = self._api.join_game('127.0.0.1', 4711, 'Yahtzee', token, name)
+        return self.my_id, err
 
     def submit_name(self, name):
         return self._api.move(name=name)
@@ -40,7 +43,7 @@ class YahtzeeAPI:
     def state(self, blocking=True):
         state, err = self._api.state(blocking)
         if err: return None, err
-        return State(state), None
+        return State(state, self.my_id), None
 
     def watch(self, token, name):
         return self._api.watch('127.0.0.1', 4711, 'Yahtzee', token, name)
@@ -52,9 +55,9 @@ class State:
     Usually, a dictionary is returned by the state function. Here, all data is encapsulated in a class for easy access.
     """
 
-    def __init__(self, state):
+    def __init__(self, state, my_id):
         gameover = state['gameover']
-        self.current = state['current'][0] if state['current'] else None
+        self.my_turn = my_id in state['current']
         self.gameover = gameover
         self.scorecard = state['scorecard']
         self.dice = state['dice'] if gameover == False else None

@@ -78,7 +78,7 @@ if err: fatal(err)
 while not state.gameover:
     print_scorecard(state.scorecard)
 
-    if my_id == state.current: # my turn
+    if state.my_turn:
         print_dice(state.dice)
 
         option = menu(['roll all dice again', 'roll some dice again', 'add points to category', 'cross out a category'])

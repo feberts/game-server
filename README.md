@@ -1,6 +1,6 @@
 # Game server
 
-This project provides a server for multiplayer games. The main features are:
+This project provides a lightweight server for multiplayer games. The main features are:
 
 - a framework that allows new games to be added easily
 - a uniform yet flexible API for all games
@@ -8,8 +8,8 @@ This project provides a server for multiplayer games. The main features are:
 Possible areas of application include:
 
 - programming courses in which students implement game clients
-- projects in the area of reinforcement learning
 - multiplayer game development in general
+- projects in the area of reinforcement learning
 
 ## Quickstart
 
@@ -31,7 +31,7 @@ Adding a new game is quite easy:
 2. In this module, implement a class that is derived from `abstract_game.AbstractGame`.
 3. Override all the base class's methods.
 4. Add the new class to the list of games (`server/games.py`).
-5. Write a documentation for the new game.
+5. Write an API documentation for the new game.
 
 Notes:
 

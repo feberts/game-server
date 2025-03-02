@@ -212,7 +212,7 @@ class Yahtzee(AbstractGame):
                     return 'no large straight'
                 points = 40
             elif category == 'Yahtzee':
-                if len(set(self._dice)) != 5:
+                if len(set(self._dice)) != 1:
                     return 'no yahtzee'
                 points = 50
         else:

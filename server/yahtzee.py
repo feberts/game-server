@@ -35,7 +35,7 @@ class Yahtzee(AbstractGame):
     # upper and lower sections of Yahtzee scorecard:
     # (according to https://en.wikipedia.org/w/index.php?title=Yahtzee&oldid=1258193803)
     _upper_section = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes']
-    _lower_section = [] # NOTE add more categories here
+    _lower_section = ['Chance', 'Three of a Kind', 'Four of a Kind', 'Full House', 'Small Straight', 'Large Straight', 'Yahtzee']
 
     class _ScoreCard:
         """
@@ -165,10 +165,58 @@ class Yahtzee(AbstractGame):
             count = self._dice.count(face_value)
             if count == 0: return f'there are no {face_value}s'
             points = count * face_value
+        elif category in self._lower_section:
+            if category == 'Chance':
+                points = sum(self._dice)
+            elif category == 'Three of a Kind':
+                valid = False
+                count = [0] * 7
+                for d in self._dice:
+                    count[d] = count[d] + 1
+                for c in count:
+                    if c > 2:
+                        valid = True
+                        break
+                if not valid:
+                    return 'no three of a kind'
+                points = sum(self._dice)
+            elif category == 'Four of a Kind':
+                valid = False
+                count = [0] * 7
+                for d in self._dice:
+                    count[d] = count[d] + 1
+                for c in count:
+                    if c > 3:
+                        valid = True
+                        break
+                if not valid:
+                    return 'no four of a kind'
+                points = sum(self._dice)
+            elif category == 'Full House':
+                count = [0] * 7
+                for d in self._dice:
+                    count[d] = count[d] + 1
+                if not (2 in count and 3 in count):
+                    return 'no full house'
+                points = 25
+            elif category == 'Small Straight':
+                if not ((3 in self._dice and 4 in self._dice)
+                        and (1 in self._dice and 2 in self._dice
+                            or 2 in self._dice and 5 in self._dice
+                            or 5 in self._dice and 6 in self._dice)):
+                    return 'no small straight'
+                points = 30
+            elif category == 'Large Straight':
+                if not ((2 in self._dice and 3 in self._dice and 4 in self._dice and 5 in self._dice)
+                        and (1 in self._dice or 6 in self._dice)):
+                    return 'no large straight'
+                points = 40
+            elif category == 'Yahtzee':
+                if len(set(self._dice)) != 5:
+                    return 'no yahtzee'
+                points = 50
         else:
-            # NOTE implement lower section of Yahtzee scorecard here
-            points = None
-            return 'not implemented'
+            return 'no such category'
 
         return self._update_scorecard(category, points)
 

@@ -12,7 +12,7 @@ def print_scorecard(scorecard):
     print('Yahtzee\n')
     for category, points in scorecard.items():
         points = str(points) if points is not None else ''
-        print(f'{category:10s}{points:_>3s}')
+        print(f'{category:16s}{points:_>3s}')
 
 def print_dice(dice):
     print('')
@@ -70,7 +70,7 @@ while True:
     if err: print(err)
     else: break
 
-categories = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes']
+categories = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes', 'Chance', 'Three of a Kind', 'Four of a Kind', 'Full House', 'Small Straight', 'Large Straight', 'Yahtzee']
 
 state, err = game.state(blocking=False)
 if err: fatal(err)

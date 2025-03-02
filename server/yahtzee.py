@@ -61,7 +61,16 @@ class Yahtzee(AbstractGame):
             """
             Calculate total points.
             """
-            return sum(self.categories.values())
+            total = sum(self.categories.values())
+
+            # check for bonus points:
+            upper_sum = 0
+            for cat in Yahtzee._upper_section:
+                upper_sum += self.categories[cat]
+            if upper_sum >= 63:
+                total += 35
+
+            return total
 
     def _init_scorecards(self):
         """

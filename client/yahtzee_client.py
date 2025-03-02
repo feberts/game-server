@@ -70,7 +70,7 @@ while True:
     if err: print(err)
     else: break
 
-categories = ['Ones', 'Twos', 'Threes']
+categories = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes']
 
 state, err = game.state(blocking=False)
 if err: fatal(err)
@@ -81,7 +81,7 @@ while not state['gameover']:
     if my_id in state['current']: # my turn
         print_dice(state['dice'])
 
-        option = menu(['roll all dice again', 'roll some dice again', 'add points to category', 'cross out a category'])
+        option = menu(['roll all dice again', 'roll some dice again', 'add points to scorecard', 'cross out a category'])
 
         if option == 0:
             err = game.move(roll_dice=list(range(0, 5)))

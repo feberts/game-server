@@ -34,7 +34,7 @@ class Yahtzee(AbstractGame):
 
     # upper and lower sections of Yahtzee scorecard:
     # (according to https://en.wikipedia.org/w/index.php?title=Yahtzee&oldid=1258193803)
-    _upper_section = ['Ones', 'Twos', 'Threes'] # NOTE add more categories here
+    _upper_section = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes']
     _lower_section = [] # NOTE add more categories here
 
     class _ScoreCard:

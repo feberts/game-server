@@ -92,8 +92,13 @@ class Yahtzee(AbstractGame):
         """
         categories = self._scorecards[self._current].categories
 
-        if category not in categories: return 'no such category'
-        if categories[category] is not None: return 'category was already used'
+        if category not in categories:
+            return 'no such category'
+
+        if category == 'Yahtzee' and categories[category] == 50:
+            points = 150 # +100 yahtzee bonus
+        elif categories[category] is not None:
+            return 'category was already used'
 
         categories[category] = points
         self._check_game_over()

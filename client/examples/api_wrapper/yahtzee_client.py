@@ -12,7 +12,7 @@ def print_scorecard(scorecard):
     print('Yahtzee\n')
     for category, points in scorecard.items():
         points = str(points) if points is not None else ''
-        print(f'{category:10s}{points:_>3s}')
+        print(f'{category:16s}{points:_>3s}')
 
 def print_dice(dice):
     print('')
@@ -61,7 +61,7 @@ my_id, err = game.join_game(token='mygame')
 
 if err: # no game started yet
     # start new game:
-    my_id, err = game.start_game(token='mygame', players=2)
+    my_id, err = game.start_game(token='mygame', players=1)
     if err: fatal(err)
 
 # submit name:
@@ -70,7 +70,7 @@ while True:
     if err: print(err)
     else: break
 
-categories = ['Ones', 'Twos', 'Threes']
+categories = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes', 'Chance', 'Three of a Kind', 'Four of a Kind', 'Full House', 'Small Straight', 'Large Straight', 'Yahtzee']
 
 state, err = game.state(blocking=False)
 if err: fatal(err)
@@ -81,7 +81,7 @@ while not state.gameover:
     if state.my_turn:
         print_dice(state.dice)
 
-        option = menu(['roll all dice again', 'roll some dice again', 'add points to category', 'cross out a category'])
+        option = menu(['roll all dice again', 'roll some dice again', 'add points to scorecard', 'cross out a category'])
 
         if option == 0:
             err = game.roll_all_dice()

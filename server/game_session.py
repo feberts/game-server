@@ -6,6 +6,8 @@ game session.
 """
 
 import copy
+import random
+import string
 import threading
 import time
 
@@ -32,6 +34,7 @@ class GameSession:
         self._game = game_class(players)
         self._next_id = 0
         self._player_names = {} # player name -> ID
+        self._passwords = {} # player ID -> password
         self._last_access = time.time()
         self._lock = threading.Lock()
         self._state_change = threading.Event()
@@ -45,12 +48,14 @@ class GameSession:
         This function returns a new ID for each player joining a game session.
         If a none empty string is passed as the player name, this name together
         with the assigned ID are added to a dictionary.
+        TODO
 
         Parameters:
         player_name (str): player name, can be an empty string
 
         Returns:
         int: the next player ID
+        TODO
         """
         with self._lock:
             # player ID:
@@ -61,7 +66,11 @@ class GameSession:
             if player_name != '':
                 self._player_names[player_name] = player_id
 
-            return player_id
+            # generate unique password:
+            password = self._password(5)
+            self._passwords[player_id] = password
+
+            return player_id, password
 
     def ready(self):
         """
@@ -75,22 +84,25 @@ class GameSession:
 
     def get_id(self, player_name):
         """
-        Return player ID by name.
+        Return player ID and password by name.
 
-        This function returns the ID that was assigned to the player.
+        This function returns the ID and password that were assigned to the player.
 
         Parameters:
         player_name (str): name of an existing player that has already joined the game
 
         Returns:
-        tuple(int, str):
+        tuple(int, str, str):
             int: player ID, None if no such player exists
+            str: password, None if no such player exists
             str: error message, if a problem occurred, None otherwise
         """
         if not player_name in self._player_names:
-            return None, 'no such player'
+            return None, None, 'no such player'
 
-        return self._player_names[player_name], None
+        player_id = self._player_names[player_name]
+
+        return player_id, self._passwords[player_id], None
 
     def get_game(self, player_id=None):
         """
@@ -206,3 +218,16 @@ class GameSession:
 
         # wake up other threads waiting for the game state to change:
         self._state_change.set()
+
+    def _password(self, length):
+        """
+        TODO
+        """
+        chars = string.ascii_letters + string.digits
+        return ''.join(random.choice(chars) for _ in range(length))
+
+    def password_valid(self, player_id, password):
+        """
+        TODO
+        """
+        return player_id in self._passwords and self._passwords[player_id] == password

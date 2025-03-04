@@ -95,11 +95,15 @@ class GameFramework:
         the previous game session and start a new one, which other players can
         join.
 
+        In addition to the ID, a unique password is generated for the player and
+        sent to the client. It is included in every future request sent by the
+        client and then checked by the framework.
+
         Parameters:
         request (dict): request containing game name, token and number of players
 
         Returns:
-        dict: containing the player ID
+        dict: containing the player's ID and password
         """
         # check and parse request:
         err = utility.check_dict(request, {'game':str, 'token':str, 'players':int, 'name':str})
@@ -121,8 +125,8 @@ class GameFramework:
         session = game_session.GameSession(game_class, players)
         self._game_sessions[(game_name, token)] = session
 
-        # get player ID:
-        player_id = session.next_id(name)
+        # get player ID and password:
+        player_id, password = session.next_id(name)
 
         # wait for others to join:
         self._await_game_start(session)
@@ -134,7 +138,7 @@ class GameFramework:
 
         self._log_sessions()
 
-        return self._return_data({'player_id':player_id, 'request_size_max':config.receive_size_max})
+        return self._return_data({'player_id':player_id, 'password':password, 'request_size_max':config.receive_size_max})
 
     def _join_game(self, request):
         """
@@ -147,11 +151,15 @@ class GameFramework:
         enough players have joined the game before the timeout occurs, the
         requesting client is informed.
 
+        In addition to the ID, a unique password is generated for the player and
+        sent to the client. It is included in every future request sent by the
+        client and then checked by the framework.
+
         Parameters:
         request (dict): request containing game name and token
 
         Returns:
-        dict: containing the player ID
+        dict: containing the player's ID and password
         """
         # check and parse request:
         err = utility.check_dict(request, {'game':str, 'token':str, 'name':str})
@@ -166,8 +174,8 @@ class GameFramework:
         if session.ready(): # game is full
             return utility.framework_error('game is already full')
 
-        # get player ID:
-        player_id = session.next_id(name)
+        # get player ID and password:
+        player_id, password = session.next_id(name)
 
         # wait for others to join:
         self._player_joins.set()
@@ -176,7 +184,7 @@ class GameFramework:
         if not session.ready(): # timeout reached
             return utility.framework_error('timeout while waiting for others to join')
 
-        return self._return_data({'player_id':player_id, 'request_size_max':config.receive_size_max})
+        return self._return_data({'player_id':player_id, 'password':password, 'request_size_max':config.receive_size_max})
 
     def _move(self, request):
         """
@@ -194,10 +202,10 @@ class GameFramework:
         dict: containing an error message, if the move is invalid
         """
         # check and parse request:
-        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'move':dict})
+        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'password':str, 'move':dict})
         if err: return utility.framework_error(err)
 
-        game_name, token, player_id, move = request['game'], request['token'], request['player_id'], request['move']
+        game_name, token, player_id, password, move = request['game'], request['token'], request['player_id'], request['password'], request['move']
 
         # retrieve the game:
         session, err = self._retrieve_game_session(game_name, token)
@@ -209,6 +217,10 @@ class GameFramework:
         # check if game is still active:
         if game.game_over():
             return utility.framework_error('game has ended')
+
+        # check if password and ID match:
+        if not session.password_valid(player_id, password):
+            return utility.framework_error('invalid password')
 
         # check if it is the client's turn:
         if player_id not in game.current_player():
@@ -237,10 +249,10 @@ class GameFramework:
         dict: containing the game state
         """
         # check and parse request:
-        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'blocking':bool, 'observer':bool})
+        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'password':str, 'blocking':bool, 'observer':bool})
         if err: return utility.framework_error(err)
 
-        game_name, token, player_id, blocking, observer = request['game'], request['token'], request['player_id'], request['blocking'], request['observer']
+        game_name, token, player_id, password, blocking, observer = request['game'], request['token'], request['player_id'], request['password'], request['blocking'], request['observer']
 
         # retrieve the game:
         session, err = self._retrieve_game_session(game_name, token)
@@ -248,6 +260,10 @@ class GameFramework:
             return err
 
         game = session.get_game(player_id)
+
+        # check if password and ID match:
+        if not session.password_valid(player_id, password):
+            return utility.framework_error('invalid password')
 
         # retrieve the game state:
         state = session.game_state(player_id, blocking, observer)
@@ -265,7 +281,8 @@ class GameFramework:
         To observe another player in the same game session, the observing client
         needs to know the ID of that player. This function retrieves that ID
         based on the player's name. This only works, if the player has supplied
-        a name when joining the game session.
+        a name when joining the game session. The observed player's password is
+        sent to the client as well.
 
         Parameters:
         request (dict): request containing game name, token and player to be observed
@@ -286,11 +303,11 @@ class GameFramework:
         if not session.ready(): # game has not yet started
             return utility.framework_error('game has not yet started')
 
-        # get player ID:
-        player_id, err = session.get_id(player_name)
+        # get player ID and password:
+        player_id, password, err = session.get_id(player_name)
         if err: return utility.framework_error(err)
 
-        return self._return_data({'player_id':player_id})
+        return self._return_data({'player_id':player_id, 'password':password})
 
     def _reset_game(self, request):
         """
@@ -309,10 +326,10 @@ class GameFramework:
         dict: containing an error message, if the request is invalid
         """
         # check and parse request:
-        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int})
+        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'password':str})
         if err: return utility.framework_error(err)
 
-        game_name, token, player_id = request['game'], request['token'], request['player_id']
+        game_name, token, player_id, password = request['game'], request['token'], request['player_id'], request['password']
 
         if player_id != 0: return utility.framework_error('game can only be reset by starter')
 
@@ -320,6 +337,10 @@ class GameFramework:
         session, err = self._retrieve_game_session(game_name, token)
         if err: # no such game or game session
             return err
+
+        # check if password and ID match:
+        if not session.password_valid(player_id, password):
+            return utility.framework_error('invalid password')
 
         # reset game instance:
         session.reset_game()

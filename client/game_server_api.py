@@ -64,6 +64,7 @@ class GameServerAPI:
 
         if err: return None, err
         self._player_id = response['player_id']
+        self._password = response['password']
         self._request_size_max = response['request_size_max']
 
         return self._player_id, None
@@ -106,6 +107,7 @@ class GameServerAPI:
 
         if err: return None, err
         self._player_id = response['player_id']
+        self._password = response['password']
         self._request_size_max = response['request_size_max']
 
         return self._player_id, None
@@ -129,7 +131,7 @@ class GameServerAPI:
         if self._player_id is None: return self._api_error('start or join a game first')[1]
         if self._watch_mode: return self._api_error('cannot submit moves in watch mode')[1]
 
-        _, err = self._send({'type':'move', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'move':kwargs})
+        _, err = self._send({'type':'move', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'password':self._password, 'move':kwargs})
 
         if err: return err
 
@@ -164,7 +166,7 @@ class GameServerAPI:
         """
         if self._player_id is None: return self._api_error('start or join a game first')
 
-        state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'blocking':blocking, 'observer':self._watch_mode})
+        state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'password':self._password, 'blocking':blocking, 'observer':self._watch_mode})
 
         if err: return None, err
 
@@ -204,6 +206,7 @@ class GameServerAPI:
 
         if err: return None, err
         self._player_id = response['player_id']
+        self._password = response['password']
         self._watch_mode = True
 
         return self._player_id, None
@@ -222,7 +225,7 @@ class GameServerAPI:
         """
         if self._player_id != 0: return self._api_error('game can only be reset by starter')[1]
 
-        _, err = self._send({'type':'reset_game', 'game':self._game, 'token':self._token, 'player_id':self._player_id})
+        _, err = self._send({'type':'reset_game', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'password':self._password})
 
         if err: return err
 
@@ -328,6 +331,7 @@ class GameServerAPI:
         self._game = None
         self._token = None
         self._player_id = None
+        self._password = None
         self._watch_mode = False
 
         # server:

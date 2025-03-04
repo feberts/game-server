@@ -271,7 +271,7 @@ class GameFramework:
         request (dict): request containing game name, token and player to be observed
 
         Returns:
-        dict: containing the ID (with negative sign) of the observed player
+        dict: containing the ID of the observed player
         """
         # check and parse request:
         err = utility.check_dict(request, {'game':str, 'token':str, 'name':str})

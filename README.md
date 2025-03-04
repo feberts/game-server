@@ -1,7 +1,10 @@
-# Game server
+# Multiplayer game server
 
-This project provides a lightweight server for turn-based multiplayer games. The main features are:
+This project provides a lightweight server for turn-based multiplayer games.
 
+The main features are:
+
+- multiple parallel game sessions
 - a framework that allows new games to be added easily
 - a uniform yet flexible API for all games
 - an observer mode to watch other clients play

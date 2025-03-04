@@ -3,27 +3,25 @@
 This is a graphical tic-tac-toe client using Pygame (www.pygame.org). It is
 based on an implementation found on GitHub.
 
-The original implementation is a stand-alone program to be used by two human
-players on the same machine. It was reworked by me (Fabian Eberts) to use my
-game server API and play against a remote client. Most of the game logic was
-removed and replaced by calls to API functions.
-
-Code added by me is marked with a 'feb' comment.
-
+The original implementation is a stand-alone program to be used by two human 
+players on the same machine. It was modified to use the game server API and play 
+against a remote client. Most of the game logic was removed and replaced by 
+calls to API functions.
 
 Source of the original implementation:
 GitHub user 'x4nth055' (Rockikz)
 https://github.com/x4nth055/pythoncode-tutorials/tree/master/gui-programming/tictactoe-game
 Accessed: 2024-12-12
 
-The implementation is also presented on this website:
+The original implementation is also presented on this website:
 Author: Michael Maranan
 https://thepythoncode.com/article/make-a-tic-tac-toe-game-pygame-in-python
 Accessed: 2024-12-12
 
 The two PNG files were downloaded from the same website.
+"""
 
-
+"""
 MIT License
 
 Copyright (c) 2019 Rockikz
@@ -41,8 +39,8 @@ copies or substantial portions of the Software.
 
 import pygame
 from pygame.locals import *
-import threading # feb
-from game_server_api import GameServerAPI # feb
+import threading
+from game_server_api import GameServerAPI
 
 pygame.init()
 pygame.font.init()
@@ -52,14 +50,13 @@ window_size = (450, 500)
 screen = pygame.display.set_mode(window_size)
 pygame.display.set_caption("Tic Tac Toe")
 
-def fatal(msg): # feb (function)
+def fatal(msg):
     print(msg)
     exit()
 
 class TicTacToe():
 
     def __init__(self, table_size):
-        # feb start
         self.game = GameServerAPI()
         self.my_id = None
 
@@ -76,7 +73,6 @@ class TicTacToe():
 
         self.marks = ('X', 'O')
         self._sending_move = threading.Event()
-        # feb end
 
         self.table_size = table_size
         self.cell_size = table_size // 3
@@ -102,7 +98,7 @@ class TicTacToe():
     def _move(self, pos):
         try:
             x, y = pos[0] // self.cell_size, pos[1] // self.cell_size
-            self.game.move(position=y * 3 + x) # feb
+            self.game.move(position=y * 3 + x)
         except:
             print("Click inside the table only")
 
@@ -117,30 +113,30 @@ class TicTacToe():
 
     # instructions and game-state messages
     def _message(self):
-        if self.state['gameover']: # feb
+        if self.state['gameover']:
             screen.fill(self.background_color, (135, 445, 188, 35))
-            if self.state['winner'] == self.my_id: # feb
-                msg = f'You ({self.marks[self.my_id]}) win! ' # feb
-            elif self.state['winner'] is None: # feb
-                msg = 'No winner ...' # feb
-            else: # feb
-                msg = f'You ({self.marks[self.my_id]}) lose...' # feb
+            if self.state['winner'] == self.my_id:
+                msg = f'You ({self.marks[self.my_id]}) win! '
+            elif self.state['winner'] is None:
+                msg = 'No winner ...'
+            else:
+                msg = f'You ({self.marks[self.my_id]}) lose...'
             msg = self.font.render(msg, True, self.instructions_color,self.background_color)
             screen.blit(msg,(75,445))
             self._strike()
         else:
             screen.fill(self.background_color, (135, 445, 188, 35))
 
-            if self.my_id in self.state['current']: # feb
-                instr = f'Your ({self.marks[self.my_id]}) turn' # feb
-            else: # feb
-                instr = 'Opponent ... ' # feb
+            if self.my_id in self.state['current']:
+                instr = f'Your ({self.marks[self.my_id]}) turn'
+            else:
+                instr = 'Opponent ... '
             instructions = self.font.render(instr, True, self.instructions_color,self.background_color)
             screen.blit(instructions,(75,445))
 
     def _strike(self):
-        if self.state['gameover'] and self.state['winner'] is not None: # feb
-            b = self.state['board'] # feb
+        if self.state['gameover'] and self.state['winner'] is not None:
+            b = self.state['board']
             if b[0] == b[1] == b[2] and b[2] != -1:
                 self._pattern_strike((0,0),(2,0),"hor")
             elif b[3] == b[4] == b[5] and b[5] != -1:
@@ -189,11 +185,11 @@ class TicTacToe():
     def _draw_marks(self):
         for y in range(3):
             for x in range(3):
-                player = self.state['board'][y * 3 + x] # feb
-                if player in (0, 1): # feb
+                player = self.state['board'][y * 3 + x]
+                if player in (0, 1):
                     self._draw_char(x,y,player)
 
-    def _request_state(self): # feb (function)
+    def _request_state(self):
         blocking = True
         while True:
             self.state, err = self.game.state(blocking=blocking)
@@ -210,7 +206,7 @@ class TicTacToe():
         screen.fill(self.background_color)
         self._draw_table()
         running = True
-        threading.Thread(target=self._request_state, args=(), daemon=True).start() # feb
+        threading.Thread(target=self._request_state, args=(), daemon=True).start()
 
         while running:
             self._draw_marks()

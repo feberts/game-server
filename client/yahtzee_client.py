@@ -2,7 +2,8 @@
 """
 Yahtzee client.
 
-This program connects to the game server to play Yahtzee, alone, or against other clients.
+This program connects to the game server to play Yahtzee, alone, or against
+other clients.
 """
 
 from game_server_api import GameServerAPI

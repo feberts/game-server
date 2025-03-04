@@ -2,7 +2,9 @@
 """
 Tic-tac-toe learner.
 
-This client learns how to play tic-tac-toe using a method designed by Donald Michie (see module menace). During training, a statistic is printed showing how the performance develops over time.
+This client learns how to play tic-tac-toe using a method designed by Donald
+Michie (see module menace). During training, a statistic is printed showing how
+the performance develops over time.
 """
 
 from game_server_api import GameServerAPI

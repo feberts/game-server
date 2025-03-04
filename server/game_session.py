@@ -1,7 +1,8 @@
 """
 Game session.
 
-This module provides a class that contains all data associated with a specific game session.
+This module provides a class that contains all data associated with a specific
+game session.
 """
 
 import copy
@@ -12,7 +13,8 @@ class GameSession:
     """
     Class GameSession.
 
-    This is a wrapper class for game instances providing additional functionality.
+    This is a wrapper class for game instances providing additional
+    functionality.
     """
 
     def __init__(self, game_class, players):
@@ -40,7 +42,9 @@ class GameSession:
         """
         Returning a player ID.
 
-        This function returns a new ID for each player joining a game session. If a none empty string is passed as the player name, this name together with the assigned ID are added to a dictionary.
+        This function returns a new ID for each player joining a game session.
+        If a none empty string is passed as the player name, this name together
+        with the assigned ID are added to a dictionary.
 
         Parameters:
         player_name (str): player name, can be an empty string
@@ -61,7 +65,8 @@ class GameSession:
 
     def ready(self):
         """
-        Game session is ready to start as soon as all players have joined the game.
+        Game session is ready to start as soon as all players have joined the
+        game.
 
         Returns:
         bool: True, if session ready, else False
@@ -118,7 +123,8 @@ class GameSession:
         """
         Pass player's move to the game instance.
 
-        When this function is called, an event is triggered to wake up other threads waiting for the game state to change.
+        When this function is called, an event is triggered to wake up other
+        threads waiting for the game state to change.
 
         Parameters:
         move (dict): the player's move
@@ -137,9 +143,16 @@ class GameSession:
         """
         Retrieve the game state from the game instance.
 
-        If the corresponding API function is called in blocking mode, then this thread's execution is paused until the game state changes. To achieve this, the thread that changes the state triggers an event to wake up other threads waiting for that event. This function does not block, if it is the client's turn to submit a move, or if the game has ended.
+        If the corresponding API function is called in blocking mode, then this
+        thread's execution is paused until the game state changes. To achieve
+        this, the thread that changes the state triggers an event to wake up
+        other threads waiting for that event. This function does not block, if
+        it is the client's turn to submit a move, or if the game has ended.
 
-        If the game has been reset by some client, then for a single time the state of the previous game is returned to each client. This is necessary for a client to be able to detect the end of the previous game. See function reset_game for details.
+        If the game has been reset by some client, then for a single time the
+        state of the previous game is returned to each client. This is necessary
+        for a client to be able to detect the end of the previous game. See
+        function reset_game for details.
 
         Parameters:
         player_id (int): player ID
@@ -172,7 +185,14 @@ class GameSession:
         """
         Reset the game.
 
-        The game instance is replaced with a new one. The old instance is stored. This is necessary to allow the other clients to detect the end of the previous game. Otherwise, they would suddenly find themselves in a new game without being notified about it. To achieve this, a list of client IDs is created upon resetting a game. When a client then calls the state function, the old game state is returned a single time. Then the client is removed from the list. After that, he will receive the game state of the new game instance.
+        The game instance is replaced with a new one. The old instance is
+        stored. This is necessary to allow the other clients to detect the end
+        of the previous game. Otherwise, they would suddenly find themselves in
+        a new game without being notified about it. To achieve this, a list of
+        client IDs is created upon resetting a game. When a client then calls
+        the state function, the old game state is returned a single time. Then
+        the client is removed from the list. After that, he will receive the
+        game state of the new game instance.
 
         Only the client who started the game can reset it.
         """

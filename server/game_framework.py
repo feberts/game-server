@@ -1,7 +1,9 @@
 """
 Game framework.
 
-This module implements the game framework. The framework is responsible for managing active game sessions. Client requests are parsed, and the appropriate actions are performed. The following requests can be handled by the framework:
+This module implements the game framework. The framework is responsible for
+managing active game sessions. Client requests are parsed, and the appropriate
+actions are performed. The following requests can be handled by the framework:
 
 - starting a new game
 - joining a game
@@ -10,7 +12,8 @@ This module implements the game framework. The framework is responsible for mana
 - observing a game
 - resetting a game
 
-To perform these actions, the framework calls the corresponding methods of a game class instance, if necessary.
+To perform these actions, the framework calls the corresponding methods of a
+game class instance, if necessary.
 """
 
 import threading
@@ -27,7 +30,8 @@ class GameFramework:
     """
     Class GameFramework.
 
-    This class manages active game sessions and handles the interaction between clients and game instances.
+    This class manages active game sessions and handles the interaction between
+    clients and game instances.
     """
 
     def __init__(self):
@@ -56,7 +60,9 @@ class GameFramework:
         """
         Handling a client request.
 
-        This function is called by the server. It identifies the type of the request and redirects it to the corresponding method. The returned data is handed back to the server and then sent to the client.
+        This function is called by the server. It identifies the type of the
+        request and redirects it to the corresponding method. The returned data
+        is handed back to the server and then sent to the client.
 
         Parameters:
         request (dict): client request
@@ -80,7 +86,14 @@ class GameFramework:
         """
         Request handler for starting a game session.
 
-        This function instantiates the requested game and adds it to the list of active game sessions. After the required number of players has joined the game, the function sends the player ID back to the client who requested the start of the game. If not enough players have joined the game before the timeout occurs, the game session is deleted and the requesting client is informed. A repeated call of this function will end the previous game session and start a new one, which other players can join.
+        This function instantiates the requested game and adds it to the list of
+        active game sessions. After the required number of players has joined
+        the game, the function sends the player ID back to the client who
+        requested the start of the game. If not enough players have joined the
+        game before the timeout occurs, the game session is deleted and the
+        requesting client is informed. A repeated call of this function will end
+        the previous game session and start a new one, which other players can
+        join.
 
         Parameters:
         request (dict): request containing game name, token and number of players
@@ -127,7 +140,12 @@ class GameFramework:
         """
         Request handler for joining a game session.
 
-        This function checks if a game session specified by the game's name and the token is already started and waiting for clients to join. After the required number of players has joined the game, the function sends the player ID back to the client who requested to join the game. If not enough players have joined the game before the timeout occurs, the requesting client is informed.
+        This function checks if a game session specified by the game's name and
+        the token is already started and waiting for clients to join. After the
+        required number of players has joined the game, the function sends the
+        player ID back to the client who requested to join the game. If not
+        enough players have joined the game before the timeout occurs, the
+        requesting client is informed.
 
         Parameters:
         request (dict): request containing game name and token
@@ -164,7 +182,10 @@ class GameFramework:
         """
         Request handler for player moves.
 
-        This function handles a client's move. It makes sure, that it is actually the client's turn to submit a move. It then passes the move to the game instance and returns the game instance's message in case of an invalid move.
+        This function handles a client's move. It makes sure, that it is
+        actually the client's turn to submit a move. It then passes the move to
+        the game instance and returns the game instance's message in case of an
+        invalid move.
 
         Parameters:
         request (dict): containing information about the game session and the player's move
@@ -203,7 +224,11 @@ class GameFramework:
         """
         Request handler for game state requests.
 
-        This function retrieves the game state from a game instance and sends it back to the client. It calls the game instance's state function and passes the ID of the player requesting the state to it. In addition to the information returned from the game instance, the framework also adds the IDs of the current players and the game status.
+        This function retrieves the game state from a game instance and sends it
+        back to the client. It calls the game instance's state function and
+        passes the ID of the player requesting the state to it. In addition to
+        the information returned from the game instance, the framework also adds
+        the IDs of the current players and the game status.
 
         Parameters:
         request (dict): containing information about the game session and the player
@@ -237,7 +262,10 @@ class GameFramework:
         """
         Request handler for observing another player.
 
-        To observe another player in the same game session, the observing client needs to know the ID of that player. This function retrieves that ID based on the player's name. This only works, if the player has supplied a name when joining the game session.
+        To observe another player in the same game session, the observing client
+        needs to know the ID of that player. This function retrieves that ID
+        based on the player's name. This only works, if the player has supplied
+        a name when joining the game session.
 
         Parameters:
         request (dict): request containing game name, token and player to be observed
@@ -268,7 +296,11 @@ class GameFramework:
         """
         Request handler for resetting a game.
 
-        This function resets a game. The game class object is replaced with a new one, the game session itself stays untouched. There is no need to rejoin the game, and all players will keep their IDs. This is useful when simulating many games to collect data for AI training. Only the client who started the session (ID = 0) can reset the game.
+        This function resets a game. The game class object is replaced with a
+        new one, the game session itself stays untouched. There is no need to
+        rejoin the game, and all players will keep their IDs. This is useful
+        when simulating many games to collect data for AI training. Only the
+        client who started the session (ID = 0) can reset the game.
 
         Parameters:
         request (dict): containing information about the game session
@@ -298,7 +330,8 @@ class GameFramework:
         """
         Waits for players to join the game.
 
-        This function waits until the required number of players has joined the game or until the timeout is reached.
+        This function waits until the required number of players has joined the
+        game or until the timeout is reached.
 
         Parameters:
         session (GameSession): game session
@@ -334,7 +367,10 @@ class GameFramework:
 
     def _return_data(self, data):
         """
-        Adds data to a dictionary to be sent back to the client. This function is to be used only for sending regular data back to a client as a response to a valid request. It must not be used for sending error messages (hence the status flag 'ok').
+        Adds data to a dictionary to be sent back to the client. This function
+        is to be used only for sending regular data back to a client as a
+        response to a valid request. It must not be used for sending error
+        messages (hence the status flag 'ok').
         """
         return {'status':'ok', 'data':data}
 
@@ -356,7 +392,8 @@ class GameFramework:
 
     def _clean_up(self):
         """
-        Deleting inactive game sessions after a defined time span without read or write access.
+        Deleting inactive game sessions after a defined time span without read
+        or write access.
         """
         while True:
             time.sleep(config.game_timeout)

@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """
-This is a graphical tic-tac-toe client using Pygame (www.pygame.org). It is based on an implementation found on GitHub.
+This is a graphical tic-tac-toe client using Pygame (www.pygame.org). It is
+based on an implementation found on GitHub.
 
-The original implementation is a stand-alone program to be used by two human players on the same machine. It was reworked by me (Fabian Eberts) to use my game server API and play against a remote client. Most of the game logic was removed and replaced by calls to API functions.
+The original implementation is a stand-alone program to be used by two human
+players on the same machine. It was reworked by me (Fabian Eberts) to use my
+game server API and play against a remote client. Most of the game logic was
+removed and replaced by calls to API functions.
 
 Code added by me is marked with a 'feb' comment.
 

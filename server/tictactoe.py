@@ -45,7 +45,8 @@ class TicTacToe(AbstractGame):
         """
         Submit a move.
 
-        The move is passed as a dictionary containing the key 'position' with a board position (0-8) as its value.
+        The move is passed as a dictionary containing the key 'position' with a
+        board position (0-8) as its value.
 
         Parameters:
         args (dict): the current player's move

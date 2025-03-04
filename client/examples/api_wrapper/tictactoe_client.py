@@ -2,7 +2,9 @@
 """
 Tic-tac-toe client using the API wrapper.
 
-This client program demonstrates the use of an API wrapper for tic-tac-toe. Implementing wrapper functions is not necessary because the game server API is generic and works with every game, but it can simplify the API usage.
+This client program demonstrates the use of an API wrapper for tic-tac-toe.
+Implementing wrapper functions is not necessary because the game server API is
+generic and works with every game, but it can simplify the API usage.
 """
 
 from tictactoe_api import TicTacToeAPI

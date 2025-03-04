@@ -1,9 +1,12 @@
 """
 MENACE implementation.
 
-This module provides a reinforcement learning agent that learns how to play tic-tac-toe. It uses a method designed by British researcher Donald Michie in 1961 to develop a strategy.
+This module provides a reinforcement learning agent that learns how to play
+tic-tac-toe. It uses a method designed by British researcher Donald Michie in
+1961 to develop a strategy.
 
-Article by Donald Michie describing his method: https://academic.oup.com/comjnl/article/6/3/232/360077
+Article by Donald Michie describing his method:
+https://academic.oup.com/comjnl/article/6/3/232/360077
 
 Wikipedia article on his method: https://en.wikipedia.org/w/index.php?title=Matchbox_Educable_Noughts_and_Crosses_Engine&oldid=1242708397
 """
@@ -12,7 +15,8 @@ import random
 
 class MENACE:
     """
-    Implementation of Donald Michie's Matchbox Educable Noughts and Crosses Engine (MENACE).
+    Implementation of Donald Michie's Matchbox Educable Noughts and Crosses
+    Engine (MENACE).
     """
 
     def __init__(self):

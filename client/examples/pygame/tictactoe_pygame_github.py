@@ -1,5 +1,6 @@
 """
-This is the original and unaltered Pygame tic-tac-toe implementation downloaded from GitHub.
+This is the original and unaltered Pygame tic-tac-toe implementation downloaded
+from GitHub.
 
 
 Source:

@@ -10,7 +10,10 @@ def generic_error(sender, message):
     """
     Create an error message.
 
-    The message is embedded into a dictionary, which is sent back to the client. To let the client know where the error was detected, the sender is prepended to the message. The sender is omitted, if the message parameter is of a type other than string.
+    The message is embedded into a dictionary, which is sent back to the client.
+    To let the client know where the error was detected, the sender is prepended
+    to the message. The sender is omitted, if the message parameter is of a type
+    other than string.
 
     Parameters:
     sender (str): let client know where the error was detected
@@ -52,9 +55,11 @@ def check_dict(d, expected):
     """
     Checking a dictionary's structure.
 
-    This function verifies, that all expected keys are present in a given dictionary and that their values are of the expected type.
+    This function verifies, that all expected keys are present in a given
+    dictionary and that their values are of the expected type.
 
-    Example: To check, if dictionary d has keys named 'a' and 'b', that are mapped to values of types int and str, a function call might look like this:
+    Example: To check, if dictionary d has keys named 'a' and 'b', that are
+    mapped to values of types int and str, a function call might look like this:
 
     d = {'a':42, 'b':'forty-two'}
     err = check_dict(d, {'a':int, 'b':str})
@@ -79,7 +84,9 @@ class ServerLogger:
     """
     Logging server information.
 
-    The log level can be set in the config file. It is recommended to log errors only, as the info log is very verbose. It prints detailed information about every single connection and is only useful for debugging TCP connections.
+    The log level can be set in the config file. It is recommended to log errors
+    only, as the info log is very verbose. It prints detailed information about
+    every single connection and is only useful for debugging TCP connections.
     """
     def info(self, message, prefix=''):
         if config.log_server_info:

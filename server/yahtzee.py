@@ -115,7 +115,8 @@ class Yahtzee(AbstractGame):
         """
         Handling a player's move.
 
-        The type of move is determined and then passed to the corresponding function.
+        The type of move is determined and then passed to the corresponding
+        function.
 
         Parameters:
         args (dict): the current player's move
@@ -165,7 +166,9 @@ class Yahtzee(AbstractGame):
 
     def _add_points(self, category):
         """
-        The current combination of dice is evaluated according to the category and to the rules of the game. The calculated points are then added to the specified category on the scorecard.
+        The current combination of dice is evaluated according to the category
+        and to the rules of the game. The calculated points are then added to
+        the specified category on the scorecard.
 
         Parameters:
         category (str): the chosen category

@@ -2,22 +2,23 @@
 
 This project provides a lightweight server for turn-based multiplayer games.
 
-The main features are:
+### Main features
 
 - multiple parallel game sessions
 - a framework that allows new games to be added easily
 - a uniform yet flexible API for all games
-- an observer mode to watch other clients play
+- an observer mode to watch another client play
 
-Possible areas of application include:
+### Possible areas of application
 
-- programming courses in which students implement game clients
 - development of turn-based multiplayer games in general
+- programming courses in which students implement game clients
+- implementing separate clients for input and output using the observer mode
 - small projects in the area of reinforcement learning
 
-## Quickstart
+## Quick start
 
-To try this project on your machine, start the server by running `server/game_server.py`. Then run two tic-tac-toe clients (`client/tictactoe_client.py`) in separate shells. No further configuration is required.
+To try this project on your machine, start the server (`server/game_server.py`). Then run two clients (`client/tictactoe_client.py`) in separate shells. No further configuration is required.
 
 ## Operating the server
 

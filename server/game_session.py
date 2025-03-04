@@ -43,19 +43,18 @@ class GameSession:
 
     def next_id(self, player_name):
         """
-        Returning a player ID.
+        Returning a player ID and a password.
 
-        This function returns a new ID for each player joining a game session.
-        If a none empty string is passed as the player name, this name together
-        with the assigned ID are added to a dictionary.
-        TODO
+        This function returns a new ID and a unique password for each player
+        joining a game session. If a none empty string is passed as the player
+        name, this name together with the assigned ID is added to a dictionary.
 
         Parameters:
         player_name (str): player name, can be an empty string
 
         Returns:
         int: the next player ID
-        TODO
+        str: a unique password
         """
         with self._lock:
             # player ID:
@@ -221,13 +220,26 @@ class GameSession:
 
     def _password(self, length):
         """
-        TODO
+        Generate a password.
+
+        Parameters:
+        length (int): length of the password
+
+        Returns:
+        str: the password
         """
         chars = string.ascii_letters + string.digits
         return ''.join(random.choice(chars) for _ in range(length))
 
     def password_valid(self, player_id, password):
         """
-        TODO
+        Check if password and player ID match.
+
+        Parameters:
+        player_id (int): player ID
+        password (str): password
+
+        Returns:
+        bool: True, if password valid, else False
         """
         return player_id in self._passwords and self._passwords[player_id] == password

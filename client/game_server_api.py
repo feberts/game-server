@@ -249,8 +249,7 @@ class GameServerAPI:
         """
         # prepare data:
         try:
-            request = json.dumps(data)
-            request = bytes(request, 'utf-8')
+            request = json.dumps(data).encode()
         except:
             return self._api_error('data could not be converted to JSON')
 
@@ -279,8 +278,7 @@ class GameServerAPI:
                     response += data
 
                 if not response: raise self._MissingResponse
-                response = str(response, 'utf-8')
-                response = json.loads(response)
+                response = json.loads(response.decode())
 
                 # return data:
                 if response['status'] == 'error': # server responded with error

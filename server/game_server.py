@@ -74,8 +74,7 @@ def handle_connection(conn, ip, port):
             if not request: raise ClientDisconnect
 
             log.info(f'received {len(request)} bytes from client')
-            request = str(request, 'utf-8')
-            request = json.loads(request)
+            request = json.loads(request.decode())
             log.info(f'received from client:\n{request}')
 
             # pass request to the framework:
@@ -105,8 +104,7 @@ def handle_connection(conn, ip, port):
         if response:
             log.info(f'responding to client:\n{response}')
             response = json.dumps(response)
-            response = bytes(response, 'utf-8')
-            conn.sendall(response)
+            conn.sendall(response.encode())
 
     finally:
         # close connection:

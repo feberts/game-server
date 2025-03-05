@@ -39,7 +39,7 @@ class GameSession:
         self._lock = threading.Lock()
         self._state_change = threading.Event()
         self._previous_game = None # stored upon reset
-        self._previous_ids = [] # will receive the status of the previous game once
+        self._previous_game_ids = [] # will receive the status of the previous game once
 
     def next_id(self, player_name):
         """
@@ -113,7 +113,7 @@ class GameSession:
         Returns:
         AbstractGame: game instance
         """
-        if player_id in self._previous_ids:
+        if player_id in self._previous_game_ids:
             return self._previous_game
 
         return self._game
@@ -177,14 +177,14 @@ class GameSession:
         if (blocking
             and not self._game.game_over()
             and not (player_id in self._game.current_player() and not observer)
-            and not player_id in self._previous_ids):
+            and not player_id in self._previous_game_ids):
             self._state_change.clear()
             self._state_change.wait()
 
         # if required, return the previous game's state:
-        if player_id in self._previous_ids:
+        if player_id in self._previous_game_ids:
             ret = self._previous_game.state(player_id)
-            self._previous_ids.remove(player_id)
+            self._previous_game_ids.remove(player_id)
             return ret
 
         # return current game's state:
@@ -209,7 +209,7 @@ class GameSession:
         """
         # store old game instance and a list of player IDs:
         if self._game.game_over():
-            self._previous_ids = list(range(1, self._n_players))
+            self._previous_game_ids = list(range(1, self._n_players))
             self._previous_game = copy.deepcopy(self._game)
 
         # create new game instance:

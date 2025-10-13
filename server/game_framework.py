@@ -9,7 +9,7 @@ actions are performed. The following requests can be handled by the framework:
 - joining a game
 - submitting a move
 - requesting the game state
-- observing a game
+- observing a player
 - resetting a game
 
 To perform these actions, the framework calls the corresponding methods of a
@@ -92,12 +92,13 @@ class GameFramework:
         requested the start of the game. If not enough players have joined the
         game before the timeout occurs, the game session is deleted and the
         requesting client is informed. A repeated call of this function will end
-        the previous game session and start a new one, which other players can
-        join.
+        the game session and start a new one, which the other players will have
+        to join again.
 
         In addition to the ID, a unique password is generated for the player and
-        sent to the client. It is included in every future request sent by the
-        client and then checked by the framework.
+        sent to the client. It is automatically included in every future request
+        sent by the client and then checked by the framework to prevent
+        cheating.
 
         Parameters:
         request (dict): request containing game name, token and number of players
@@ -152,8 +153,9 @@ class GameFramework:
         requesting client is informed.
 
         In addition to the ID, a unique password is generated for the player and
-        sent to the client. It is included in every future request sent by the
-        client and then checked by the framework.
+        sent to the client. It is automatically included in every future request
+        sent by the client and then checked by the framework to prevent
+        cheating.
 
         Parameters:
         request (dict): request containing game name and token
@@ -199,7 +201,7 @@ class GameFramework:
         request (dict): containing information about the game session and the player's move
 
         Returns:
-        dict: containing an error message, if the move is invalid
+        dict: containing information in case of an invalid move
         """
         # check and parse request:
         err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'password':str, 'move':dict})
@@ -367,7 +369,7 @@ class GameFramework:
         """
         Retrieves an active game session.
 
-        If the specified game session exists, it is returned to the caller.
+        If the specified game session exists, it is returned.
 
         Parameters:
         game_name (str): game name

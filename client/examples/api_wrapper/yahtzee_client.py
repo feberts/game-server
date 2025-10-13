@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Yahtzee client.
+Yahtzee client using the API wrapper.
 
-This program connects to the game server to play Yahtzee, alone, or against
-other clients.
+This client program demonstrates the use of an API wrapper for Yahtzee.
+Implementing wrapper functions is not necessary because the game server API is
+generic and works with every game, but it can simplify the API usage.
 """
 
 from yahtzee_api import YahtzeeAPI

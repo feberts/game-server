@@ -26,12 +26,12 @@ class AbstractGame:
         """
         Constructor.
 
-        The framework assigns IDs in the range 0...players-1 to all players that
-        join a game. It then passes the total number of players to the
-        constructor. The framework makes sure, that only a defined number of
-        players can join the game. The number of allowed players is specified by
-        functions min_players and max_players. The desired number of players is
-        provided by the client starting a new game.
+        The framework assigns IDs in the range 0...n-1 to all players that join
+        a game. It then passes the total number of players to this constructor.
+        The framework makes sure that only a defined number of players can join
+        the game. The number of allowed players is specified by functions
+        min_players and max_players. The desired number of players is provided
+        by the client starting a new game.
 
         Parameters:
         players (int): number of players (no parameter check required)
@@ -41,26 +41,26 @@ class AbstractGame:
     @staticmethod
     def min_players():
         """
-        Returns the minimal number of players.
+        Returns the minimum number of players.
 
-        This function reports the minimal number of players required to play the
+        This function reports the minimum number of players required to play the
         game to the framework.
 
         Returns:
-        int: minimal number of players
+        int: minimum number of players
         """
         raise NotImplementedError
 
     @staticmethod
     def max_players():
         """
-        Returns the maximal number of players.
+        Returns the maximum number of players.
 
-        This function reports the highest allowed number of players in the game
+        This function reports the maximum number of players allowed in the game
         to the framework.
 
         Returns:
-        int: highest allowed number of players
+        int: maximum number of players
         """
         raise NotImplementedError
 
@@ -71,7 +71,7 @@ class AbstractGame:
         A game class must keep track of which player must perform the next move.
         This can be a single player, multiple players, or no player at all. This
         function reports the corresponding player IDs to the framework. In
-        return, the framework makes sure, that no other player can submit a
+        return, the framework makes sure, that no other players can submit a
         move.
 
         Returns:
@@ -115,7 +115,7 @@ class AbstractGame:
         player_id (int): ID of the player submitting the move (no parameter check required)
 
         Returns:
-        str: error message in case the move was illegal, None otherwise
+        str: error message in case the move is illegal, None otherwise (see above for details)
         """
         raise NotImplementedError
 
@@ -125,7 +125,8 @@ class AbstractGame:
 
         A boolean value is returned indicating whether the game has ended or is
         still active. After the game has ended, the framework makes sure that
-        moves can no longer be submitted.
+        moves can no longer be submitted. Clients will still be able to retrieve
+        the game state after the game has ended.
 
         Returns:
         bool: True, if game has ended, else False

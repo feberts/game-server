@@ -1,7 +1,7 @@
 """
 Tic-tac-toe game.
 
-This module provides a tic-tac-toe implementation that is used by the framework.
+This module provides a tic-tac-toe implementation.
 """
 
 import random
@@ -22,7 +22,13 @@ class TicTacToe(AbstractGame):
             self.gameover = False
             self.winner = None
 
-    def __init__(self, _): # override
+    def __init__(self, players): # override
+        """
+        Constructor.
+
+        Parameters:
+        players (int): number of players (unused)
+        """
         self._state = self._State()
 
     def state(self, player_id): # override

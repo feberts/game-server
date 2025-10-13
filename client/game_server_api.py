@@ -7,8 +7,8 @@ be used to
 - start a game that other clients can join
 - join a game that was started by another client
 - submit moves to the server
-- request the game state
-- passively observe other players
+- retrieve the game state
+- passively observe a specific player
 - reset a game without starting a new session
 """
 
@@ -27,15 +27,16 @@ class GameServerAPI:
         """
         Start a game.
 
-        This function asks the server to start a game. Other clients can use the
-        join function to join that game. To be able to join, they need to know
-        the chosen token. The token is used to identify the game session. It can
-        be any string. A repeated call of this function will end the previous
-        session and start a new one, which other players can join.
+        This function instructs the server to start a game. Other clients can
+        use the join function to join that game. To be able to join, they need
+        to know the chosen token. The token is used to identify the game
+        session. It can be any string. A repeated call of this function will end
+        the current session and start a new one, which the other players will
+        have to join again.
 
         The game starts as soon as the specified number of clients has joined
         the game. The function then returns the player ID. The server assigns
-        IDs in the range 0...players-1 to all players that join the game.
+        IDs in the range 0...n-1 to all players that join the game.
 
         The optional name parameter makes it possible for other clients to
         passively observe your playing by joining a game using the watch
@@ -79,7 +80,7 @@ class GameServerAPI:
 
         The game starts as soon as all clients have joined the game. The
         function then returns the player ID. The server assigns IDs in the range
-        0...players-1 to all players that join the game.
+        0...n-1 to all players that join the game.
 
         The optional name parameter makes it possible for other clients to
         passively observe your playing by joining a game using the watch
@@ -120,7 +121,8 @@ class GameServerAPI:
         be passed as keyword arguments. Refer to the documentation of a specific
         game to find out about the required or available arguments. If it is not
         your turn to submit a move or if the move is invalid, the server replies
-        with an error message.
+        with an error message. Refer to the documentation of a specific game for
+        more information about error handling.
 
         Parameters:
         kwargs (keyword arguments): a player's move
@@ -139,7 +141,7 @@ class GameServerAPI:
 
     def state(self, blocking=True):
         """
-        Request the state.
+        Retrieve the game state.
 
         This function requests the game state from the server. The state is
         returned as a dictionary. Refer to the documentation of a specific game
@@ -147,14 +149,14 @@ class GameServerAPI:
 
         Independent of the game, the dictionary always contains these two keys:
 
-        - current: a list of player IDs, indicating whose player's turn it is
-        - gameover: a boolean value indicating whether the game is over or still active
+        - 'current': a list of player IDs, indicating whose player's turn it is
+        - 'gameover': a boolean value indicating whether the game is over or still active
 
         This function will block until the game state changes. Only then the
         server will respond with the updated state. This is more efficient than
-        polling. The function can also be used in a non-blocking way.
-        Furthermore, the function does not block, if it is the client's turn to
-        submit a move, or if the game has ended.
+        polling. The function can also be used in a non-blocking way. The
+        function does not block, if it is the client's turn to submit a move, or
+        if the game has ended.
 
         Parameters:
         blocking (bool): use function in blocking mode (default)
@@ -178,8 +180,8 @@ class GameServerAPI:
 
         This function lets one client observe another client. By providing the
         name of the player to be observed, you will receive the same data
-        calling the state function as that player does. Moreover, this function
-        will return the player ID of the observed player.
+        calling the state function as that player does. This function will
+        return the player ID of the observed player.
 
         This function can only be called, after the specified game session has
         already been started.

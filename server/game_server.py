@@ -6,17 +6,15 @@ A lightweight server and framework for turn-based multiplayer games.
 Copyright (C) 2025 Fabian Eberts
 Licensed under the GPL v3.0 (see LICENSE)
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-"""
-
-"""
 This server program opens a port and handles client connections in separate
 threads. It passes the data received from a client to the game framework and
 sends the framework's reply back to the client. Parameters like IP or port
 number are defined in the config module.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 """
 
 import json
@@ -51,7 +49,7 @@ def handle_connection(conn, ip, port):
 
     Parameters:
     conn (socket): connection socket
-    client (str): client ip
+    ip (str): client IP
     port (int): client port
     """
     log = utility.ServerLogger(ip, port)

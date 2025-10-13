@@ -1,7 +1,8 @@
 """
 Utility.
 
-This module provides various utility functions and classes.
+This module provides various utility functions and classes for logging and error
+handling.
 """
 
 import config
@@ -13,11 +14,11 @@ def generic_error(sender, message):
     The message is embedded into a dictionary, which is sent back to the client.
     To let the client know where the error was detected, the sender is prepended
     to the message. The sender is omitted, if the message parameter is of a type
-    other than string.
+    other than string (see function AbstractGame.move).
 
     Parameters:
     sender (str): let client know where the error was detected
-    message (str): error message
+    message (str): error message (see above for details)
 
     Returns:
     dict: contains the message
@@ -29,25 +30,19 @@ def generic_error(sender, message):
 
 def server_error(message):
     """
-    Server error.
-
-    See function generic_error() for details.
+    Server error. See function generic_error for details.
     """
     return generic_error('server', message)
 
 def framework_error(message):
     """
-    Framework error.
-
-    See function generic_error() for details.
+    Framework error. See function generic_error for details.
     """
     return generic_error('framework', message)
 
 def game_error(message):
     """
-    Game error.
-
-    See function generic_error() for details.
+    Game error. See function generic_error for details.
     """
     return generic_error('game', message)
 
@@ -84,23 +79,42 @@ class ServerLogger:
     """
     Logging server information.
 
-    The log level can be set in the config file. It is recommended to log errors
-    only, as the info log is very verbose. It prints detailed information about
-    every single connection and is only useful for debugging TCP connections.
+    The output contains the log message itself, IP and port of the client, and
+    an optional prefix.
+
+    The log level can be set in the config file.
     """
+    def __init__(self, ip, port):
+    """
+    Parameters:
+    ip (str): client IP
+    port (int): client port
+    """
+        self._ip = ip
+        self._port = port
+
     def info(self, message, prefix=''):
+    """
+    Log server information. See function _log for details.
+    """
         if config.log_server_info:
             self._log(message, prefix)
 
     def error(self, message, prefix=''):
+    """
+    Log server errors. See function _log for details.
+    """
         if config.log_server_errors:
             self._log(message, prefix)
 
-    def __init__(self, ip, port):
-        self._ip = ip
-        self._port = port
-
     def _log(self, message, prefix):
+    """
+    Print log message.
+
+    Parameters:
+    message (str): message
+    prefix (str): prepended to the message
+    """
         print(f'{prefix}[{self._ip}:{self._port}] {message}')
 
 class FrameworkLogger:

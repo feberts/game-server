@@ -1,8 +1,7 @@
 """
 Game session.
 
-This module provides a class that contains all data associated with a specific
-game session.
+This module provides a class that handles a single game session.
 """
 
 import copy
@@ -15,8 +14,10 @@ class GameSession:
     """
     Class GameSession.
 
-    This is a wrapper class for game instances providing additional
-    functionality.
+    This class contains a game instance and all data associated with the
+    specific game session. It assigns player IDs, passes requests like player
+    moves to the game instance, and provides the framework with information
+    about the game session.
     """
 
     def __init__(self, game_class, players):
@@ -38,23 +39,23 @@ class GameSession:
         self._last_access = time.time()
         self._lock = threading.Lock()
         self._state_change = threading.Event()
-        self._previous_game = None # stored upon reset
-        self._previous_game_ids = [] # will receive the status of the previous game once
+        self._previous_game = None # previous game instance stored upon reset
+        self._previous_game_ids = [] # players will receive state of previous game once
 
     def next_id(self, player_name):
         """
         Returning a player ID and a password.
 
-        This function returns a new ID and a unique password for each player
-        joining a game session. If a none empty string is passed as the player
-        name, this name together with the assigned ID is added to a dictionary.
+        This function returns a new ID and a password for each player joining a
+        game session. If a none empty string is passed as the player name, this
+        name together with the assigned ID is added to a dictionary.
 
         Parameters:
         player_name (str): player name, can be an empty string
 
         Returns:
         int: the next player ID
-        str: a unique password
+        str: a generated password
         """
         with self._lock:
             # player ID:
@@ -65,7 +66,7 @@ class GameSession:
             if player_name != '':
                 self._player_names[player_name] = player_id
 
-            # generate unique password:
+            # generate password:
             password = self._password(5)
             self._passwords[player_id] = password
 
@@ -77,7 +78,7 @@ class GameSession:
         game.
 
         Returns:
-        bool: True, if session ready, else False
+        bool: True, if session ready
         """
         return self._n_players == self._next_id
 
@@ -85,10 +86,11 @@ class GameSession:
         """
         Return player ID and password by name.
 
-        This function returns the ID and password that were assigned to the player.
+        This function returns the ID and password that were assigned to the
+        player.
 
         Parameters:
-        player_name (str): name of an existing player that has already joined the game
+        player_name (str): name of a player that has already joined the game
 
         Returns:
         tuple(int, str, str):
@@ -142,7 +144,7 @@ class GameSession:
         player_id (int): ID of the player submitting the move
 
         Returns:
-        str: error message in case the move was illegal, None otherwise
+        str: error message in case the move was illegal, None otherwise (see AbstractGame.move)
         """
         with self._lock:
             ret = self._game.move(move, player_id)
@@ -201,9 +203,9 @@ class GameSession:
         of the previous game. Otherwise, they would suddenly find themselves in
         a new game without being notified about it. To achieve this, a list of
         client IDs is created upon resetting a game. When a client then calls
-        the state function, the old game state is returned a single time. Then
-        the client is removed from the list. After that, he will receive the
-        game state of the new game instance.
+        the state function, the state of the previous game is returned a single
+        time, and the client's ID is removed from the list. From then on, the
+        client will receive the game state of the new game instance.
 
         Only the client who started the game can reset it.
         """
@@ -220,7 +222,7 @@ class GameSession:
 
     def _password(self, length):
         """
-        Generate a password.
+        Generate a unique password.
 
         Parameters:
         length (int): length of the password
@@ -240,6 +242,6 @@ class GameSession:
         password (str): password
 
         Returns:
-        bool: True, if password valid, else False
+        bool: True, if password valid
         """
         return player_id in self._passwords and self._passwords[player_id] == password

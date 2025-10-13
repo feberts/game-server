@@ -9,12 +9,12 @@ ip = '127.0.0.1'
 port = 4711
 
 # tcp connections:
+receive_size_max = int(1e6) # bytes, prevents clients from sending too much data
 buffer_size = 4096 # bytes
 connection_timeout = 60 # seconds
-receive_size_max = int(1e6) # bytes
 
 # framework:
-game_timeout = 180 # deletion of inactive games; waiting for others to join
+game_timeout = 180 # timeout for inactive games and for joining a game
 
 # logging:
 log_server_info = False # useful only for debugging tcp connections (verbose)

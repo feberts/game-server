@@ -1,7 +1,7 @@
 """
 Yahtzee game.
 
-This module provides a Yahtzee implementation that is used by the framework.
+This module provides a Yahtzee implementation.
 """
 
 import random
@@ -116,7 +116,16 @@ class Yahtzee(AbstractGame):
         Handling a player's move.
 
         The type of move is determined and then passed to the corresponding
-        function.
+        function. The required content of dictionary args depends on the phase
+        of the game. In the first phase, all players must send their names
+        before any turns can be performed. From then on, players can roll their
+        dice, add points to their scorecards, or cross out categories.
+
+        Options for dictionary content:
+        'name': the player's name
+        'roll_dice' int list of up to five dice (0..4) to be rolled
+        'score': action to be performed, either 'add points' or 'cross out'
+        'category': name of a category, must be supplied in addition to 'score'
 
         Parameters:
         args (dict): the current player's move
@@ -167,7 +176,7 @@ class Yahtzee(AbstractGame):
     def _add_points(self, category):
         """
         The current combination of dice is evaluated according to the category
-        and to the rules of the game. The calculated points are then added to
+        and to the rules of the game. The calculated points are then assigned to
         the specified category on the scorecard.
 
         Parameters:
@@ -280,7 +289,18 @@ class Yahtzee(AbstractGame):
 
     def state(self, player_id): # override
         """
-        Returns the game state as a dictionary.
+        Returns the game state as a dictionary. The content of the dictionary
+        depends on the phase of the game. In the first phase, players have to
+        choose their names. In the second phase, players can perform their
+        moves. After the game has ended, the ranking can be retrieved. The
+        presence of key 'current_name' indicates that the game is in the second
+        phase, where moves can be performed.
+
+        Dictionary content:
+        'scorecard': a dictionary mapping category names to points (always included)
+        'dice': int list of length 5 containing the face values (during playing phase)
+        'current_name': current player's name (during playing phase)
+        'ranking': dictionary mapping player names to total points (when game has ended)
 
         Parameters:
         player_id (int): player ID

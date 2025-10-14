@@ -32,19 +32,20 @@ class Yahtzee(AbstractGame):
         self._roll_dice()
         self._ranking = {} # name -> total points
 
-    # upper and lower sections of Yahtzee scorecard:
-    # (according to https://en.wikipedia.org/w/index.php?title=Yahtzee&oldid=1258193803)
-    _upper_section = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes']
-    _lower_section = ['Chance', 'Three of a Kind', 'Four of a Kind', 'Full House', 'Small Straight', 'Large Straight', 'Yahtzee']
 
     class _ScoreCard:
         """
         This class implements a Yahtzee scorecard.
         """
+
+        # upper and lower sections of Yahtzee scorecard:
+        upper_section = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes']
+        lower_section = ['Chance', 'Three of a Kind', 'Four of a Kind', 'Full House', 'Small Straight', 'Large Straight', 'Yahtzee']
+
         def __init__(self):
             self.player_name = None
             self.categories = dict.fromkeys(
-                Yahtzee._upper_section + Yahtzee._lower_section, None) # category -> points
+                self.upper_section + self.lower_section, None) # category -> points
 
         def full(self):
             """
@@ -65,7 +66,7 @@ class Yahtzee(AbstractGame):
 
             # check for bonus points:
             upper_sum = 0
-            for cat in Yahtzee._upper_section:
+            for cat in self.upper_section:
                 upper_sum += self.categories[cat]
             if upper_sum >= 63:
                 total += 35
@@ -185,13 +186,13 @@ class Yahtzee(AbstractGame):
         Returns:
         str: error message in case the move was illegal, None otherwise
         """
-        if category in self._upper_section:
+        if category in self._ScoreCard.upper_section:
             # calculate sum of dice with the same value according to the category:
-            face_value = self._upper_section.index(category) + 1
+            face_value = self._ScoreCard.upper_section.index(category) + 1
             count = self._dice.count(face_value)
             if count == 0: return f'there are no {face_value}s'
             points = count * face_value
-        elif category in self._lower_section:
+        elif category in self._ScoreCard.lower_section:
             if category == 'Chance':
                 points = sum(self._dice)
             elif category == 'Three of a Kind':

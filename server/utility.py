@@ -7,7 +7,7 @@ handling.
 
 import config
 
-def generic_error(sender, message):
+def _generic_error(sender, message):
     """
     Create an error message.
 
@@ -30,50 +30,21 @@ def generic_error(sender, message):
 
 def server_error(message):
     """
-    Server error. See function generic_error for details.
+    Server error. See function _generic_error for details.
     """
-    return generic_error('server', message)
+    return _generic_error('server', message)
 
 def framework_error(message):
     """
-    Framework error. See function generic_error for details.
+    Framework error. See function _generic_error for details.
     """
-    return generic_error('framework', message)
+    return _generic_error('framework', message)
 
 def game_error(message):
     """
-    Game error. See function generic_error for details.
+    Game error. See function _generic_error for details.
     """
-    return generic_error('game', message)
-
-def check_dict(d, expected):
-    """
-    Checking a dictionary's structure.
-
-    This function verifies, that all expected keys are present in a given
-    dictionary and that their values are of the expected type.
-
-    Example: To check, if dictionary d has keys named 'a' and 'b', that are
-    mapped to values of types int and str, a function call might look like this:
-
-    d = {'a':42, 'b':'forty-two'}
-    err = check_dict(d, {'a':int, 'b':str})
-    if err: print(err)
-
-    Parameters:
-    d (dict): dictionary to be checked
-    expected (dict): contains the expected key names and value data types
-
-    Returns:
-    str: None, if dictionary has the expected structure, an error message otherwise
-    """
-    for key_name, val_type in expected.items():
-        if key_name not in d:
-            return f"key '{key_name}' of type {val_type} missing"
-        if type(d[key_name]) != val_type:
-            return f"value of key '{key_name}' must be of type {val_type}"
-
-    return None
+    return _generic_error('game', message)
 
 class ServerLogger:
     """
@@ -85,36 +56,36 @@ class ServerLogger:
     The log level can be set in the config file.
     """
     def __init__(self, ip, port):
-    """
-    Parameters:
-    ip (str): client IP
-    port (int): client port
-    """
+        """
+        Parameters:
+        ip (str): client IP
+        port (int): client port
+        """
         self._ip = ip
         self._port = port
 
     def info(self, message, prefix=''):
-    """
-    Log server information. See function _log for details.
-    """
+        """
+        Log server information. See function _log for details.
+        """
         if config.log_server_info:
             self._log(message, prefix)
 
     def error(self, message, prefix=''):
-    """
-    Log server errors. See function _log for details.
-    """
+        """
+        Log server errors. See function _log for details.
+        """
         if config.log_server_errors:
             self._log(message, prefix)
 
     def _log(self, message, prefix):
-    """
-    Print log message.
+        """
+        Print log message.
 
-    Parameters:
-    message (str): message
-    prefix (str): prepended to the message
-    """
+        Parameters:
+        message (str): message
+        prefix (str): prepended to the message
+        """
         print(f'{prefix}[{self._ip}:{self._port}] {message}')
 
 class FrameworkLogger:
@@ -155,3 +126,32 @@ class FrameworkLogger:
 
     def _log(self, message):
         print(message)
+
+def check_dict(d, expected):
+    """
+    Checking a dictionary's structure.
+
+    This function verifies, that all expected keys are present in a given
+    dictionary and that their values are of the expected type.
+
+    Example: To check, if dictionary d has keys named 'a' and 'b', that are
+    mapped to values of types int and str, a function call might look like this:
+
+    d = {'a':42, 'b':'forty-two'}
+    err = check_dict(d, {'a':int, 'b':str})
+    if err: print(err)
+
+    Parameters:
+    d (dict): dictionary to be checked
+    expected (dict): contains the expected key names and value data types
+
+    Returns:
+    str: None, if dictionary has the expected structure, an error message otherwise
+    """
+    for key_name, val_type in expected.items():
+        if key_name not in d:
+            return f"key '{key_name}' of type {val_type} missing"
+        if type(d[key_name]) != val_type:
+            return f"value of key '{key_name}' must be of type {val_type}"
+
+    return None

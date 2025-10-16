@@ -12,13 +12,6 @@ Source of the original implementation:
 GitHub user 'x4nth055' (Rockikz)
 https://github.com/x4nth055/pythoncode-tutorials/tree/master/gui-programming/tictactoe-game
 Accessed: 2024-12-12
-
-The original implementation is also presented on this website:
-Author: Michael Maranan
-https://thepythoncode.com/article/make-a-tic-tac-toe-game-pygame-in-python
-Accessed: 2024-12-12
-
-The two PNG files were downloaded from the same website.
 """
 
 """
@@ -105,9 +98,9 @@ class TicTacToe():
     # draws character of the recent player to the selected table cell
     def _draw_char(self, x, y, player):
         if player == 0:
-            img = pygame.image.load("mark_x.png")
+            img = pygame.image.load("mark_x.svg")
         elif player == 1:
-            img = pygame.image.load("mark_o.png")
+            img = pygame.image.load("mark_o.svg")
         img = pygame.transform.scale(img, (self.cell_size, self.cell_size))
         screen.blit(img, (x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size))
 

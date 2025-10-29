@@ -20,7 +20,7 @@ import threading
 import time
 
 import config
-import games
+import games_list
 import game_session
 import utility
 
@@ -35,8 +35,7 @@ class GameFramework:
     """
 
     def __init__(self):
-        self._game_classes = games.available_games
-        self._game_classes_by_name = {} # game name -> game class
+        self._game_classes = {} # game name -> game class
         self._game_sessions = {} # (game name, token) -> game session
         self._handlers = {
             'start_game':self._start_game,
@@ -53,8 +52,8 @@ class GameFramework:
         """
         Build a dictionary mapping game names to game classes.
         """
-        for game_class in self._game_classes:
-            self._game_classes_by_name[game_class.__name__] = game_class
+        for game_class in games_list.games:
+            self._game_classes[game_class.__name__] = game_class
 
     def handle_request(self, request):
         """
@@ -113,10 +112,10 @@ class GameFramework:
         game_name, token, players, name = request['game'], request['token'], request['players'], request['name']
 
         # get game class:
-        if game_name not in self._game_classes_by_name:
+        if game_name not in self._game_classes:
             return utility.framework_error('no such game')
 
-        game_class = self._game_classes_by_name[game_name]
+        game_class = self._game_classes[game_name]
 
         # check number of players:
         if players > game_class.max_players() or players < game_class.min_players():
@@ -381,7 +380,7 @@ class GameFramework:
             dict: error message, if a problem occurred, None otherwise
         """
         # check if game session exists:
-        if game_name not in self._game_classes_by_name:
+        if game_name not in self._game_classes:
             return None, utility.framework_error('no such game')
         if (game_name, token) not in self._game_sessions:
             return None, utility.framework_error('no such game session')

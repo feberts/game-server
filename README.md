@@ -46,7 +46,7 @@ Adding a new game is quite easy:
 1. Add a new module to directory `server/`.
 2. In this module, implement a class that is derived from `abstract_game.AbstractGame`.
 3. Override all the base class's methods.
-4. Add the new class to the list of games (`server/games.py`).
+4. Add the new class to the list of games (`server/games_list.py`).
 5. Write an API documentation for the new game.
 
 Notes:

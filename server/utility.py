@@ -50,9 +50,7 @@ class ServerLogger:
     """
     Logging server information.
 
-    The output contains the log message itself, IP and port of the client, and
-    an optional prefix.
-
+    The output contains IP and port of the client and the log message itself.
     The log level can be set in the config file.
     """
     def __init__(self, ip, port):
@@ -64,29 +62,28 @@ class ServerLogger:
         self._ip = ip
         self._port = port
 
-    def info(self, message, prefix=''):
+    def info(self, message):
         """
         Log server information. See function _log for details.
         """
         if config.log_server_info:
-            self._log(message, prefix)
+            self._log(message)
 
-    def error(self, message, prefix=''):
+    def error(self, message):
         """
         Log server errors. See function _log for details.
         """
         if config.log_server_errors:
-            self._log(message, prefix)
+            self._log(message)
 
-    def _log(self, message, prefix):
+    def _log(self, message):
         """
         Print log message.
 
         Parameters:
         message (str): message
-        prefix (str): prepended to the message
         """
-        print(f'{prefix}[{self._ip}:{self._port}] {message}')
+        print(f'[{self._ip}:{self._port}] {message}')
 
 class FrameworkLogger:
     """

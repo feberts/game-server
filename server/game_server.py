@@ -53,7 +53,7 @@ def handle_connection(conn, ip, port):
     port (int): client port
     """
     log = utility.ServerLogger(ip, port)
-    log.info('connection accepted', '\n')
+    log.info('connection accepted')
 
     conn.settimeout(config.connection_timeout)
 
@@ -71,9 +71,9 @@ def handle_connection(conn, ip, port):
 
             if not request: raise ClientDisconnect
 
-            log.info(f'received {len(request)} bytes from client')
+            log.info(f'received {len(request)} bytes from client: {request}')
             request = json.loads(request.decode())
-            log.info(f'received from client:\n{request}')
+            log.info(f'received json from client: {request}')
 
             # pass request to the framework:
             try:
@@ -100,7 +100,7 @@ def handle_connection(conn, ip, port):
 
         # send response to client:
         if response:
-            log.info(f'responding to client:\n{response}')
+            log.info(f'responding to client: {response}')
             response = json.dumps(response)
             conn.sendall(response.encode())
 

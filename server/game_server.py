@@ -29,7 +29,7 @@ import utility
 framework = game_framework.GameFramework()
 
 class ClientDisconnect(Exception): pass
-class MessageSizeExceeded(Exception): pass
+class RequestSizeExceeded(Exception): pass
 
 def handle_connection(conn, ip, port):
     """
@@ -66,8 +66,8 @@ def handle_connection(conn, ip, port):
                 data = conn.recv(config.buffer_size)
                 request += data
                 if not data: break
-                if len(request) > config.receive_size_max:
-                    raise MessageSizeExceeded
+                if len(request) > config.request_size_max:
+                    raise RequestSizeExceeded
 
             if not request: raise ClientDisconnect
 
@@ -82,7 +82,7 @@ def handle_connection(conn, ip, port):
                 log.error('unexpected exception in the framework:\n' + traceback.format_exc())
                 response = utility.framework_error('internal error')
 
-        except MessageSizeExceeded:
+        except RequestSizeExceeded:
             log.error('message size exceeded by client')
             response = utility.server_error('too much data sent')
         except socket.timeout:

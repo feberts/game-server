@@ -21,13 +21,13 @@ def print_dice(dice):
         print(f'[{d}] ', end='')
     print('\n a   b   c   d   e')
 
-def menu(options):
+def menu(options, start=1):
     print('\nOptions:')
-    for i, opt in enumerate(options):
+    for i, opt in enumerate(options, start):
         print(f'{i:3} - {opt}')
     while True:
         try:
-            option = int(input('\nYour option: '))
+            option = int(input('\nYour option: ')) - start
             if option < 0 or option >= len(options): raise ValueError
             return option
         except KeyboardInterrupt:

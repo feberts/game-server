@@ -27,11 +27,10 @@ class Yahtzee(AbstractGame):
         self._players = players
         self._scorecards = {} # player ID -> scorecard
         self._init_scorecards()
-        self._dice = [None] * 5
+        self._dice = [-1] * 5
         self._dice_rolls = 0
         self._roll_dice()
         self._ranking = {} # name -> total points
-
 
     class _ScoreCard:
         """

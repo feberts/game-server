@@ -34,7 +34,7 @@ class GameSession:
         self._n_players = players
         self._game = game_class(players)
         self._next_id = 0
-        self._player_names = {} # player name -> ID
+        self._player_ids = {} # player name -> ID
         self._passwords = {} # player ID -> password
         self._last_access = time.time()
         self._lock = threading.Lock()
@@ -64,10 +64,10 @@ class GameSession:
 
             # associate player name with ID:
             if player_name != '':
-                self._player_names[player_name] = player_id
+                self._player_ids[player_name] = player_id
 
             # generate password:
-            password = self._password(5)
+            password = self._password()
             self._passwords[player_id] = password
 
             return player_id, password
@@ -98,10 +98,10 @@ class GameSession:
             str: password, None if no such player exists
             str: error message, if a problem occurred, None otherwise
         """
-        if not player_name in self._player_names:
+        if not player_name in self._player_ids:
             return None, None, 'no such player'
 
-        player_id = self._player_names[player_name]
+        player_id = self._player_ids[player_name]
 
         return player_id, self._passwords[player_id], None
 
@@ -220,7 +220,7 @@ class GameSession:
         # wake up other threads waiting for the game state to change:
         self._state_change.set()
 
-    def _password(self, length):
+    def _password(self, length=5):
         """
         Generate a unique password.
 

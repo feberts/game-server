@@ -66,7 +66,6 @@ class GameServerAPI:
         if err: return None, err
         self._player_id = response['player_id']
         self._password = response['password']
-        self._request_size_max = response['request_size_max']
 
         return self._player_id, None
 
@@ -109,7 +108,6 @@ class GameServerAPI:
         if err: return None, err
         self._player_id = response['player_id']
         self._password = response['password']
-        self._request_size_max = response['request_size_max']
 
         return self._player_id, None
 
@@ -239,10 +237,7 @@ class GameServerAPI:
 
         This function sends data to the server and returns the data sent back by
         it. The data is sent in JSON format. Make sure, that the passed
-        dictionary's content is compatible with JSON. Before sending data, this
-        function checks if the request exceeds the size limit. A default value
-        for that limit is defined by this class. It is updated with a value
-        transmitted by the server after starting or joining a game.
+        dictionary's content is compatible with JSON.
 
         Parameters:
         data (dict): data to be sent to the server
@@ -257,9 +252,6 @@ class GameServerAPI:
             request = json.dumps(data).encode()
         except:
             return self._api_error('data could not be converted to JSON')
-
-        if len(request) > self._request_size_max:
-            return self._api_error('message size exceeded')
 
         # create a socket:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
@@ -340,6 +332,5 @@ class GameServerAPI:
         self._server = None
         self._port = None
 
-        # connections:
+        # tcp connections:
         self._buffer_size = 4096 # bytes
-        self._request_size_max = int(1e6) # bytes (updated after starting/joining a game)

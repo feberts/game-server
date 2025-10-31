@@ -6,6 +6,7 @@ handling.
 """
 
 import config
+from datetime import datetime
 
 def _generic_error(sender, message):
     """
@@ -50,8 +51,8 @@ class ServerLogger:
     """
     Logging server information.
 
-    The output contains IP and port of the client and the log message itself.
-    The log level can be set in the config file.
+    The output contains a timestamp, the client's IP and port, and the log
+    message itself. The log level can be set in the config file.
     """
     def __init__(self, ip, port):
         """
@@ -83,7 +84,8 @@ class ServerLogger:
         Parameters:
         message (str): message
         """
-        print(f'[{self._ip}:{self._port}] {message}')
+        time = datetime.strftime(datetime.now(), "%Y-%m-%d %X")
+        print(f'[{time} {self._ip}:{self._port}] {message}')
 
 class FrameworkLogger:
     """

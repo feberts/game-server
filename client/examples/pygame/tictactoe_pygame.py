@@ -3,9 +3,9 @@
 This is a graphical tic-tac-toe client using Pygame (www.pygame.org). It is
 based on an implementation found on GitHub.
 
-The original implementation is a stand-alone program to be used by two human 
-players on the same machine. It was modified to use the game server API and play 
-against a remote client. Most of the game logic was removed and replaced by 
+The original implementation is a stand-alone program to be used by two human
+players on the same machine. It was modified to use the game server API and play
+against a remote client. Most of the game logic was removed and replaced by
 calls to API functions.
 
 Source of the original implementation:
@@ -35,6 +35,10 @@ from pygame.locals import *
 import threading
 from game_server_api import GameServerAPI
 
+server='127.0.0.1'
+port=4711
+token='mygame'
+
 pygame.init()
 pygame.font.init()
 
@@ -54,11 +58,11 @@ class TicTacToe():
         self.my_id = None
 
         # join game:
-        self.my_id, err = self.game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
+        self.my_id, err = self.game.join_game(server, port, 'TicTacToe', token)
 
         if err: # no game started yet
             # start new game:
-            self.my_id, err = self.game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
+            self.my_id, err = self.game.start_game(server, port, 'TicTacToe', token, 2)
             if err: fatal(err)
 
         self.state, err = self.game.state(blocking=False)
@@ -71,12 +75,18 @@ class TicTacToe():
         self.cell_size = table_size // 3
         self.table_space = 20
 
+        self.mark = self._load_mark('mark_x.svg'), self._load_mark('mark_o.svg')
+
         self.background_color = (255, 174, 66)
         self.table_color = (50, 50, 50)
         self.line_color = (0, 175, 0)
         self.instructions_color = (17, 53, 165)
         self.font = pygame.font.SysFont(["Courier New", pygame.font.get_default_font()], 35, True)
         self.FPS = pygame.time.Clock()
+
+    def _load_mark(self, file_name):
+        img = pygame.image.load(file_name)
+        return pygame.transform.scale(img, (self.cell_size, self.cell_size))
 
     # draws table representation
     def _draw_table(self):
@@ -97,12 +107,7 @@ class TicTacToe():
 
     # draws character of the recent player to the selected table cell
     def _draw_char(self, x, y, player):
-        if player == 0:
-            img = pygame.image.load("mark_x.svg")
-        elif player == 1:
-            img = pygame.image.load("mark_o.svg")
-        img = pygame.transform.scale(img, (self.cell_size, self.cell_size))
-        screen.blit(img, (x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size))
+        screen.blit(self.mark[player], (x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size))
 
     # instructions and game-state messages
     def _message(self):
@@ -188,6 +193,7 @@ class TicTacToe():
             self.state, err = self.game.state(blocking=blocking)
             blocking = True
             if err: fatal(err)
+            self._draw_marks()
             if self.my_id in self.state['current']:
                 self._sending_move.clear()
                 self._sending_move.wait()
@@ -202,7 +208,6 @@ class TicTacToe():
         threading.Thread(target=self._request_state, args=(), daemon=True).start()
 
         while running:
-            self._draw_marks()
             self._message()
 
             for self.event in pygame.event.get():
@@ -214,7 +219,7 @@ class TicTacToe():
                     self._sending_move.set()
 
             pygame.display.flip()
-            self.FPS.tick(60)
+            self.FPS.tick(30)
 
 if __name__ == "__main__":
     g = TicTacToe(window_size[0])

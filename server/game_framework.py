@@ -191,10 +191,10 @@ class GameFramework:
         """
         Request handler for player moves.
 
-        This function handles a client's move. It makes sure, that it is
-        actually the client's turn to submit a move. It then passes the move to
-        the game instance and returns the game instance's message in case of an
-        invalid move.
+        This function handles a client's move. It makes sure that it is the
+        client's turn to submit a move. It then passes the move to the game
+        session and returns the game session's message in case of an invalid
+        move.
 
         Parameters:
         request (dict): containing information about the game session and the player's move
@@ -208,15 +208,13 @@ class GameFramework:
 
         game_name, token, player_id, password, move = request['game'], request['token'], request['player_id'], request['password'], request['move']
 
-        # retrieve the game:
+        # retrieve the game session:
         session, err = self._retrieve_game_session(game_name, token)
         if err: # no such game or game session
             return err
 
-        game = session.get_game()
-
         # check if game is still active:
-        if game.game_over():
+        if session.game_over():
             return utility.framework_error('game has ended')
 
         # check if password and ID match:
@@ -224,10 +222,10 @@ class GameFramework:
             return utility.framework_error('invalid password')
 
         # check if it is the client's turn:
-        if player_id not in game.current_player():
+        if player_id not in session.current_player():
             return utility.framework_error('not your turn')
 
-        # pass the move to the game instance:
+        # pass the move to the game session:
         err = session.game_move(move, player_id)
         if err: return utility.game_error(err)
 
@@ -237,11 +235,8 @@ class GameFramework:
         """
         Request handler for game state requests.
 
-        This function retrieves the game state from a game instance and sends it
-        back to the client. It calls the game instance's state function and
-        passes the ID of the player requesting the state to it. In addition to
-        the information returned from the game instance, the framework also adds
-        the IDs of the current players and the game status.
+        This function retrieves the game state from a game session and sends it
+        back to the client.
 
         Parameters:
         request (dict): containing information about the game session and the player
@@ -255,12 +250,10 @@ class GameFramework:
 
         game_name, token, player_id, password, blocking, observer = request['game'], request['token'], request['player_id'], request['password'], request['blocking'], request['observer']
 
-        # retrieve the game:
+        # retrieve the game session:
         session, err = self._retrieve_game_session(game_name, token)
         if err: # no such game or game session
             return err
-
-        game = session.get_game(player_id)
 
         # check if password and ID match:
         if not session.password_valid(player_id, password):
@@ -268,10 +261,6 @@ class GameFramework:
 
         # retrieve the game state:
         state = session.game_state(player_id, blocking, observer)
-
-        # add IDs of current players and game status:
-        state['current'] = game.current_player()
-        state['gameover'] = game.game_over()
 
         return self._return_data(state)
 

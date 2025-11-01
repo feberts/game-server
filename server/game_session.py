@@ -105,20 +105,23 @@ class GameSession:
 
         return player_id, self._passwords[player_id], None
 
-    def get_game(self, player_id=None):
+    def game_over(self):
         """
-        Return the game instance.
-
-        Parameters:
-        player_id (int): player ID
+        Retrieve the game status from the game instance.
 
         Returns:
-        AbstractGame: game instance
+        bool: True, if game has ended, else False
         """
-        if player_id in self._previous_game_ids:
-            return self._previous_game
+        return self._game.game_over()
 
-        return self._game
+    def current_player(self):
+        """
+        Retrieve current player(s) from the game instance.
+
+        Returns:
+        list: player IDs
+        """
+        return self._game.current_player()
 
     def last_access(self):
         """
@@ -156,6 +159,10 @@ class GameSession:
         """
         Retrieve the game state from the game instance.
 
+        In addition to the information returned from the game instance, the IDs
+        of the current players and the game status are added to the returned
+        state.
+
         If the corresponding API function is called in blocking mode, then this
         thread's execution is paused until the game state changes. To achieve
         this, the thread that changes the state triggers an event to wake up
@@ -184,15 +191,21 @@ class GameSession:
             self._state_change.wait()
 
         # if required, return the previous game's state:
+        # (this must NOT be done inside the lock below to prevent deadlocks)
         if player_id in self._previous_game_ids:
-            ret = self._previous_game.state(player_id)
+            state = self._previous_game.state(player_id)
+            state['current'] = self._previous_game.current_player()
+            state['gameover'] = self._previous_game.game_over()
             self._previous_game_ids.remove(player_id)
-            return ret
+            return state
 
         # return current game's state:
         with self._lock:
             self._update_last_access()
-            return self._game.state(player_id)
+            state = self._game.state(player_id)
+            state['current'] = self._game.current_player()
+            state['gameover'] = self._game.game_over()
+            return state
 
     def reset_game(self):
         """
@@ -225,7 +238,7 @@ class GameSession:
         Generate a unique password.
 
         Parameters:
-        length (int): length of the password
+        length (int): length of the password (optional)
 
         Returns:
         str: the password

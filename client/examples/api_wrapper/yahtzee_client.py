@@ -22,13 +22,13 @@ def print_dice(dice):
         print(f'[{d}] ', end='')
     print('\n a   b   c   d   e')
 
-def menu(options):
+def menu(options, start=1):
     print('\nOptions:')
-    for i, opt in enumerate(options):
+    for i, opt in enumerate(options, start):
         print(f'{i:3} - {opt}')
     while True:
         try:
-            option = int(input('\nYour option: '))
+            option = int(input('\nYour option: ')) - start
             if option < 0 or option >= len(options): raise ValueError
             return option
         except KeyboardInterrupt:
@@ -56,14 +56,12 @@ def fatal(msg):
     print(msg)
     exit()
 
-game = YahtzeeAPI()
+game = YahtzeeAPI(token='mygame')
 
-# join game:
-my_id, err = game.join_game(token='mygame')
+my_id, err = game.join_game()
 
 if err: # no game started yet
-    # start new game:
-    my_id, err = game.start_game(token='mygame', players=1)
+    my_id, err = game.start_game(players=2)
     if err: fatal(err)
 
 # submit name:

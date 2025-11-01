@@ -24,10 +24,10 @@ def fatal(msg):
     print(msg)
     exit()
 
-game = GameServerAPI()
+game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
 
 # observe game:
-observed_id, err = game.watch(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', name='bob')
+observed_id, err = game.watch(name='bob')
 if err: fatal(err)
 
 state, err = game.state(blocking=False)

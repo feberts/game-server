@@ -32,14 +32,12 @@ def fatal(msg):
     print(msg)
     exit()
 
-game = TicTacToeAPI()
+game = TicTacToeAPI(token='mygame')
 
-# join game:
-my_id, err = game.join_game(token='mygame')
+my_id, err = game.join_game()
 
 if err: # no game started yet
-    # start new game:
-    my_id, err = game.start_game(token='mygame')
+    my_id, err = game.start_game()
     if err: fatal(err)
 
 state, err = game.state(blocking=False)

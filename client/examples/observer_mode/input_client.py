@@ -25,14 +25,12 @@ def fatal(msg):
     print(msg)
     exit()
 
-game = GameServerAPI()
+game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', name='bob')
 
-# join game:
-my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', name='alice')
+my_id, err = game.join_game()
 
 if err: # no game started yet
-    # start new game:
-    my_id, err = game.start_game(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2, name='bob')
+    my_id, err = game.start_game(players=2)
     if err: fatal(err)
 
 state, err = game.state()

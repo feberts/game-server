@@ -15,14 +15,14 @@ class TicTacToeAPI:
     This class provides API wrapper functions for tic-tac-toe.
     """
 
-    def __init__(self):
-        self._api = game_server_api.GameServerAPI()
+    def __init__(self, token, name=''):
+        self._api = game_server_api.GameServerAPI('127.0.0.1', 4711, 'TicTacToe', token, name)
 
-    def start_game(self, token, name=''):
-        return self._api.start_game('127.0.0.1', 4711, 'TicTacToe', token, 2, name)
+    def start_game(self):
+        return self._api.start_game(2)
 
-    def join_game(self, token, name=''):
-        return self._api.join_game('127.0.0.1', 4711, 'TicTacToe', token, name)
+    def join_game(self):
+        return self._api.join_game()
 
     def move(self, position):
         return self._api.move(position=position)
@@ -32,8 +32,8 @@ class TicTacToeAPI:
         if err: return None, err
         return State(state['board'], state['current'][0], state['gameover'], state['winner']), None
 
-    def watch(self, token, name):
-        return self._api.watch('127.0.0.1', 4711, 'TicTacToe', token, name)
+    def watch(self, name):
+        return self._api.watch(name)
 
 class State:
     """

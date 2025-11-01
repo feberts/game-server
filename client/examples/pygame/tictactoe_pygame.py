@@ -54,15 +54,13 @@ def fatal(msg):
 class TicTacToe():
 
     def __init__(self, table_size):
-        self.game = GameServerAPI()
+        self.game = GameServerAPI(server, port, 'TicTacToe', token)
         self.my_id = None
 
-        # join game:
-        self.my_id, err = self.game.join_game(server, port, 'TicTacToe', token)
+        self.my_id, err = self.game.join_game()
 
         if err: # no game started yet
-            # start new game:
-            self.my_id, err = self.game.start_game(server, port, 'TicTacToe', token, 2)
+            self.my_id, err = self.game.start_game(2)
             if err: fatal(err)
 
         self.state, err = self.game.state(blocking=False)

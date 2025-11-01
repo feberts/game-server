@@ -18,9 +18,9 @@ def random_move(board):
     vacant = [i for i in range(9) if board[i] == -1]
     return random.choice(vacant)
 
-game = GameServerAPI()
+game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='training')
 
-my_id, err = game.join_game(server='127.0.0.1', port=4711, game='TicTacToe', token='training')
+my_id, err = game.join_game()
 if err: fatal(err)
 
 while True:

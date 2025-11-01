@@ -15,16 +15,16 @@ class YahtzeeAPI:
     This class provides API wrapper functions for Yahtzee.
     """
 
-    def __init__(self):
-        self._api = game_server_api.GameServerAPI()
+    def __init__(self, token, name=''):
+        self._api = game_server_api.GameServerAPI('127.0.0.1', 4711, 'Yahtzee', token, name)
         self.my_id = None
 
-    def start_game(self, token, players=1, name=''):
-        self.my_id, err = self._api.start_game('127.0.0.1', 4711, 'Yahtzee', token, players, name)
+    def start_game(self, players):
+        self.my_id, err = self._api.start_game(players)
         return self.my_id, err
 
-    def join_game(self, token, name=''):
-        self.my_id, err = self._api.join_game('127.0.0.1', 4711, 'Yahtzee', token, name)
+    def join_game(self):
+        self.my_id, err = self._api.join_game()
         return self.my_id, err
 
     def submit_name(self, name):
@@ -47,8 +47,8 @@ class YahtzeeAPI:
         if err: return None, err
         return State(state, self.my_id), None
 
-    def watch(self, token, name):
-        return self._api.watch('127.0.0.1', 4711, 'Yahtzee', token, name)
+    def watch(self, name):
+        return self._api.watch(name)
 
 class State:
     """

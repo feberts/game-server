@@ -194,18 +194,11 @@ class GameSession:
         # (this must NOT be done inside the lock below to prevent deadlocks)
         if player_id in self._previous_game_ids:
             self._previous_game_ids.remove(player_id)
-            # state = self._previous_game.state(player_id)
-            # state['current'] = self._previous_game.current_player()
-            # state['gameover'] = self._previous_game.game_over()
-            # return state
             return self._assemble_state(self._previous_game, player_id)
 
         # return current game's state:
         with self._lock:
             self._update_last_access()
-            # state = self._game.state(player_id)
-            # state['current'] = self._game.current_player()
-            # state['gameover'] = self._game.game_over()
             return self._assemble_state(self._game, player_id)
 
     def _assemble_state(self, game, player_id):

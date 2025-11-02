@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Tic-tac-toe observer client.
+Tic-tac-toe output client.
 
 This program connects to a game session as a passive observer. It can be used in
 combination with the input client. The input client joins a game as an active

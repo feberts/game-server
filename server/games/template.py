@@ -1,10 +1,23 @@
 """
-Game base class.
+Template for new games.
 
-This module provides a base class for games.
+This file can be used as a template for new games. Just follow these steps:
+
+  1. Change the name of this file to something more descriptive.
+  2. Name class GameTemplate after your game. Clients will use that name to
+     start a game.
+  3. Implement all the methods.
+  4. Add the class to the list of games in server/games_list.py.
+  5. Implement a client or help others to implement clients by writing
+     documentation.
+
+That's it. For orientation, you can also take a look at the implementations of
+the other games.
 """
 
-class AbstractGame:
+from abstract_game import AbstractGame
+
+class GameTemplate(AbstractGame): # TODO pick a proper name
     """
     Base class for games.
 
@@ -37,6 +50,7 @@ class AbstractGame:
         players (int): number of players (no parameter check required)
         """
         raise NotImplementedError
+        # TODO the constructor can be used to initialize attributes
 
     @staticmethod
     def min_players():
@@ -50,6 +64,7 @@ class AbstractGame:
         int: minimum number of players
         """
         raise NotImplementedError
+        # TODO return the minimum number of players
 
     @staticmethod
     def max_players():
@@ -63,6 +78,7 @@ class AbstractGame:
         int: maximum number of players
         """
         raise NotImplementedError
+        # TODO return the maximum number of players
 
     def current_player(self):
         """
@@ -78,6 +94,7 @@ class AbstractGame:
         list: player IDs
         """
         raise NotImplementedError
+        # TODO return a list (!) of player IDs
 
     def move(self, args, player_id):
         """
@@ -117,6 +134,7 @@ class AbstractGame:
         str: error message in case the move is illegal, None otherwise (see above for details)
         """
         raise NotImplementedError
+        # TODO return a string in case of an illegal move, or None otherwise
 
     def game_over(self):
         """
@@ -131,6 +149,7 @@ class AbstractGame:
         bool: True, if game has ended, else False
         """
         raise NotImplementedError
+        # TODO return True/False
 
     def state(self, player_id):
         """
@@ -162,3 +181,4 @@ class AbstractGame:
         dict: game state
         """
         raise NotImplementedError
+        # TODO return a dictionary containing the game state

@@ -54,10 +54,15 @@ class GameSession:
         player_name (str): player name, can be an empty string
 
         Returns:
-        int: the next player ID
-        str: a generated password
+        tuple(int, str, str):
+            int: the next player ID
+            str: a generated password
+            str: error message, if a problem occurred, None otherwise
         """
         with self._lock:
+            if player_name in self._player_ids:
+                return None, None, 'name already in use'
+
             # player ID:
             player_id = self._next_id
             self._next_id += 1
@@ -70,7 +75,7 @@ class GameSession:
             password = self._password()
             self._passwords[player_id] = password
 
-            return player_id, password
+            return player_id, password, None
 
     def ready(self):
         """
@@ -191,7 +196,7 @@ class GameSession:
             self._state_change.wait()
 
         # if required, return the previous game's state:
-        # (this must NOT be done inside the lock below to prevent deadlocks)
+        # (this must NOT be done inside the lock below to avoid deadlocks)
         if player_id in self._previous_game_ids:
             self._previous_game_ids.remove(player_id)
             return self._assemble_state(self._previous_game, player_id)
@@ -209,6 +214,9 @@ class GameSession:
         Parameters:
         game (AbstractGame): game instance
         player_id (int): player ID
+
+        Returns:
+        dict: game state
         """
         state = game.state(player_id)
         state['current'] = game.current_player()

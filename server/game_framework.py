@@ -126,7 +126,7 @@ class GameFramework:
         self._game_sessions[(game_name, token)] = session
 
         # get player ID and password:
-        player_id, password = session.next_id(name)
+        player_id, password, _ = session.next_id(name)
 
         # wait for others to join:
         self._await_game_start(session)
@@ -176,7 +176,8 @@ class GameFramework:
             return utility.framework_error('game is already full')
 
         # get player ID and password:
-        player_id, password = session.next_id(name)
+        player_id, password, err = session.next_id(name)
+        if err: return utility.framework_error(err)
 
         # wait for others to join:
         self._player_joins.set()

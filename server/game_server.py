@@ -83,19 +83,22 @@ def handle_connection(conn, ip, port):
                 response = utility.framework_error('internal error')
 
         except RequestSizeExceeded:
-            log.error('message size exceeded by client')
-            response = utility.server_error('too much data sent')
+            log.error('request size exceeded by client')
+            response = utility.server_error('request size exceeded by client')
         except socket.timeout:
             log.error('connection timed out on server')
-            response = utility.server_error('connection timed out')
+            response = utility.server_error('connection timed out on server')
         except ClientDisconnect:
             log.error('disconnect by client')
             response = None
+        except UnicodeDecodeError:
+            log.error('could not decode binary data received from client')
+            response = utility.server_error('could not decode binary data received from client')
         except json.decoder.JSONDecodeError:
-            log.error('corrupt data received from client')
-            response = utility.server_error('received corrupt data')
+            log.error('corrupt json received from client')
+            response = utility.server_error('corrupt json received from client')
         except:
-            log.error('unexpected exception on server:\n' + traceback.format_exc())
+            log.error('unexpected exception on the server:\n' + traceback.format_exc())
             response = utility.server_error('internal error')
 
         # send response to client:

@@ -33,9 +33,6 @@ if err: # no game started yet
     my_id, err = game.start_game(players=2)
     if err: fatal(err)
 
-state, err = game.state()
-if err: fatal(err)
-
 while True:
     pos = user_input('Input: ')
     err = game.move(position=pos)

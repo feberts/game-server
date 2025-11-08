@@ -22,25 +22,25 @@ class GameSession:
 
     def __init__(self, game_class, players):
         """
-        Constructor.
-
         Instantiating a game class object and initializing other attributes.
 
         Parameters:
-        game_class (class AbstractGame): the game class itself (not an instance of it)
+        game_class (derived from AbstractGame): the game class itself, not an instance
         players (int): number of players
         """
         self._game_class = game_class
         self._n_players = players
-        self._game = game_class(players)
+        self._game = None
         self._next_id = 0
         self._player_ids = {} # player name -> ID
         self._passwords = {} # player ID -> password
         self._last_access = time.time()
         self._lock = threading.Lock()
         self._state_change = threading.Event()
+        self._no_delay = [] # IDs, players will receive the state immediately
+        self._in_previous_game = [] # IDs, after reset, receive state of previous game once
         self._previous_game = None # previous game instance stored upon reset
-        self._previous_game_ids = [] # players will receive state of previous game once
+        self._new_game()
 
     def next_id(self, player_name):
         """
@@ -158,9 +158,11 @@ class GameSession:
             ret = self._game.move(move, player_id)
             self._update_last_access()
             self._state_change.set()
+            if player_id not in self._no_delay:
+                self._no_delay.append(player_id)
             return ret
 
-    def game_state(self, player_id, blocking, observer):
+    def game_state(self, player_id, observer):
         """
         Retrieve the game state from the game instance.
 
@@ -168,42 +170,63 @@ class GameSession:
         of the current players and the game status are added to the returned
         state.
 
-        If the corresponding API function is called in blocking mode, then this
-        thread's execution is paused until the game state changes. To achieve
-        this, the thread that changes the state triggers an event to wake up
-        other threads waiting for that event. This function does not block, if
-        it is the client's turn to submit a move, or if the game has ended.
+        This function will block until the game state changes. Only then will
+        the updated state be sent back to the client. This is more efficient
+        than polling. To avoid deadlocks, the function never blocks in certain
+        situations:
+
+        - when the game has just started and no move has been performed yet
+        - when it is the client's turn to submit a move
+        - when the client just performed a move and wants to get the new state
+        - when the game has ended and moves are no longer possible
+        - when the game was reset and a client still has to get the old game's state
+
+        To achieve this, the thread that changes the state triggers an event to
+        wake up other threads waiting for that event.
 
         If the game has been reset by some client, then for a single time the
         state of the previous game is returned to each client. This is necessary
         for a client to be able to detect the end of the previous game. See
         function reset_game for details.
 
+        A list containing IDs is used for deciding whether the state should be
+        returned immediately or only after it changes. At the same time, the
+        function has to distinguish between active players and passive
+        observers. Since observers are assigned the same IDs as the observed
+        clients, the IDs have to be converted internally. The observer's IDs are
+        increased so they come after the regular IDs: 0...n-1 = players,
+        n...2n-1 = observers.
+
         Parameters:
         player_id (int): player ID
-        blocking (bool): if True, API function was called in blocking mode
         observer (bool): if True, client requesting the state is a passive observer
 
         Returns:
         dict: game state
         """
+        p_id = player_id
+        if observer:
+            p_id += self._n_players # convert observer IDs
+
         # wait for game state to change:
-        if (blocking
-            and not self._game.game_over()
-            and not (player_id in self._game.current_player() and not observer)
-            and not player_id in self._previous_game_ids):
+        if (not self._game.game_over()
+            and not p_id in self._game.current_player()
+            and not p_id in self._in_previous_game
+            and not p_id in self._no_delay):
             self._state_change.clear()
             self._state_change.wait()
 
         # if required, return the previous game's state:
         # (this must NOT be done inside the lock below to avoid deadlocks)
-        if player_id in self._previous_game_ids:
-            self._previous_game_ids.remove(player_id)
+        if p_id in self._in_previous_game:
+            self._in_previous_game.remove(p_id)
             return self._assemble_state(self._previous_game, player_id)
 
         # return current game's state:
         with self._lock:
             self._update_last_access()
+            if p_id in self._no_delay:
+                self._no_delay.remove(p_id)
             return self._assemble_state(self._game, player_id)
 
     def _assemble_state(self, game, player_id):
@@ -223,6 +246,16 @@ class GameSession:
         state['gameover'] = game.game_over()
         return state
 
+    def _new_game(self):
+        """
+        Instantiate a new game and add IDs to the no-delay list so that all
+        clients can retrieve the state even before any move has been performed.
+        The observer's IDs are appended to the regular IDs. See function
+        game_state for details.
+        """
+        self._game = self._game_class(self._n_players)
+        self._no_delay = list(range(self._n_players * 2))
+
     def reset_game(self):
         """
         Reset the game.
@@ -240,11 +273,11 @@ class GameSession:
         """
         # store old game instance and a list of player IDs:
         if self._game.game_over():
-            self._previous_game_ids = list(range(1, self._n_players))
+            self._in_previous_game = list(range(1, self._n_players * 2))
             self._previous_game = copy.deepcopy(self._game)
 
         # create new game instance:
-        self._game = self._game_class(self._n_players)
+        self._new_game()
 
         # wake up other threads waiting for the game state to change:
         self._state_change.set()

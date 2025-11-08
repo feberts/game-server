@@ -40,7 +40,7 @@ if err: # no game started yet
     my_id, err = game.start_game()
     if err: fatal(err)
 
-state, err = game.state(blocking=False)
+state, err = game.state()
 if err: fatal(err)
 
 while not state.gameover:
@@ -52,12 +52,10 @@ while not state.gameover:
             err = game.move(pos)
             if err: print(err)
             else: break
-        blocking = False
     else:
         print("Opponent's turn ...")
-        blocking = True
 
-    state, err = game.state(blocking)
+    state, err = game.state()
     if err: fatal(err)
 
 print_board(state.board)

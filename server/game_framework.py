@@ -246,10 +246,10 @@ class GameFramework:
         dict: containing the game state
         """
         # check and parse request:
-        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'password':str, 'blocking':bool, 'observer':bool})
+        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'password':str, 'observer':bool})
         if err: return utility.framework_error(err)
 
-        game_name, token, player_id, password, blocking, observer = request['game'], request['token'], request['player_id'], request['password'], request['blocking'], request['observer']
+        game_name, token, player_id, password, observer = request['game'], request['token'], request['player_id'], request['password'], request['observer']
 
         # retrieve the game session:
         session, err = self._retrieve_game_session(game_name, token)
@@ -261,7 +261,7 @@ class GameFramework:
             return utility.framework_error('invalid password')
 
         # retrieve the game state:
-        state = session.game_state(player_id, blocking, observer)
+        state = session.game_state(player_id, observer)
 
         return self._return_data(state)
 

@@ -19,7 +19,7 @@ game = GameServerAPI(server='127.0.0.1', port=4711, game='Echo', token='mygame')
 my_id, err = game.start_game(players=1)
 if err: fatal(err)
 
-state, err = game.state(blocking=False)
+state, err = game.state()
 if err: fatal(err)
 
 while not state['gameover']:

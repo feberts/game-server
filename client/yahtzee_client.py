@@ -71,7 +71,7 @@ while True:
 
 categories = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes', 'Chance', 'Three of a Kind', 'Four of a Kind', 'Full House', 'Small Straight', 'Large Straight', 'Yahtzee']
 
-state, err = game.state(blocking=False)
+state, err = game.state()
 if err: fatal(err)
 
 while not state['gameover']:
@@ -96,16 +96,13 @@ while not state['gameover']:
         if err:
             print(err)
             input('\n<press enter>')
-
-        blocking = False
     else:
         if 'current_name' in state:
             print(f"\n{state['current_name']}'s turn ...")
         else:
             print('\nOpponents are choosing their names...')
-        blocking = True
 
-    state, err = game.state(blocking=blocking)
+    state, err = game.state()
     if err: fatal(err)
 
 print_scorecard(state['scorecard'])

@@ -27,8 +27,8 @@ class TicTacToeAPI:
     def move(self, position):
         return self._api.move(position=position)
 
-    def state(self, blocking=True):
-        state, err = self._api.state(blocking)
+    def state(self):
+        state, err = self._api.state()
         if err: return None, err
         return State(state['board'], state['current'][0], state['gameover'], state['winner']), None
 

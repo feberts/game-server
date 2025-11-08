@@ -156,7 +156,7 @@ class GameServerAPI:
 
         return None
 
-    def state(self, blocking=True):
+    def state(self):
         """
         Retrieve the game state.
 
@@ -171,12 +171,14 @@ class GameServerAPI:
 
         This function will block until the game state changes. Only then the
         server will respond with the updated state. This is more efficient than
-        polling. The function can also be used in a non-blocking way. The
-        function never blocks, if it is the client's turn to submit a move, or
-        if the game has ended.
+        polling. To avoid deadlocks, the function never blocks in certain
+        situations:
 
-        Parameters:
-        blocking (bool): use function in blocking mode (default)
+        - when the game has just started and no move has been performed yet
+        - when it is the client's turn to submit a move
+        - when the client just performed a move and wants to get the new state
+        - when the game has ended and moves are no longer possible
+        - when the game was reset and a client still has to get the old game's state
 
         Returns:
         tuple(dict, str):
@@ -185,7 +187,7 @@ class GameServerAPI:
         """
         if self._player_id is None: return self._api_error('start or join a game first')
 
-        state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'password':self._password, 'blocking':blocking, 'observer':self._watch_mode})
+        state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'password':self._password, 'observer':self._watch_mode})
 
         if err: return None, err
 

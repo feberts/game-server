@@ -30,7 +30,7 @@ game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='myg
 observed_id, err = game.watch(name='bob')
 if err: fatal(err)
 
-state, err = game.state(blocking=False)
+state, err = game.state()
 if err: fatal(err)
 
 while not state['gameover']:

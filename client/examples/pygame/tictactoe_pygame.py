@@ -63,7 +63,7 @@ class TicTacToe():
             self.my_id, err = self.game.start_game(2)
             if err: fatal(err)
 
-        self.state, err = self.game.state(blocking=False)
+        self.state, err = self.game.state()
         if err: fatal(err)
 
         self.marks = ('X', 'O')
@@ -186,16 +186,13 @@ class TicTacToe():
                     self._draw_char(x,y,player)
 
     def _request_state(self):
-        blocking = True
         while True:
-            self.state, err = self.game.state(blocking=blocking)
-            blocking = True
+            self.state, err = self.game.state()
             if err: fatal(err)
             self._draw_marks()
             if self.my_id in self.state['current']:
                 self._sending_move.clear()
                 self._sending_move.wait()
-                blocking = False
             if self.state['gameover']:
                 return
 

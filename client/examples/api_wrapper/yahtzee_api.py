@@ -42,8 +42,8 @@ class YahtzeeAPI:
     def cross_out_category(self, category):
         return self._api.move(score='cross out', category=category)
 
-    def state(self, blocking=True):
-        state, err = self._api.state(blocking)
+    def state(self):
+        state, err = self._api.state()
         if err: return None, err
         return State(state, self.my_id), None
 

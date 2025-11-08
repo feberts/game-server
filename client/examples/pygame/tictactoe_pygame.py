@@ -90,10 +90,10 @@ class TicTacToe():
     def _draw_table(self):
         tb_space_point = (self.table_space, self.table_size - self.table_space)
         cell_space_point = (self.cell_size, self.cell_size * 2)
-        r1 = pygame.draw.line(screen, self.table_color, [tb_space_point[0], cell_space_point[0]], [tb_space_point[1], cell_space_point[0]], 8)
-        c1 = pygame.draw.line(screen, self.table_color, [cell_space_point[0], tb_space_point[0]], [cell_space_point[0], tb_space_point[1]], 8)
-        r2 = pygame.draw.line(screen, self.table_color, [tb_space_point[0], cell_space_point[1]], [tb_space_point[1], cell_space_point[1]], 8)
-        c2 = pygame.draw.line(screen, self.table_color, [cell_space_point[1], tb_space_point[0]], [cell_space_point[1], tb_space_point[1]], 8)
+        pygame.draw.line(screen, self.table_color, [tb_space_point[0], cell_space_point[0]], [tb_space_point[1], cell_space_point[0]], 8)
+        pygame.draw.line(screen, self.table_color, [cell_space_point[0], tb_space_point[0]], [cell_space_point[0], tb_space_point[1]], 8)
+        pygame.draw.line(screen, self.table_color, [tb_space_point[0], cell_space_point[1]], [tb_space_point[1], cell_space_point[1]], 8)
+        pygame.draw.line(screen, self.table_color, [cell_space_point[1], tb_space_point[0]], [cell_space_point[1], tb_space_point[1]], 8)
 
     # processing clicks to move
     def _move(self, pos):
@@ -176,7 +176,7 @@ class TicTacToe():
             end_x, end_y = self.table_space, self.table_size - self.table_space
 
         # draws the line strike
-        line_strike = pygame.draw.line(screen, self.line_color, [start_x, start_y], [end_x, end_y], 16)
+        pygame.draw.line(screen, self.line_color, [start_x, start_y], [end_x, end_y], 16)
 
     def _draw_marks(self):
         for y in range(3):
@@ -205,12 +205,12 @@ class TicTacToe():
         while running:
             self._message()
 
-            for self.event in pygame.event.get():
-                if self.event.type == pygame.QUIT:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
                     running = False
 
-                if self.event.type == pygame.MOUSEBUTTONDOWN:
-                    self._move(self.event.pos)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self._move(event.pos)
                     self._sending_move.set()
 
             pygame.display.flip()

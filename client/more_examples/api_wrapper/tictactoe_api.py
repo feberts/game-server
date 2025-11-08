@@ -32,9 +32,6 @@ class TicTacToeAPI:
         if err: return None, err
         return State(state['board'], state['current'][0], state['gameover'], state['winner']), None
 
-    def watch(self, name):
-        return self._api.watch(name)
-
 class State:
     """
     Class State.

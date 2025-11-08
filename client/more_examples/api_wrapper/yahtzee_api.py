@@ -47,9 +47,6 @@ class YahtzeeAPI:
         if err: return None, err
         return State(state, self.my_id), None
 
-    def watch(self, name):
-        return self._api.watch(name)
-
 class State:
     """
     Class State.

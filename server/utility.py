@@ -5,8 +5,9 @@ This module provides various utility functions and classes for logging and error
 handling.
 """
 
-import config
 from datetime import datetime
+
+import config
 
 def _generic_error(sender, message):
     """

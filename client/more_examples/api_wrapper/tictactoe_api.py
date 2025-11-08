@@ -17,20 +17,23 @@ class TicTacToeAPI:
 
     def __init__(self, token, name=''):
         self._api = game_server_api.GameServerAPI('127.0.0.1', 4711, 'TicTacToe', token, name)
+        self.my_id = None
 
     def start_game(self):
-        return self._api.start_game(2)
+        self.my_id, err = self._api.start_game(2)
+        return self.my_id, err
 
     def join_game(self):
-        return self._api.join_game()
+        self.my_id, err = self._api.join_game()
+        return self.my_id, err
 
-    def move(self, position):
+    def put_mark(self, position):
         return self._api.move(position=position)
 
     def state(self):
         state, err = self._api.state()
         if err: return None, err
-        return State(state['board'], state['current'][0], state['gameover'], state['winner']), None
+        return State(state, self.my_id), None
 
 class State:
     """
@@ -40,8 +43,8 @@ class State:
     encapsulated in a class for easy access.
     """
 
-    def __init__(self, board, current, gameover, winner):
-        self.board = board
-        self.current = current
-        self.gameover = gameover
-        self.winner = winner
+    def __init__(self, state, my_id):
+        self.my_turn = my_id in state['current']
+        self.board = state['board']
+        self.gameover = state['gameover']
+        self.winner = None if state['winner'] is None else state['winner'] == my_id

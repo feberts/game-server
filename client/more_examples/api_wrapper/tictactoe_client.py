@@ -46,10 +46,10 @@ if err: fatal(err)
 while not state.gameover:
     print_board(state.board)
 
-    if state.current == my_id: # my turn
+    if state.my_turn:
         while True:
             pos = user_input(f'\nYour ({symbols[my_id]}) turn: ')
-            err = game.move(pos)
+            err = game.put_mark(pos)
             if err: print(err)
             else: break
     else:
@@ -59,11 +59,10 @@ while not state.gameover:
     if err: fatal(err)
 
 print_board(state.board)
-winner = state.winner
 
-if winner is None:
+if state.winner is None:
     print('No winner...')
-elif winner == my_id:
+elif state.winner:
     print(f'You ({symbols[my_id]}) win!')
 else:
     print(f'You ({symbols[my_id]}) lose...')

@@ -63,6 +63,6 @@ class State:
         self.my_turn = my_id in state['current']
         self.gameover = gameover
         self.scorecard = state['scorecard']
-        self.dice = state['dice'] if gameover == False else None
+        self.dice = state['dice'] if not gameover else None
         self.current_name = state['current_name'] if 'current_name' in state else None
-        self.ranking = state['ranking'] if gameover == True else None
+        self.ranking = state['ranking'] if gameover else None

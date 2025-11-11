@@ -1,56 +1,69 @@
 # Multiplayer game server
 
-This project provides a lightweight server for turn-based multiplayer games.
+A lightweight server and framework for turn-based multiplayer games.
 
-### Main features
+### Features
 
-- multiple parallel game sessions
 - a framework that allows new games to be added easily
 - a uniform yet flexible API for all games
+- multiple parallel game sessions
 - an observer mode to watch another client play
 
-### Possible areas of application
+### Use cases
 
-- development of turn-based multiplayer games in general
-- programming courses in which students implement game clients
-- implementing separate clients for input and output using the observer mode
-- small projects in the area of reinforcement learning
+- development of turn-based multiplayer games such as board or card games
+- programming courses in which students implement clients or new games
+- implementing reinforcement learning agents
 
-## Quick start
+### Quick start
 
-To try this project on your machine, start the server (`server/game_server.py`). Then run two clients (`client/tictactoe_client.py`) in separate shells. No further configuration is required.
+To try this project on your machine, start the server (`server/game_server.py`), then run two clients (`client/tictactoe_client.py`) in separate shells. No configuration is required.
+
+### About this project
+
+This server was developed for use in a university programming course, where students learn Python as their first programming language and have to work on projects in small groups.
+Both the framework and the API are designed so that the programming skills acquired during the first term are sufficient to implement new games and clients. However, the use of the server is not limited to educational scenarios.
+
+Due to the architecture of the framework and the design of the communication protocol, the server is not suited for real-time games.
 
 ## Operating the server
 
-Server and API are implemented in plain Python. TCP sockets are used for communication. There are no external dependencies.
+To run the server in a network, edit IP and port in the configuration file (`server/config.py`). The log level for server and framework can be specified there, as well as a timeout for inactive game sessions and parameters for TCP connections.
 
-To run the server in a network, edit IP and port in the configuration file (`server/config.py`). Other than that, the log level for server and framework can be set there, a timeout for inactive game sessions, as well as parameters for TCP connections.
+Server and API are implemented in plain Python. TCP sockets are used for communication. There are no external dependencies. This makes the server very easy to handle.
 
-## API documentation
+If you intend to run the server as a systemd service, you can use the provided unit file (`gameserver.service`) as a starting point.
 
-Module `game_server_api` provides an API for communicating with the game server. The API can be used to
+## Implementing clients
 
-- start a game that other clients can join
-- join a game that was started by another client
-- submit moves to the server
-- request the game state
+Module `game_server_api` provides an API for communicating with the server. The API can be used to
+
+- start a game session that other clients can join
+- join a game session
+- submit moves
+- retrieve the game state
 - passively observe another player
-- reset a game without starting a new session
+- restart a game without having to start a new session
 
-The module is well documented. This should be sufficient to become familiar with the API.
+You can take a look at the example clients to become familiar with the API. The API module itself is extensively documented.
 
 ## Adding new games
 
-Adding a new game is quite easy:
+Adding a new game is quite easy. You simply derive from a base class and override its methods:
 
-1. Add a new module to directory `server/`.
+1. Create a new module in `server/games/`.
 2. In this module, implement a class that is derived from `abstract_game.AbstractGame`.
 3. Override all the base class's methods.
 4. Add the new class to the list of games (`server/games_list.py`).
-5. Write an API documentation for the new game.
 
-Notes:
+To make things even easier, you can use the template (`server/games/template.py`), which is structured like a tutorial.
 
-- The documentation of the game base class (file `abstract_game.py`) should give you a good idea of how the framework operates. Use that as a guide, while implementing your game.
-- It is not necessary to add any code to the API module. It was designed to be compatible with any game. What you can do, optionally, is to implement an API wrapper for your game. Use the tic-tac-toe API wrapper as an example.
-- The API documentation should include information on the arguments expected by the function for submitting moves. The structure and content of the dictionary as returned by the function for retrieving the game state should also be explained.
+No changes to the API are required when adding a new game. The API was designed to be compatible with any game. The function to submit a move accepts the data as keyword arguments (`**kwargs`). These are converted to a dictionary and sent to the server, where the dictionary is passed to the corresponding function of the game class. The game state is also sent back as a dictionary. This allows for a maximum of flexibility.
+
+## Observer mode
+
+A passive observer will receive the same data as the observed player does when retrieving the game state. This can be useful in a number of ways:
+
+- The observer mode can be used to visualize the performance of a reinforcement learning agent.
+- It can be used to split up the work in a team. One member could implement a client for the user interaction that verifies the input and sends it to the server. Another client could then be implemented to retrieve the state and render the game board.
+- In a similar way, it can be used as a substitute for multithreading, which is usually not taught in a beginner programming course. Let's take a chat client as an example: Say you want to display any incoming messages immediately while being able to write a new message at the same time. You could use two threads of execution to achieve this. Alternatively, the observer mode can be used to implement separate clients for input and output.

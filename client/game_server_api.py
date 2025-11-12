@@ -279,8 +279,7 @@ class GameServerAPI:
 
             try:
                 # send data to server:
-                sd.sendall(request)
-                sd.shutdown(socket.SHUT_WR) # signal end of message
+                sd.sendall(request + b'_EOF_')
 
                 # receive data from server:
                 response = bytearray()

@@ -66,12 +66,13 @@ def handle_connection(conn, ip, port):
                 data = conn.recv(config.buffer_size)
                 request += data
                 if not data: break
-                if len(request) > config.request_size_max:
-                    raise RequestSizeExceeded
+                if len(request) > config.request_size_max: raise RequestSizeExceeded
+                if request[-5:] == b'_EOF_': break
 
             if not request: raise ClientDisconnect
 
             log.info(f'received {len(request)} bytes from client: {request}')
+            request = request[:-5] # strip EOF
             request = json.loads(request.decode())
             log.info(f'received json from client: {request}')
 

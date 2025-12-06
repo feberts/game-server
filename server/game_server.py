@@ -64,17 +64,14 @@ def handle_connection(conn, ip, port):
 
             while True:
                 data = conn.recv(config.buffer_size)
+                if not data: raise ClientDisconnect
                 request += data
-                if not data: break
                 if len(request) > config.request_size_max: raise RequestSizeExceeded
                 if request[-5:] == b'_EOF_': break
 
-            if not request: raise ClientDisconnect
-
-            log.info(f'received {len(request)} bytes from client: {request}')
+            log.info(f'received {len(request)} bytes: {request}')
             request = request[:-5] # strip EOF
             request = json.loads(request.decode())
-            log.info(f'received json from client: {request}')
 
             # pass request to the framework:
             try:
@@ -92,6 +89,9 @@ def handle_connection(conn, ip, port):
         except ClientDisconnect:
             log.error('disconnect by client')
             response = None
+        except ConnectionResetError:
+            log.error('connection reset by client')
+            response = None
         except UnicodeDecodeError:
             log.error('could not decode binary data received from client')
             response = utility.server_error('could not decode binary data received from client')
@@ -104,12 +104,23 @@ def handle_connection(conn, ip, port):
 
         # send response to client:
         if response:
-            log.info(f'responding to client: {response}')
-            response = json.dumps(response)
-            conn.sendall(response.encode())
+            try:
+                response = json.dumps(response).encode()
+            except:
+                log.error('response could not be converted to JSON')
+                response = utility.framework_error('response could not be converted to JSON')
+                response = json.dumps(response).encode()
 
+            conn.sendall(response)
+            log.info(f'responding: {response}')
+
+    except BrokenPipeError:
+        log.error('connection closed by client after sending request')
+    except ConnectionResetError:
+        log.error('connection reset by client after sending request')
+    except:
+        log.error('unexpected exception on the server:\n' + traceback.format_exc())
     finally:
-        # close connection:
         conn.close()
         log.info('connection closed by server')
 

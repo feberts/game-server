@@ -70,7 +70,7 @@ class GameFramework:
         dict: reply
         """
         if 'type' not in request:
-            return utility.framework_error("key 'type' of type str missing")
+            return utility.framework_error('no request type specified')
         if request['type'] not in self._handlers:
             return utility.framework_error('invalid request type')
 

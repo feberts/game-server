@@ -67,10 +67,10 @@ def handle_connection(conn, ip, port):
                 if not data: raise ClientDisconnect
                 request += data
                 if len(request) > config.request_size_max: raise RequestSizeExceeded
-                if request[-5:] == b'_EOF_': break
+                if request.endswith(b'EOT\0'): break
 
             log.info(f'received {len(request)} bytes: {request}')
-            request = request[:-5] # strip EOF
+            request = request[:-4] # strip EOT
             request = json.loads(request.decode())
 
             # pass request to the framework:

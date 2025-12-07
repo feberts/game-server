@@ -279,7 +279,7 @@ class GameServerAPI:
 
             try:
                 # send data to server:
-                sd.sendall(request + b'_EOF_')
+                sd.sendall(request + b'EOT\0')
 
                 # receive data from server:
                 response = bytearray()
@@ -289,7 +289,7 @@ class GameServerAPI:
                     if not data: break
                     response += data
 
-                if not response: raise self._MissingResponse
+                if not response: raise self._NoResponse
                 response = json.loads(response.decode())
 
                 # return data:
@@ -300,7 +300,7 @@ class GameServerAPI:
 
             except socket.timeout:
                 return self._api_error('connection timed out')
-            except self._MissingResponse:
+            except self._NoResponse:
                 return self._api_error('empty or no response received from server')
             except (ConnectionResetError, BrokenPipeError):
                 return self._api_error('connection closed by server')
@@ -320,5 +320,5 @@ class GameServerAPI:
     def _msg(msg):
         return 'Invalid argument: ' + msg
 
-    class _MissingResponse(Exception):
+    class _NoResponse(Exception):
         pass

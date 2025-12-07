@@ -136,7 +136,7 @@ class GameFramework:
                 del self._game_sessions[(game_name, token)] # remove game session
             return utility.framework_error('timeout while waiting for others to join')
 
-        self._log_sessions()
+        log.info(f'Starting session {game_name}:{token}')
 
         return self._return_data({'player_id':player_id, 'password':password})
 

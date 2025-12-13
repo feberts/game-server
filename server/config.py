@@ -9,14 +9,14 @@ ip = '127.0.0.1'
 port = 4711
 
 # FRAMEWORK:
-game_timeout = 300 # seconds, timeout for inactive games and for joining a game
+game_timeout = 1000 # seconds, timeout for inactive games and for joining a game
 
 # LOGGING:
 log_server_info = False # useful for debugging tcp connections (verbose)
 log_server_errors = True # errors during tcp connections
-log_framework_info = True # actions performed by the framework
 log_framework_request = True # client requests
 log_framework_response = True # server responses
+log_framework_actions = True # actions performed by the framework, such as terminating games
 
 # TCP CONNECTIONS:
 # pick a higher value for request_size_max if required by a new game;

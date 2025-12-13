@@ -4,12 +4,12 @@ Template for new games.
 This file can be used as a template for new games. Just follow these steps:
 
   1. Change the name of this file to something more descriptive.
-  2. Name class GameTemplate after your game. Clients will use that name to
+  2. Name class MyNewGame after your game. Clients will use that name to
      start a game.
   3. Implement all the methods.
   4. Add the class to the list of games in server/games_list.py.
   5. Implement a client or help others to implement clients by writing
-     documentation.
+     documentation for the new game.
 
 That's it. For orientation, you can also take a look at the implementations of
 the other games.
@@ -17,7 +17,7 @@ the other games.
 
 from abstract_game import AbstractGame
 
-class GameTemplate(AbstractGame): # TODO pick a proper name
+class MyNewGame(AbstractGame): # TODO pick a proper name
     """
     Base class for games.
 
@@ -50,7 +50,7 @@ class GameTemplate(AbstractGame): # TODO pick a proper name
         players (int): number of players (no parameter check required)
         """
         raise NotImplementedError
-        # TODO the constructor can be used to initialize attributes
+        # TODO use the constructor to initialize attributes, if needed
 
     @staticmethod
     def min_players():

@@ -66,4 +66,8 @@ A passive observer will receive the same data as the observed player does when r
 
 - The observer mode can be used to visualize the performance of a reinforcement learning agent.
 - It can be used to split up the work in a team. One member could implement a client for the user interaction that verifies the input and sends it to the server. Another client could then be implemented to retrieve the state and render the game board.
-- In a similar way, it can be used as a substitute for multithreading, which is usually not taught in a beginner programming course. Let's take a chat client as an example: Say you want to display any incoming messages immediately while being able to write a new message at the same time. You could use two threads of execution to achieve this. Alternatively, the observer mode can be used to implement separate clients for input and output.
+- In a similar way, it can be used as a substitute for multithreading, which is usually not taught in a beginner programming course. Let's take a chat client as an example: Suppose you want to display incoming messages continuously while being able to write a new message at the same time. You could use two threads of execution to achieve this. Alternatively, the observer mode can be used to implement separate clients for input and output.
+
+## Contributions
+
+Code contributions are welcome. Feel free to open a pull request if you want to contribute a new game, a client, or new features to the server.

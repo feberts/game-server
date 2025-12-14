@@ -41,6 +41,7 @@ class GameSession:
         self._in_previous_game = [] # IDs, after reset, receive state of previous game once
         self._previous_game = None # previous game instance stored upon reset
         self._new_game()
+        self._timed_out = False
 
     def next_id(self, player_name):
         """
@@ -157,7 +158,7 @@ class GameSession:
         with self._lock:
             ret = self._game.move(move, player_id)
             self._update_last_access()
-            self._state_change.set()
+            self.wake_up_threads()
             if player_id not in self._no_delay:
                 self._no_delay.append(player_id)
             return ret
@@ -280,7 +281,7 @@ class GameSession:
         self._new_game()
 
         # wake up other threads waiting for the game state to change:
-        self._state_change.set()
+        self.wake_up_threads()
 
     def _password(self, length=5):
         """
@@ -307,3 +308,24 @@ class GameSession:
         bool: True, if password valid
         """
         return player_id in self._passwords and self._passwords[player_id] == password
+
+    def wake_up_threads(self):
+        """
+        Wake up other threads waiting for the game state to change.
+        """
+        self._state_change.set()
+
+    def mark_timed_out(self):
+        """
+        Mark game session as timed out.
+        """
+        self._timed_out = True
+
+    def timed_out(self):
+        """
+        Check if game session has timed out.
+
+        Returns:
+        bool: True, if game session has timed out
+        """
+        return self._timed_out

@@ -263,6 +263,10 @@ class GameFramework:
         # retrieve the game state:
         state = session.game_state(player_id, observer)
 
+        # check if session has timed out while waiting for state change:
+        if session.timed_out():
+            return utility.framework_error('game session has timed out')
+
         return self._return_data(state)
 
     def _watch(self, request):
@@ -418,5 +422,8 @@ class GameFramework:
 
             # delete old sessions:
             for (game_name, token) in old_sessions:
+                session = self._game_sessions[(game_name, token)]
+                session.mark_timed_out()
+                session.wake_up_threads()
                 del self._game_sessions[(game_name, token)]
                 log.info(f'Deleting session {game_name}:{token}')

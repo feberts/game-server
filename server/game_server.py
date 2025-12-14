@@ -81,7 +81,7 @@ def handle_connection(conn, ip, port):
                 response = utility.framework_error('internal error')
 
         except RequestSizeExceeded:
-            log.error('request size exceeded by client')
+            log.error('request size limit exceeded by client')
             response = utility.server_error('request size exceeded by client')
         except socket.timeout:
             log.error('connection timed out on server')

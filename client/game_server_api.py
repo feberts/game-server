@@ -66,7 +66,8 @@ class GameServerAPI:
         self._port = port
 
         # tcp connections:
-        self._buffer_size = 4096 # bytes
+        self._buffer_size = 4096 # bytes, corresponds to server-side buffer size value
+        self._request_size_max = int(1e6) # bytes, updated after joining a game
 
     def start_game(self, players):
         """
@@ -101,6 +102,7 @@ class GameServerAPI:
         if err: return None, err
         self._player_id = response['player_id']
         self._password = response['password']
+        self._request_size_max = response['request_size_max']
 
         return self._player_id, None
 
@@ -127,6 +129,7 @@ class GameServerAPI:
         if err: return None, err
         self._player_id = response['player_id']
         self._password = response['password']
+        self._request_size_max = response['request_size_max']
 
         return self._player_id, None
 
@@ -265,9 +268,12 @@ class GameServerAPI:
         """
         # prepare data:
         try:
-            request = json.dumps(data).encode()
+            request = json.dumps(data).encode() + b'EOT\0'
         except:
             return self._api_error('data could not be converted to JSON')
+
+        if len(request) > self._request_size_max:
+            return self._api_error('request size limit exceeded')
 
         # create a socket:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sd:
@@ -279,7 +285,7 @@ class GameServerAPI:
 
             try:
                 # send data to server:
-                sd.sendall(request + b'EOT\0')
+                sd.sendall(request)
 
                 # receive data from server:
                 response = bytearray()

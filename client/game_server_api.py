@@ -304,8 +304,10 @@ class GameServerAPI:
                 return self._api_error('empty or no response received from server')
             except (ConnectionResetError, BrokenPipeError):
                 return self._api_error('connection closed by server')
+            except UnicodeDecodeError:
+                return self._api_error('could not decode binary data received from server')
             except json.decoder.JSONDecodeError:
-                return self._api_error('received corrupt data')
+                return self._api_error('corrupt json received from server')
             except:
                 return self._api_error('unexpected exception:\n' + traceback.format_exc())
 

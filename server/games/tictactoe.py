@@ -82,7 +82,7 @@ class TicTacToe(AbstractGame):
         Check if a move is legal.
         """
         if pos < 0 or pos > 8:
-            return False, 'value must be 0..8'
+            return False, 'invalid position'
         if self._state.board[pos] != -1:
             return False, 'position already occupied'
 

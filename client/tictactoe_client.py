@@ -13,7 +13,7 @@ symbols = ('x', 'o')
 
 def print_board(board):
     print('\n' * 100)
-    board = [i if board[i] == -1 else symbols[board[i]] for i in range(9)]
+    board = [i + 1 if board[i] == -1 else symbols[board[i]] for i in range(9)]
     print(f' {board[0]} | {board[1]} | {board[2]}', '---+---+---',
           f' {board[3]} | {board[4]} | {board[5]}', '---+---+---',
           f' {board[6]} | {board[7]} | {board[8]}', sep='\n')
@@ -21,7 +21,7 @@ def print_board(board):
 def user_input(prompt):
     while True:
         try:
-            return int(input(prompt))
+            return int(input(prompt)) - 1
         except KeyboardInterrupt:
             print('')
             exit()

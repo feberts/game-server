@@ -14,7 +14,7 @@ from game_server_api import GameServerAPI
 def user_input(prompt):
     while True:
         try:
-            return int(input(prompt))
+            return int(input(prompt)) - 1
         except KeyboardInterrupt:
             print('')
             exit()

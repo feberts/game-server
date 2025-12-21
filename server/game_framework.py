@@ -9,7 +9,7 @@ actions are performed. The following requests can be handled by the framework:
 - submitting a move
 - requesting the game state
 - observing a player
-- resetting a game
+- restarting a game
 
 To perform these actions, the framework calls the methods of the corresponding
 game class instance, if necessary.
@@ -41,7 +41,7 @@ class GameFramework:
             'move':self._move,
             'state':self._state,
             'observe':self._observe,
-            'reset':self._reset}
+            'restart':self._restart}
         self._build_game_class_dict()
         self._start_clean_up()
         self._player_joins = threading.Event()
@@ -322,15 +322,15 @@ class GameFramework:
 
         return self._return_data({'player_id':player_id, 'password':password})
 
-    def _reset(self, request):
+    def _restart(self, request):
         """
-        Request handler for resetting a game.
+        Request handler for restarting a game.
 
-        This function resets a game. The game class object is replaced with a
+        This function restarts a game. The game class object is replaced with a
         new one, the game session itself stays untouched. There is no need to
         rejoin the game, and all players will keep their IDs. This is useful
         when simulating many games to collect data for AI training. Only the
-        client who started the session (ID = 0) can reset the game.
+        client who started the session (ID = 0) can restart the game.
 
         Parameters:
         request (dict): containing information about the game session
@@ -344,7 +344,7 @@ class GameFramework:
 
         game_name, token, player_id, password = request['game'], request['token'], request['player_id'], request['password']
 
-        if player_id != 0: return utility.framework_error('game can only be reset by starter')
+        if player_id != 0: return utility.framework_error('game can only be restarted by starter')
 
         # retrieve the game session:
         session, err = self._retrieve_session(game_name, token)
@@ -355,8 +355,8 @@ class GameFramework:
         if not session.password_valid(player_id, password):
             return utility.framework_error('invalid password')
 
-        # reset game instance:
-        session.reset_game()
+        # restart game:
+        session.restart_game()
 
         return self._return_data(None)
 

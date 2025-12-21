@@ -8,7 +8,7 @@ be used to
 - submit moves to the server
 - retrieve the game state
 - passively observe a specific player
-- reset a game without starting a new session
+- restart a game without starting a new session
 """
 
 import json
@@ -95,8 +95,8 @@ class GameServerAPI:
 
         Returns:
         tuple(int, str):
-            int: player ID, if the game could be started or joined, else None
-            str: error message, if a problem occurred, None otherwise
+            int: player ID if the game could be started or joined, else None
+            str: error message if a problem occurred, None otherwise
         """
         response, err = self._send({'type':'join', 'game':self._game, 'token':self._token, 'players':self._players, 'name':self._name})
 
@@ -123,7 +123,7 @@ class GameServerAPI:
         kwargs (keyword arguments): a player's move
 
         Returns:
-        str: error message, if a problem occurred, None otherwise
+        str: error message if a problem occurred, None otherwise
         """
         if self._player_id is None: return self._api_error('join a game first')[1]
         if self._observer: return self._api_error('cannot submit moves as observer')[1]
@@ -156,12 +156,12 @@ class GameServerAPI:
         - when it is the client's turn to submit a move
         - when the client just performed a move and wants to get the new state
         - when the game has ended and moves are no longer possible
-        - when the game was reset and a client still has to get the old game's state
+        - when the game was restarted and a client still has to get the old game's state
 
         Returns:
         tuple(dict, str):
             dict: game state if state could be retrieved, else None
-            str: error message, if a problem occurred, None otherwise
+            str: error message if a problem occurred, None otherwise
         """
         if self._player_id is None: return self._api_error('join a game first')
 
@@ -189,7 +189,7 @@ class GameServerAPI:
         Returns:
         tuple(int, str):
             int: ID of observed player, None in case of an error
-            str: error message, if a problem occurred, None otherwise
+            str: error message if a problem occurred, None otherwise
 
         Raises:
         AssertionError: for invalid arguments
@@ -206,21 +206,21 @@ class GameServerAPI:
 
         return self._player_id, None
 
-    def reset(self):
+    def restart(self):
         """
-        Reset a game.
+        Restart a game.
 
-        This function resets the current game. There is no need to rejoin the
-        game, and all players will keep their IDs. This is useful when
+        This function restarts the current game. There is no need to rejoin the
+        session, and all players will keep their IDs. This is useful when
         simulating many games to collect data for AI training. Only the client
-        who started the game can reset it.
+        who started the game can restart it.
 
         Returns:
-        str: error message, if game could not be reset, None otherwise
+        str: error message if game could not be restarted, None otherwise
         """
-        if self._player_id != 0: return self._api_error('game can only be reset by starter')[1]
+        if self._player_id != 0: return self._api_error('game can only be restarted by starter')[1]
 
-        _, err = self._send({'type':'reset', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'password':self._password})
+        _, err = self._send({'type':'restart', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'password':self._password})
 
         if err: return err
 
@@ -240,7 +240,7 @@ class GameServerAPI:
         Returns:
         tuple(dict, str):
             dict: data returned by server, None in case of an error
-            str: error message, if a problem occurred, None otherwise
+            str: error message if a problem occurred, None otherwise
         """
         # prepare data:
         try:

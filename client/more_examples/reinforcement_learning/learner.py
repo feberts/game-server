@@ -59,7 +59,7 @@ while batches < number_of_batches:
             menace.loss()
 
         # start new game:
-        game.reset_game()
+        game.restart()
         games += 1
 
     # print training progress for the last batch of games:

@@ -38,8 +38,8 @@ class GameSession:
         self._lock = threading.Lock()
         self._state_change = threading.Event()
         self._no_delay = [] # IDs, players will receive the state immediately
-        self._in_previous_game = [] # IDs, after reset, receive state of previous game once
-        self._previous_game = None # previous game instance stored upon reset
+        self._in_previous_game = [] # IDs, after restart, receive state of previous game once
+        self._previous_game = None # previous game instance stored upon restart
         self._new_game()
         self._timed_out = False
 
@@ -179,15 +179,15 @@ class GameSession:
         - when it is the client's turn to submit a move
         - when the client just performed a move and wants to get the new state
         - when the game has ended and moves are no longer possible
-        - when the game was reset and a client still has to get the old game's state
+        - when the game was restarted and a client still has to get the old game's state
 
         To achieve this, the thread that changes the state triggers an event to
         wake up other threads waiting for that event.
 
-        If the game has been reset by some client, then for a single time the
-        state of the previous game is returned to each client. This is necessary
-        for a client to be able to detect the end of the previous game. See
-        function reset_game for details.
+        If the game has been restarted by some client, then for a single time
+        the state of the previous game is returned to each client. This is
+        necessary for a client to be able to detect the end of the previous
+        game. See function restart_game for details.
 
         A list containing IDs is used for deciding whether the state should be
         returned immediately or only after it changes. At the same time, the
@@ -256,20 +256,20 @@ class GameSession:
         self._game = self._game_class(self._n_players)
         self._no_delay = list(range(self._n_players * 2))
 
-    def reset_game(self):
+    def restart_game(self):
         """
-        Reset the game.
+        Restart the game.
 
         The game instance is replaced with a new one. The old instance is
         stored. This is necessary to allow the other clients to detect the end
         of the previous game. Otherwise, they would suddenly find themselves in
         a new game without being notified about it. To achieve this, a list of
-        client IDs is created upon resetting a game. When a client then calls
+        client IDs is created upon restarting a game. When a client then calls
         the state function, the state of the previous game is returned a single
         time, and the client's ID is removed from the list. From then on, the
         client will receive the game state of the new game instance.
 
-        Only the client who started the game can reset it.
+        Only the client who started the game can restart it.
         """
         # store old game instance and a list of player IDs:
         if self._game.game_over():

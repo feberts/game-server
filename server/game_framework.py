@@ -408,16 +408,6 @@ class GameFramework:
         """
         return {'status':'ok', 'data':data}
 
-    def _log_sessions(self):
-        """
-        Print active games.
-        """
-        if not config.log_framework_actions: return
-        msg = 'Sessions:'
-        for game_name, token in self._game_sessions:
-            msg += f'\n{game_name}:{token}'
-        log.info(msg)
-
     def _start_clean_up(self):
         """
         Starting the clean up function in a separate thread.

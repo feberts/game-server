@@ -24,19 +24,19 @@ class YahtzeeAPI:
         return self.my_id
 
     def submit_name(self, name):
-        return self._api.move(name=name)
+        self._api.move(name=name)
 
     def roll_all_dice(self):
-        return self._api.move(roll_dice=list(range(0, 5)))
+        self._api.move(roll_dice=list(range(0, 5)))
 
     def roll_some_dice(self, dice):
-        return self._api.move(roll_dice=dice)
+        self._api.move(roll_dice=dice)
 
     def add_points(self, category):
-        return self._api.move(score='add points', category=category)
+        self._api.move(score='add points', category=category)
 
     def cross_out_category(self, category):
-        return self._api.move(score='cross out', category=category)
+        self._api.move(score='cross out', category=category)
 
     def state(self):
         state = self._api.state()

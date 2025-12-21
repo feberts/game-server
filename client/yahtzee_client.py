@@ -77,15 +77,15 @@ while not state['gameover']:
 
         try:
             if option == 0:
-                err = game.move(roll_dice=list(range(0, 5)))
+                game.move(roll_dice=list(range(0, 5)))
             elif option == 1:
-                err = game.move(roll_dice=select_dice())
+                game.move(roll_dice=select_dice())
             elif option == 2:
-                option = menu(categories)
-                err = game.move(score='add points', category=categories[option])
+                cat = menu(categories)
+                game.move(score='add points', category=categories[cat])
             elif option == 3:
-                option = menu(categories)
-                err = game.move(score='cross out', category=categories[option])
+                cat = menu(categories)
+                game.move(score='cross out', category=categories[cat])
         except GameError as e:
             print(e)
             input('\n<press enter>')

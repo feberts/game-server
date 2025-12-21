@@ -54,7 +54,7 @@ def print_ranking(ranking):
     for name, points in ranking:
         print(f'{name:10s}{points:5}')
 
-game.join()
+my_id = game.join()
 
 # submit name:
 while True:
@@ -78,15 +78,15 @@ while not state.gameover:
 
         try:
             if option == 0:
-                err = game.roll_all_dice()
+                game.roll_all_dice()
             elif option == 1:
-                err = game.roll_some_dice(select_dice())
+                game.roll_some_dice(select_dice())
             elif option == 2:
-                option = menu(categories)
-                err = game.add_points(categories[option])
+                cat = menu(categories)
+                game.add_points(categories[cat])
             elif option == 3:
-                option = menu(categories)
-                err = game.cross_out_category(categories[option])
+                cat = menu(categories)
+                game.cross_out_category(categories[cat])
         except GameError as e:
             print(e)
             input('\n<press enter>')

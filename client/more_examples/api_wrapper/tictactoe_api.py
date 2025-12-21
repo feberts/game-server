@@ -24,7 +24,7 @@ class TicTacToeAPI:
         return self.my_id
 
     def put_mark(self, position):
-        return self._api.move(position=position)
+        self._api.move(position=position)
 
     def state(self):
         state = self._api.state()

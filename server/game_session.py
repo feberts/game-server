@@ -33,7 +33,7 @@ class GameSession:
         self._game = None
         self._next_id = 0
         self._player_ids = {} # player name -> ID
-        self._passwords = {} # player ID -> password
+        self._keys = {} # player ID -> key
         self._last_access = time.time()
         self._lock = threading.Lock()
         self._state_change = threading.Event()
@@ -45,11 +45,11 @@ class GameSession:
 
     def next_id(self, player_name):
         """
-        Returning a player ID and a password.
+        Returning a player ID and a key.
 
-        This function returns a new ID and a password for each player joining a
-        game session. If a none empty string is passed as the player name, this
-        name together with the assigned ID is added to a dictionary.
+        This function returns a new ID and a key for each player joining a game
+        session. If a none empty string is passed as the player name, this name
+        together with the assigned ID is added to a dictionary.
 
         Parameters:
         player_name (str): player name, can be an empty string
@@ -57,7 +57,7 @@ class GameSession:
         Returns:
         tuple(int, str, str):
             int: the next player ID
-            str: a generated password
+            str: a generated key
             str: error message, if a problem occurred, None otherwise
         """
         with self._lock:
@@ -72,11 +72,11 @@ class GameSession:
             if player_name != '':
                 self._player_ids[player_name] = player_id
 
-            # generate password:
-            password = self._password()
-            self._passwords[player_id] = password
+            # generate key:
+            key = self._key()
+            self._keys[player_id] = key
 
-            return player_id, password, None
+            return player_id, key, None
 
     def full(self):
         """
@@ -89,10 +89,9 @@ class GameSession:
 
     def get_id(self, player_name):
         """
-        Return player ID and password by name.
+        Return player ID and key by name.
 
-        This function returns the ID and password that were assigned to the
-        player.
+        This function returns the ID and key that were assigned to the player.
 
         Parameters:
         player_name (str): name of a player that has already joined the game
@@ -100,7 +99,7 @@ class GameSession:
         Returns:
         tuple(int, str, str):
             int: player ID, None if no such player exists
-            str: password, None if no such player exists
+            str: key, None if no such player exists
             str: error message, if a problem occurred, None otherwise
         """
         if not player_name in self._player_ids:
@@ -108,7 +107,7 @@ class GameSession:
 
         player_id = self._player_ids[player_name]
 
-        return player_id, self._passwords[player_id], None
+        return player_id, self._keys[player_id], None
 
     def game_over(self):
         """
@@ -282,31 +281,31 @@ class GameSession:
         # wake up other threads waiting for the game state to change:
         self.wake_up_threads()
 
-    def _password(self, length=5):
+    def _key(self, length=5):
         """
-        Generate a unique password.
+        Generate a unique key.
 
         Parameters:
-        length (int): length of the password (optional)
+        length (int): length of the key (optional)
 
         Returns:
-        str: the password
+        str: the key
         """
         chars = string.ascii_letters + string.digits
         return ''.join(random.choice(chars) for _ in range(length))
 
-    def password_valid(self, player_id, password):
+    def key_valid(self, player_id, key):
         """
-        Check if password and player ID match.
+        Check if key and player ID match.
 
         Parameters:
         player_id (int): player ID
-        password (str): password
+        key (str): key
 
         Returns:
-        bool: True, if password valid
+        bool: True, if key valid
         """
-        return player_id in self._passwords and self._passwords[player_id] == password
+        return player_id in self._keys and self._keys[player_id] == key
 
     def wake_up_threads(self):
         """

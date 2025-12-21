@@ -70,7 +70,7 @@ class GameServerAPI:
         self._players = players
         self._name = name
         self._player_id = None
-        self._password = None
+        self._key = None
         self._observer = False
 
         # tcp connections:
@@ -103,7 +103,7 @@ class GameServerAPI:
         if err: return None, err
 
         self._player_id = response['player_id']
-        self._password = response['password']
+        self._key = response['key']
         self._request_size_max = response['request_size_max']
 
         return self._player_id, None
@@ -128,7 +128,7 @@ class GameServerAPI:
         if self._player_id is None: return self._api_error('join a game first')[1]
         if self._observer: return self._api_error('cannot submit moves as observer')[1]
 
-        _, err = self._send({'type':'move', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'password':self._password, 'move':kwargs})
+        _, err = self._send({'type':'move', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'key':self._key, 'move':kwargs})
 
         if err: return err
 
@@ -165,7 +165,7 @@ class GameServerAPI:
         """
         if self._player_id is None: return self._api_error('join a game first')
 
-        state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'password':self._password, 'observer':self._observer})
+        state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'key':self._key, 'observer':self._observer})
 
         if err: return None, err
 
@@ -201,7 +201,7 @@ class GameServerAPI:
         if err: return None, err
 
         self._player_id = response['player_id']
-        self._password = response['password']
+        self._key = response['key']
         self._observer = True
 
         return self._player_id, None
@@ -220,7 +220,7 @@ class GameServerAPI:
         """
         if self._player_id != 0: return self._api_error('game can only be restarted by starter')[1]
 
-        _, err = self._send({'type':'restart', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'password':self._password})
+        _, err = self._send({'type':'restart', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'key':self._key})
 
         if err: return err
 

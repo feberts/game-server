@@ -9,7 +9,7 @@ in separate shells.
 
 from game_server_api import GameServerAPI
 
-game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
+game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
 
 symbols = ('x', 'o')
 

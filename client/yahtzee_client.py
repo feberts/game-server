@@ -6,9 +6,9 @@ This program connects to the game server to play Yahtzee, alone, or against
 other clients.
 """
 
-from game_server_api import GameServerAPI
+from game_server_api import GameServerAPI, GameError
 
-game = GameServerAPI(server='127.0.0.1', port=4711, game='Yahtzee', token='mygame', players=2)
+game = GameServerAPI(server='127.0.0.1', port=4711, game='Yahtzee', token='mygame', players=1)
 
 def print_scorecard(scorecard):
     print('\n' * 100)
@@ -53,23 +53,19 @@ def print_ranking(ranking):
     for name, points in ranking:
         print(f'{name:10s}{points:5}')
 
-def fatal(msg):
-    print(msg)
-    exit()
-
-my_id, err = game.join()
-if err: fatal(err)
+my_id = game.join()
 
 # submit name:
 while True:
-    err = game.move(name=input('Enter name: '))
-    if err: print(err)
-    else: break
+    try:
+        game.move(name=input('Enter name: '))
+        break
+    except GameError as e:
+        print(e)
 
 categories = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes', 'Chance', 'Three of a Kind', 'Four of a Kind', 'Full House', 'Small Straight', 'Large Straight', 'Yahtzee']
 
-state, err = game.state()
-if err: fatal(err)
+state = game.state()
 
 while not state['gameover']:
     print_scorecard(state['scorecard'])
@@ -79,19 +75,19 @@ while not state['gameover']:
 
         option = menu(['roll all dice again', 'roll some dice again', 'add points to scorecard', 'cross out a category'])
 
-        if option == 0:
-            err = game.move(roll_dice=list(range(0, 5)))
-        elif option == 1:
-            err = game.move(roll_dice=select_dice())
-        elif option == 2:
-            option = menu(categories)
-            err = game.move(score='add points', category=categories[option])
-        elif option == 3:
-            option = menu(categories)
-            err = game.move(score='cross out', category=categories[option])
-
-        if err:
-            print(err)
+        try:
+            if option == 0:
+                err = game.move(roll_dice=list(range(0, 5)))
+            elif option == 1:
+                err = game.move(roll_dice=select_dice())
+            elif option == 2:
+                option = menu(categories)
+                err = game.move(score='add points', category=categories[option])
+            elif option == 3:
+                option = menu(categories)
+                err = game.move(score='cross out', category=categories[option])
+        except GameError as e:
+            print(e)
             input('\n<press enter>')
     else:
         if 'current_name' in state:
@@ -99,8 +95,7 @@ while not state['gameover']:
         else:
             print('\nOpponents are choosing their names...')
 
-    state, err = game.state()
-    if err: fatal(err)
+    state = game.state()
 
 print_scorecard(state['scorecard'])
 print_ranking(state['ranking'])

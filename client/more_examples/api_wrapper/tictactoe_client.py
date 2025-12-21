@@ -7,7 +7,7 @@ Implementing wrapper functions is not necessary because the game server API is
 generic and works with every game, but it can simplify the API usage.
 """
 
-from tictactoe_api import TicTacToeAPI
+from tictactoe_api import TicTacToeAPI, GameError
 
 game = TicTacToeAPI(token='mygame')
 
@@ -30,15 +30,8 @@ def user_input(prompt):
         except ValueError:
             print('Integers only!')
 
-def fatal(msg):
-    print(msg)
-    exit()
-
-my_id, err = game.join()
-if err: fatal(err)
-
-state, err = game.state()
-if err: fatal(err)
+my_id = game.join()
+state = game.state()
 
 while not state.gameover:
     print_board(state.board)
@@ -46,14 +39,16 @@ while not state.gameover:
     if state.my_turn:
         while True:
             pos = user_input(f'\nYour ({symbols[my_id]}) turn: ')
-            err = game.put_mark(pos)
-            if err: print(err)
-            else: break
+
+            try:
+                game.put_mark(pos)
+                break
+            except GameError as e:
+                print(e)
     else:
         print("Opponent's turn ...")
 
-    state, err = game.state()
-    if err: fatal(err)
+    state = game.state()
 
 print_board(state.board)
 

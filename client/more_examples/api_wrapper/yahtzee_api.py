@@ -6,7 +6,7 @@ for a specific game. Doing this is not necessary, because the game server API is
 generic and works with every game, but it can simplify the API usage.
 """
 
-import game_server_api
+from game_server_api import GameServerAPI, GameError
 
 class YahtzeeAPI:
     """
@@ -16,12 +16,12 @@ class YahtzeeAPI:
     """
 
     def __init__(self, token, players, name=''):
-        self._api = game_server_api.GameServerAPI('127.0.0.1', 4711, 'Yahtzee', token, players, name)
+        self._api = GameServerAPI('127.0.0.1', 4711, 'Yahtzee', token, players, name)
         self.my_id = None
 
     def join(self):
-        self.my_id, err = self._api.join()
-        return self.my_id, err
+        self.my_id = self._api.join()
+        return self.my_id
 
     def submit_name(self, name):
         return self._api.move(name=name)
@@ -39,9 +39,8 @@ class YahtzeeAPI:
         return self._api.move(score='cross out', category=category)
 
     def state(self):
-        state, err = self._api.state()
-        if err: return None, err
-        return State(state, self.my_id), None
+        state = self._api.state()
+        return State(state, self.my_id)
 
 class State:
     """

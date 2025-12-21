@@ -7,9 +7,9 @@ Implementing wrapper functions is not necessary because the game server API is
 generic and works with every game, but it can simplify the API usage.
 """
 
-from yahtzee_api import YahtzeeAPI
+from yahtzee_api import YahtzeeAPI, GameError
 
-game = YahtzeeAPI(token='mygame', players=2)
+game = YahtzeeAPI(token='mygame', players=1)
 
 def print_scorecard(scorecard):
     print('\n' * 100)
@@ -54,23 +54,19 @@ def print_ranking(ranking):
     for name, points in ranking:
         print(f'{name:10s}{points:5}')
 
-def fatal(msg):
-    print(msg)
-    exit()
-
-my_id, err = game.join()
-if err: fatal(err)
+game.join()
 
 # submit name:
 while True:
-    err = game.submit_name(input('Enter name: '))
-    if err: print(err)
-    else: break
+    try:
+        game.submit_name(input('Enter name: '))
+        break
+    except GameError as e:
+        print(e)
 
 categories = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes', 'Chance', 'Three of a Kind', 'Four of a Kind', 'Full House', 'Small Straight', 'Large Straight', 'Yahtzee']
 
-state, err = game.state()
-if err: fatal(err)
+state = game.state()
 
 while not state.gameover:
     print_scorecard(state.scorecard)
@@ -80,19 +76,19 @@ while not state.gameover:
 
         option = menu(['roll all dice again', 'roll some dice again', 'add points to scorecard', 'cross out a category'])
 
-        if option == 0:
-            err = game.roll_all_dice()
-        elif option == 1:
-            err = game.roll_some_dice(select_dice())
-        elif option == 2:
-            option = menu(categories)
-            err = game.add_points(categories[option])
-        elif option == 3:
-            option = menu(categories)
-            err = game.cross_out_category(categories[option])
-
-        if err:
-            print(err)
+        try:
+            if option == 0:
+                err = game.roll_all_dice()
+            elif option == 1:
+                err = game.roll_some_dice(select_dice())
+            elif option == 2:
+                option = menu(categories)
+                err = game.add_points(categories[option])
+            elif option == 3:
+                option = menu(categories)
+                err = game.cross_out_category(categories[option])
+        except GameError as e:
+            print(e)
             input('\n<press enter>')
     else:
         if state.current_name:
@@ -100,8 +96,7 @@ while not state.gameover:
         else:
             print('\nOpponents are choosing their names...')
 
-    state, err = game.state()
-    if err: fatal(err)
+    state = game.state()
 
 print_scorecard(state.scorecard)
 print_ranking(state.ranking)

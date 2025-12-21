@@ -15,12 +15,7 @@ game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='tra
 batch_size = 1000 # learning progress will be printed after each batch of games
 number_of_batches = 100
 
-def fatal(msg):
-    print(msg)
-    exit()
-
-my_id, err = game.join()
-if err: fatal(err)
+my_id = game.join()
 
 menace = MENACE()
 batches = 0
@@ -34,17 +29,14 @@ while batches < number_of_batches:
     # play a batch of games:
     while games < batch_size:
         # play a single game:
-        state, err = game.state()
-        if err: fatal(err)
+        state = game.state()
 
         while not state['gameover']:
             if my_id in state['current']:
                 pos = menace.move(state['board'])
-                err = game.move(position=pos)
-                if err: fatal(err)
+                game.move(position=pos)
 
-            state, err = game.state()
-            if err: fatal(err)
+            state = game.state()
 
         # let menace know about the outcome:
         winner = state['winner']

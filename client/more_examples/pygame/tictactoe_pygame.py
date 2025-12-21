@@ -34,7 +34,7 @@ import pygame
 from pygame.locals import *
 import threading
 
-from game_server_api import GameServerAPI
+from game_server_api import GameServerAPI, GameError
 
 game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
 
@@ -46,17 +46,11 @@ window_size = (450, 500)
 screen = pygame.display.set_mode(window_size)
 pygame.display.set_caption("Tic Tac Toe")
 
-def fatal(msg):
-    print(msg)
-    exit()
-
 class TicTacToe():
     def __init__(self, table_size):
-        self.my_id, err = game.join()
-        if err: fatal(err)
+        self.my_id = game.join()
 
-        self.state, err = game.state()
-        if err: fatal(err)
+        self.state = game.state()
 
         self.marks = ('X', 'O')
         self._sending_move = threading.Event()
@@ -92,6 +86,8 @@ class TicTacToe():
         try:
             x, y = pos[0] // self.cell_size, pos[1] // self.cell_size
             game.move(position=y * 3 + x)
+        except GameError as e:
+            print(e)
         except:
             print("Click inside the table only")
 
@@ -179,8 +175,7 @@ class TicTacToe():
 
     def _request_state(self):
         while True:
-            self.state, err = game.state()
-            if err: fatal(err)
+            self.state = game.state()
             self._draw_marks()
             if self.my_id in self.state['current']:
                 self._sending_move.clear()

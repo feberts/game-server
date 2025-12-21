@@ -7,7 +7,7 @@ client. If you want to test it on a single machine, just run this program twice
 in separate shells.
 """
 
-from game_server_api import GameServerAPI
+from game_server_api import GameServerAPI, GameError
 
 game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
 
@@ -30,15 +30,8 @@ def user_input(prompt):
         except ValueError:
             print('Integers only!')
 
-def fatal(msg):
-    print(msg)
-    exit()
-
-my_id, err = game.join()
-if err: fatal(err)
-
-state, err = game.state()
-if err: fatal(err)
+my_id = game.join()
+state = game.state()
 
 while not state['gameover']:
     print_board(state['board'])
@@ -46,14 +39,16 @@ while not state['gameover']:
     if my_id in state['current']: # my turn
         while True:
             pos = user_input(f'\nYour ({symbols[my_id]}) turn: ')
-            err = game.move(position=pos)
-            if err: print(err)
-            else: break
+
+            try:
+                game.move(position=pos)
+                break
+            except GameError as e:
+                print(e)
     else:
         print("Opponent's turn ...")
 
-    state, err = game.state()
-    if err: fatal(err)
+    state = game.state()
 
 print_board(state['board'])
 winner = state['winner']

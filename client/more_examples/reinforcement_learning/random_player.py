@@ -12,22 +12,15 @@ from game_server_api import GameServerAPI
 
 game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='training')
 
-def fatal(msg):
-    print(msg)
-    exit()
-
 def random_move(board):
     vacant = [i for i in range(9) if board[i] == -1]
     return random.choice(vacant)
 
-my_id, err = game.join()
-if err: fatal(err)
+my_id = game.join()
 
 while True:
-    state, err = game.state()
-    if err: fatal(err)
+    state = game.state()
 
     if my_id in state['current'] and not state['gameover']:
         pos = random_move(state['board'])
-        err = game.move(position=pos)
-        if err: fatal(err)
+        game.move(position=pos)

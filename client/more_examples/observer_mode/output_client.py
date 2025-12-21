@@ -9,7 +9,7 @@ be divided between two programs. Both programs need to pass the same value for
 the name parameter when connecting to a game session.
 """
 
-from game_server_api import GameServerAPI
+from game_server_api import GameServerAPI, GameError
 
 game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
 
@@ -22,16 +22,10 @@ def print_board(board):
           f' {board[3]} | {board[4]} | {board[5]}', '---+---+---',
           f' {board[6]} | {board[7]} | {board[8]}', sep='\n')
 
-def fatal(msg):
-    print(msg)
-    exit()
-
 # observe player:
-observed_id, err = game.observe(name='bob')
-if err: fatal(err)
+observed_id = game.observe(name='bob')
 
-state, err = game.state()
-if err: fatal(err)
+state = game.state()
 
 while not state['gameover']:
     print_board(state['board'])
@@ -41,8 +35,7 @@ while not state['gameover']:
     else:
         print("Opponent's turn ...")
 
-    state, err = game.state()
-    if err: fatal(err)
+    state = game.state()
 
 print_board(state['board'])
 winner = state['winner']

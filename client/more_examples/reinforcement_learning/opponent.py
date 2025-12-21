@@ -11,28 +11,20 @@ from menace import MENACE
 
 game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='training')
 
-def fatal(msg):
-    print(msg)
-    exit()
-
-my_id, err = game.join()
-if err: fatal(err)
+my_id = game.join()
 
 menace = MENACE()
 
 while True:
     # play a single game:
-    state, err = game.state()
-    if err: fatal(err)
+    state = game.state()
 
     while not state['gameover']:
         if my_id in state['current']:
             pos = menace.move(state['board'])
-            err = game.move(position=pos)
-            if err: fatal(err)
+            game.move(position=pos)
 
-        state, err = game.state()
-        if err: fatal(err)
+        state = game.state()
 
     # let menace know about the outcome:
     winner = state['winner']

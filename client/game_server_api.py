@@ -15,6 +15,9 @@ import json
 import socket
 import traceback
 
+class GameError(Exception):
+    pass
+
 class GameServerAPI:
     """
     Class GameServerAPI.
@@ -94,19 +97,20 @@ class GameServerAPI:
         the range 0...n-1 to all players that join the game.
 
         Returns:
-        tuple(int, str):
-            int: player ID if the game could be started or joined, else None
-            str: error message if a problem occurred, None otherwise
+        int: player ID
+
+        Raises:
+        GameError: in case no session could be started or joined
         """
         response, err = self._send({'type':'join', 'game':self._game, 'token':self._token, 'players':self._players, 'name':self._name})
 
-        if err: return None, err
+        if err: raise GameError(err)
 
         self._player_id = response['player_id']
         self._key = response['key']
         self._request_size_max = response['request_size_max']
 
-        return self._player_id, None
+        return self._player_id
 
     def move(self, **kwargs):
         """
@@ -122,30 +126,28 @@ class GameServerAPI:
         Parameters:
         kwargs (keyword arguments): a player's move
 
-        Returns:
-        str: error message if a problem occurred, None otherwise
+        Raises:
+        GameError: in case of an illegal move
         """
-        if self._player_id is None: return self._api_error('join a game first')[1]
-        if self._observer: return self._api_error('cannot submit moves as observer')[1]
+        if self._player_id is None: raise GameError('join a game first')
+        if self._observer: raise GameError('cannot submit moves as observer')
 
         _, err = self._send({'type':'move', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'key':self._key, 'move':kwargs})
 
-        if err: return err
-
-        return None
+        if err: raise GameError(err)
 
     def state(self):
         """
         Retrieve the game state.
 
-        This function requests the game state from the server. The state is
+        This function retrieves the game state from the server. The state is
         returned as a dictionary. Refer to the documentation of a specific game
         to find out about the structure and content of the dictionary.
 
         Independent of the game, the dictionary always contains these two keys:
 
-        - 'current': a list of player IDs, indicating whose player's turn it is
-        - 'gameover': a boolean value indicating whether the game is over or still active
+        'current': a list of player IDs, indicating whose player's turn it is
+        'gameover': a boolean value indicating whether the game is over or still active
 
         This function will block until the game state changes. Only then the
         server will respond with the updated state. This is more efficient than
@@ -159,17 +161,18 @@ class GameServerAPI:
         - when the game was restarted and a client still has to get the old game's state
 
         Returns:
-        tuple(dict, str):
-            dict: game state if state could be retrieved, else None
-            str: error message if a problem occurred, None otherwise
+        dict: game state
+
+        Raises:
+        GameError: in case the state could not be retrieved
         """
-        if self._player_id is None: return self._api_error('join a game first')
+        if self._player_id is None: raise GameError('join a game first')
 
         state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'key':self._key, 'observer':self._observer})
 
-        if err: return None, err
+        if err: raise GameError(err)
 
-        return state, None
+        return state
 
     def observe(self, name):
         """
@@ -187,24 +190,23 @@ class GameServerAPI:
         name (str): name of player to observe
 
         Returns:
-        tuple(int, str):
-            int: ID of observed player, None in case of an error
-            str: error message if a problem occurred, None otherwise
+        int: ID of the observed player
 
         Raises:
         AssertionError: for invalid arguments
+        GameError: in case session could not be joined as observer
         """
         assert type(name) == str and len(name) > 0, self._error('name')
 
         response, err = self._send({'type':'observe', 'game':self._game, 'token':self._token, 'name':name})
 
-        if err: return None, err
+        if err: raise GameError(err)
 
         self._player_id = response['player_id']
         self._key = response['key']
         self._observer = True
 
-        return self._player_id, None
+        return self._player_id
 
     def restart(self):
         """
@@ -215,16 +217,14 @@ class GameServerAPI:
         simulating many games to collect data for AI training. Only the client
         who started the game can restart it.
 
-        Returns:
-        str: error message if game could not be restarted, None otherwise
+        Raises:
+        GameError: in case the game could not be restarted
         """
-        if self._player_id != 0: return self._api_error('game can only be restarted by starter')[1]
+        if self._player_id != 0: raise GameError('game can only be restarted by starter')
 
         _, err = self._send({'type':'restart', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'key':self._key})
 
-        if err: return err
-
-        return None
+        if err: raise GameError(err)
 
     def _send(self, data):
         """

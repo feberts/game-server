@@ -9,6 +9,8 @@ generic and works with every game, but it can simplify the API usage.
 
 from tictactoe_api import TicTacToeAPI
 
+game = TicTacToeAPI(token='mygame')
+
 symbols = ('x', 'o')
 
 def print_board(board):
@@ -32,13 +34,8 @@ def fatal(msg):
     print(msg)
     exit()
 
-game = TicTacToeAPI(token='mygame')
-
-my_id, err = game.join_game()
-
-if err: # no game started yet
-    my_id, err = game.start_game()
-    if err: fatal(err)
+my_id, err = game.join()
+if err: fatal(err)
 
 state, err = game.state()
 if err: fatal(err)

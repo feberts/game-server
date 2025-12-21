@@ -10,13 +10,13 @@ The game is over as soon as the message 'quit' is sent.
 
 from game_server_api import GameServerAPI
 
+game = GameServerAPI(server='127.0.0.1', port=4711, game='Echo', token='mygame', players=1)
+
 def fatal(msg):
     print(msg)
     exit()
 
-game = GameServerAPI(server='127.0.0.1', port=4711, game='Echo', token='mygame')
-
-my_id, err = game.start_game(players=1)
+my_id, err = game.join()
 if err: fatal(err)
 
 state, err = game.state()

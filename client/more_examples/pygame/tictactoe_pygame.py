@@ -33,11 +33,10 @@ copies or substantial portions of the Software.
 import pygame
 from pygame.locals import *
 import threading
+
 from game_server_api import GameServerAPI
 
-server='127.0.0.1'
-port=4711
-token='mygame'
+game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
 
 pygame.init()
 pygame.font.init()
@@ -52,18 +51,11 @@ def fatal(msg):
     exit()
 
 class TicTacToe():
-
     def __init__(self, table_size):
-        self.game = GameServerAPI(server, port, 'TicTacToe', token)
-        self.my_id = None
+        self.my_id, err = game.join()
+        if err: fatal(err)
 
-        self.my_id, err = self.game.join_game()
-
-        if err: # no game started yet
-            self.my_id, err = self.game.start_game(2)
-            if err: fatal(err)
-
-        self.state, err = self.game.state()
+        self.state, err = game.state()
         if err: fatal(err)
 
         self.marks = ('X', 'O')
@@ -99,7 +91,7 @@ class TicTacToe():
     def _move(self, pos):
         try:
             x, y = pos[0] // self.cell_size, pos[1] // self.cell_size
-            self.game.move(position=y * 3 + x)
+            game.move(position=y * 3 + x)
         except:
             print("Click inside the table only")
 
@@ -187,7 +179,7 @@ class TicTacToe():
 
     def _request_state(self):
         while True:
-            self.state, err = self.game.state()
+            self.state, err = game.state()
             if err: fatal(err)
             self._draw_marks()
             if self.my_id in self.state['current']:

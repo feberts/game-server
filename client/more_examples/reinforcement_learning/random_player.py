@@ -10,6 +10,8 @@ import random
 
 from game_server_api import GameServerAPI
 
+game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='training')
+
 def fatal(msg):
     print(msg)
     exit()
@@ -18,9 +20,7 @@ def random_move(board):
     vacant = [i for i in range(9) if board[i] == -1]
     return random.choice(vacant)
 
-game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='training')
-
-my_id, err = game.join_game()
+my_id, err = game.join()
 if err: fatal(err)
 
 while True:

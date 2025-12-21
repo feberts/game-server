@@ -11,6 +11,8 @@ the name parameter when connecting to a game session.
 
 from game_server_api import GameServerAPI
 
+game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
+
 symbols = ('x', 'o')
 
 def print_board(board):
@@ -24,10 +26,8 @@ def fatal(msg):
     print(msg)
     exit()
 
-game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
-
-# observe game:
-observed_id, err = game.watch(name='bob')
+# observe player:
+observed_id, err = game.observe(name='bob')
 if err: fatal(err)
 
 state, err = game.state()

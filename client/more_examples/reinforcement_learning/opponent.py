@@ -9,13 +9,13 @@ uses the same learning method.
 from game_server_api import GameServerAPI
 from menace import MENACE
 
+game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='training')
+
 def fatal(msg):
     print(msg)
     exit()
 
-game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='training')
-
-my_id, err = game.join_game()
+my_id, err = game.join()
 if err: fatal(err)
 
 menace = MENACE()

@@ -11,6 +11,8 @@ for the name parameter when connecting to a game session.
 
 from game_server_api import GameServerAPI
 
+game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2, name='bob')
+
 def user_input(prompt):
     while True:
         try:
@@ -25,13 +27,8 @@ def fatal(msg):
     print(msg)
     exit()
 
-game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', name='bob')
-
-my_id, err = game.join_game()
-
-if err: # no game started yet
-    my_id, err = game.start_game(players=2)
-    if err: fatal(err)
+my_id, err = game.join()
+if err: fatal(err)
 
 while True:
     pos = user_input('Input: ')

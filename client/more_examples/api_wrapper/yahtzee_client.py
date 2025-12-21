@@ -9,6 +9,8 @@ generic and works with every game, but it can simplify the API usage.
 
 from yahtzee_api import YahtzeeAPI
 
+game = YahtzeeAPI(token='mygame', players=2)
+
 def print_scorecard(scorecard):
     print('\n' * 100)
     print('Yahtzee\n')
@@ -56,13 +58,8 @@ def fatal(msg):
     print(msg)
     exit()
 
-game = YahtzeeAPI(token='mygame')
-
-my_id, err = game.join_game()
-
-if err: # no game started yet
-    my_id, err = game.start_game(players=1)
-    if err: fatal(err)
+my_id, err = game.join()
+if err: fatal(err)
 
 # submit name:
 while True:

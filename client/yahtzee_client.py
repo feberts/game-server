@@ -8,6 +8,8 @@ other clients.
 
 from game_server_api import GameServerAPI
 
+game = GameServerAPI(server='127.0.0.1', port=4711, game='Yahtzee', token='mygame', players=2)
+
 def print_scorecard(scorecard):
     print('\n' * 100)
     print('Yahtzee\n')
@@ -55,13 +57,8 @@ def fatal(msg):
     print(msg)
     exit()
 
-game = GameServerAPI(server='127.0.0.1', port=4711, game='Yahtzee', token='mygame')
-
-my_id, err = game.join_game()
-
-if err: # no game started yet
-    my_id, err = game.start_game(players=1)
-    if err: fatal(err)
+my_id, err = game.join()
+if err: fatal(err)
 
 # submit name:
 while True:

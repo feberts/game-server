@@ -132,13 +132,14 @@ def check_dict(d, expected):
     Checking a dictionary's structure.
 
     This function verifies, that all expected keys are present in a given
-    dictionary and that their values are of the expected type.
+    dictionary and that their values are of the expected types.
 
-    Example: To check, if dictionary d has keys named 'a' and 'b', that are
-    mapped to values of types int and str, a function call might look like this:
+    Example: To check if dictionary d has a key named 'a' that maps to a value
+    of type int or float and a key named 'b' that maps to a value of type str,
+    a function call might look like this:
 
     d = {'a':42, 'b':'forty-two'}
-    err = check_dict(d, {'a':int, 'b':str})
+    err = check_dict(d, {'a':(int, float), 'b':str})
     if err: print(err)
 
     Parameters:
@@ -151,7 +152,7 @@ def check_dict(d, expected):
     for key_name, val_type in expected.items():
         if key_name not in d:
             return f"key '{key_name}' of type {val_type} missing"
-        if type(d[key_name]) != val_type:
+        if not isinstance(d[key_name], val_type):
             return f"value of key '{key_name}' must be of type {val_type}"
 
     return None

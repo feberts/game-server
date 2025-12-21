@@ -38,8 +38,7 @@ If you intend to run the server as a systemd service, you can use the provided u
 
 Module `game_server_api` provides an API for communicating with the server. The API can be used to
 
-- start a game session that other clients can join
-- join a game session
+- start or join a game session
 - submit moves
 - retrieve the game state
 - passively observe another player
@@ -64,10 +63,10 @@ No changes to the API are required when adding a new game. The API was designed 
 
 A passive observer will receive the same data as the observed player does when retrieving the game state. This can be useful in a number of ways:
 
-- The observer mode can be used to visualize the performance of a reinforcement learning agent.
-- It can be used to split up the work in a team. One member could implement a client for the user interaction that verifies the input and sends it to the server. Another client could then be implemented to retrieve the state and render the game board.
+- The observer mode can be used to split up the work in a team. One member could implement a client for the user interaction that verifies the input and sends it to the server. Another client could then be implemented to retrieve the state and render the game board.
 - In a similar way, it can be used as a substitute for multithreading, which is usually not taught in a beginner programming course. Let's take a chat client as an example: Suppose you want to display incoming messages continuously while being able to write a new message at the same time. You could use two threads of execution to achieve this. Alternatively, the observer mode can be used to implement separate clients for input and output.
+- The observer mode could also be used to visualize the performance of a reinforcement learning agent.
 
 ## Contributions
 
-Code contributions are welcome. Feel free to open a pull request if you want to contribute a new game, a client, or new features to the server.
+Code contributions are welcome. Feel free to open a pull request if you want to contribute a new game, a client, or new features.

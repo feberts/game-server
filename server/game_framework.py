@@ -5,14 +5,13 @@ This module implements the game framework. The framework is responsible for
 managing active game sessions. Client requests are parsed, and the appropriate
 actions are performed. The following requests can be handled by the framework:
 
-- starting a new game
-- joining a game
+- starting and joining a game session
 - submitting a move
 - requesting the game state
 - observing a player
 - resetting a game
 
-To perform these actions, the framework calls the corresponding methods of a
+To perform these actions, the framework calls the methods of the corresponding
 game class instance, if necessary.
 """
 
@@ -38,12 +37,11 @@ class GameFramework:
         self._game_classes = {} # game name -> game class
         self._game_sessions = {} # (game name, token) -> game session
         self._handlers = {
-            'start_game':self._start_game,
-            'join_game':self._join_game,
+            'join':self._join,
             'move':self._move,
             'state':self._state,
-            'watch':self._watch,
-            'reset_game':self._reset_game}
+            'observe':self._observe,
+            'reset':self._reset}
         self._build_game_class_dict()
         self._start_clean_up()
         self._player_joins = threading.Event()
@@ -75,15 +73,53 @@ class GameFramework:
             return utility.framework_error('invalid request type')
 
         log.request(request)
-
         response = self._handlers[request['type']](request)
         log.response(response)
 
         return response
 
-    def _start_game(self, request):
+    def _join(self, request):
         """
-        Request handler for starting a game session.
+        Request handler for starting and joining a game session.
+
+        This function first checks if a game session specified by the game's
+        name and the token is already created and still waiting for clients to
+        join. If this is the case, the request is passed to the function for
+        joining a session. In all other cases, the function for starting a new
+        game session is called. This implies that an already running session
+        will be terminated.
+
+        Parameters:
+        request (dict): request containing game name and token
+
+        Returns:
+        dict: containing the player's ID and password
+        """
+        # check and parse request:
+        err = utility.check_dict(request, {'game':str, 'token':str, 'players':(int, type(None)), 'name':str})
+        if err: return utility.framework_error(err)
+
+        game_name, token, players, name = request['game'], request['token'], request['players'], request['name']
+
+        if game_name not in self._game_classes:
+            return utility.framework_error('no such game')
+
+        # retrieve game session, if it exists:
+        session, _ = self._retrieve_session(game_name, token)
+
+        # start or join a session:
+        if session and not session.full():
+            return self._join_session(session, name)
+        elif not session and not players:
+            return utility.framework_error('no such game session')
+        elif session and session.full() and not players:
+            return utility.framework_error('game session already full')
+        else:
+            return self._start_session(game_name, token, players, name)
+
+    def _start_session(self, game_name, token, players, name):
+        """
+        Starting a game session.
 
         This function instantiates the requested game and adds it to the list of
         active game sessions. After the required number of players has joined
@@ -91,8 +127,8 @@ class GameFramework:
         requested the start of the game. If not enough players have joined the
         game before the timeout occurs, the game session is deleted and the
         requesting client is informed. A repeated call of this function will end
-        the game session and start a new one, which the other players will have
-        to join again.
+        an active game session and start a new one, which the other players will
+        have to join again.
 
         In addition to the ID, a unique password is generated for the player and
         sent to the client. It is automatically included in every future request
@@ -100,30 +136,25 @@ class GameFramework:
         cheating.
 
         Parameters:
-        request (dict): request containing game name, token and number of players
+        game_name (str): name of the game
+        token (str): name of the game session
+        players (int): total number of players
+        name (str): player name, can be an empty string
 
         Returns:
         dict: containing the player's ID and password
         """
-        # check and parse request:
-        err = utility.check_dict(request, {'game':str, 'token':str, 'players':int, 'name':str})
-        if err: return utility.framework_error(err)
-
-        game_name, token, players, name = request['game'], request['token'], request['players'], request['name']
-
-        # get game class:
-        if game_name not in self._game_classes:
-            return utility.framework_error('no such game')
-
+        # check number of players:
         game_class = self._game_classes[game_name]
 
-        # check number of players:
         if players > game_class.max_players() or players < game_class.min_players():
             return utility.framework_error('invalid number of players')
 
         # create game session and add it to dictionary of active sessions:
+        old_session, _ = self._retrieve_session(game_name, token)
         session = game_session.GameSession(game_class, players)
         self._game_sessions[(game_name, token)] = session
+        if old_session: old_session.wake_up_threads()
 
         # get player ID and password:
         player_id, password, _ = session.next_id(name)
@@ -131,7 +162,7 @@ class GameFramework:
         # wait for others to join:
         self._await_game_start(session)
 
-        if not session.ready(): # timeout reached
+        if not session.full(): # timeout reached
             if (game_name, token) in self._game_sessions:
                 del self._game_sessions[(game_name, token)] # remove game session
             return utility.framework_error('timeout while waiting for others to join')
@@ -140,12 +171,11 @@ class GameFramework:
 
         return self._return_data({'player_id':player_id, 'password':password, 'request_size_max':config.request_size_max})
 
-    def _join_game(self, request):
+    def _join_session(self, session, name):
         """
-        Request handler for joining a game session.
+        Joining a game session.
 
-        This function checks if a game session specified by the game's name and
-        the token is already started and waiting for clients to join. After the
+        This function lets a client join an existing game session. After the
         required number of players has joined the game, the function sends the
         player ID back to the client who requested to join the game. If not
         enough players have joined the game before the timeout occurs, the
@@ -157,24 +187,12 @@ class GameFramework:
         cheating.
 
         Parameters:
-        request (dict): request containing game name and token
+        session (GameSession): game session
+        name (str): player name, can be an empty string
 
         Returns:
         dict: containing the player's ID and password
         """
-        # check and parse request:
-        err = utility.check_dict(request, {'game':str, 'token':str, 'name':str})
-        if err: return utility.framework_error(err)
-
-        game_name, token, name = request['game'], request['token'], request['name']
-
-        # retrieve game session:
-        session, err = self._retrieve_game_session(game_name, token)
-        if err: # no such game or game session
-            return err
-        if session.ready(): # game is full
-            return utility.framework_error('game is already full')
-
         # get player ID and password:
         player_id, password, err = session.next_id(name)
         if err: return utility.framework_error(err)
@@ -183,7 +201,7 @@ class GameFramework:
         self._player_joins.set()
         self._await_game_start(session)
 
-        if not session.ready(): # timeout reached
+        if not session.full(): # timeout reached
             return utility.framework_error('timeout while waiting for others to join')
 
         return self._return_data({'player_id':player_id, 'password':password, 'request_size_max':config.request_size_max})
@@ -210,7 +228,7 @@ class GameFramework:
         game_name, token, player_id, password, move = request['game'], request['token'], request['player_id'], request['password'], request['move']
 
         # retrieve the game session:
-        session, err = self._retrieve_game_session(game_name, token)
+        session, err = self._retrieve_session(game_name, token)
         if err: # no such game or game session
             return err
 
@@ -252,7 +270,7 @@ class GameFramework:
         game_name, token, player_id, password, observer = request['game'], request['token'], request['player_id'], request['password'], request['observer']
 
         # retrieve the game session:
-        session, err = self._retrieve_game_session(game_name, token)
+        session, err = self._retrieve_session(game_name, token)
         if err: # no such game or game session
             return err
 
@@ -269,7 +287,7 @@ class GameFramework:
 
         return self._return_data(state)
 
-    def _watch(self, request):
+    def _observe(self, request):
         """
         Request handler for observing another player.
 
@@ -292,10 +310,10 @@ class GameFramework:
         game_name, token, player_name = request['game'], request['token'], request['name']
 
         # retrieve game session:
-        session, err = self._retrieve_game_session(game_name, token)
+        session, err = self._retrieve_session(game_name, token)
         if err: # no such game or game session
             return err
-        if not session.ready(): # game has not yet started
+        if not session.full(): # game has not yet started
             return utility.framework_error('game has not yet started')
 
         # get player ID and password:
@@ -304,7 +322,7 @@ class GameFramework:
 
         return self._return_data({'player_id':player_id, 'password':password})
 
-    def _reset_game(self, request):
+    def _reset(self, request):
         """
         Request handler for resetting a game.
 
@@ -329,7 +347,7 @@ class GameFramework:
         if player_id != 0: return utility.framework_error('game can only be reset by starter')
 
         # retrieve the game session:
-        session, err = self._retrieve_game_session(game_name, token)
+        session, err = self._retrieve_session(game_name, token)
         if err: # no such game or game session
             return err
 
@@ -354,11 +372,11 @@ class GameFramework:
         """
         start = session.last_access()
 
-        while not session.ready() and time.time() - start < config.game_timeout:
+        while not session.full() and time.time() - start < config.game_timeout:
             self._player_joins.clear()
             self._player_joins.wait(config.game_timeout)
 
-    def _retrieve_game_session(self, game_name, token):
+    def _retrieve_session(self, game_name, token):
         """
         Retrieves an active game session.
 

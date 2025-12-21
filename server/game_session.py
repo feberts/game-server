@@ -78,13 +78,12 @@ class GameSession:
 
             return player_id, password, None
 
-    def ready(self):
+    def full(self):
         """
-        Game session is ready to start as soon as all players have joined the
-        game.
+        Game session is full as soon as all players have joined the game.
 
         Returns:
-        bool: True, if session ready
+        bool: True, if session is full
         """
         return self._n_players == self._next_id
 

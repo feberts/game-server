@@ -4,8 +4,7 @@ Game server API.
 This module provides an API for communicating with the game server. The API can
 be used to
 
-- start a game that other clients can join
-- join a game that was started by another client
+- start or join a game session
 - submit moves to the server
 - retrieve the game state
 - passively observe a specific player
@@ -23,7 +22,7 @@ class GameServerAPI:
     This class provides API functions to communicate with the game server.
     """
 
-    def __init__(self, server, port, game, token, name=''):
+    def __init__(self, server, port, game, token, players=None, name=''):
         """
         Parameters needed in order to connect to the server and to start or join
         a game session are passed to this constructor. Parameter game specifies
@@ -32,8 +31,14 @@ class GameServerAPI:
         to agree on a token and pass it to the constructor. The token is used to
         identify the game session. It can be any string.
 
-        The optional name parameter makes it possible for other clients to
-        passively observe your playing by joining a game using the watch
+        The optional parameter players is required by function join in order to
+        start a new game session with the specified number of players. If the
+        argument is omitted, the join function will only try to join an existing
+        session but never start a new one. The argument is ignored when an
+        existing session can be joined.
+
+        The optional parameter name makes it possible for other clients to
+        passively observe your playing by joining a game using the observe
         function. They will receive the same data calling the state function as
         you do.
 
@@ -42,91 +47,61 @@ class GameServerAPI:
         port (int): port number
         game (str): name of the game
         token (str): name of the game session
+        players (int): total number of players (optional)
         name (str): player name (optional)
 
         Raises:
         AssertionError: for invalid arguments
         """
-        assert type(server) == str and len(server) > 0, self._msg('server')
-        assert type(port) == int and 0 <= port <= 65535, self._msg('port')
-        assert type(game) == str and len(game) > 0, self._msg('game')
-        assert type(token) == str and len(token) > 0, self._msg('token')
-        assert type(name) == str, self._msg('name')
-
-        # game session:
-        self._game = game
-        self._token = token
-        self._name = name
-        self._player_id = None
-        self._password = None
-        self._watch_mode = False
+        assert type(server) == str and len(server) > 0, self._error('server')
+        assert type(port) == int and 0 <= port <= 65535, self._error('port')
+        assert type(game) == str and len(game) > 0, self._error('game')
+        assert type(token) == str and len(token) > 0, self._error('token')
+        assert players == None or type(players) == int and players > 0, self._error('players')
+        assert type(name) == str, self._error('name')
 
         # server:
         self._server = server
         self._port = port
 
+        # game session:
+        self._game = game
+        self._token = token
+        self._players = players
+        self._name = name
+        self._player_id = None
+        self._password = None
+        self._observer = False
+
         # tcp connections:
         self._buffer_size = 4096 # bytes, corresponds to server-side buffer size value
         self._request_size_max = int(1e6) # bytes, updated after joining a game
 
-    def start_game(self, players):
+    def join(self):
         """
-        Start a game.
+        Start or join a game session.
 
-        This function instructs the server to start a game. Other clients can
-        use the join function to join that game. To be able to join, they need
-        to know the chosen token and pass it to the constructor. The token is
-        used to identify the game session. It can be any string. A repeated call
-        of this function will end the current session and start a new one, which
-        the other players will have to join again.
+        This function lets a client join a game session. A new session is
+        started, if necessary. In order to start a new session, the number of
+        players must be passed to the constructor. If the argument is omitted,
+        this function will only try to join an existing session but never start
+        a new one. The argument is ignored when an existing session can be
+        joined. If a session exists but is already fully occupied by players,
+        it is terminated and a new session is started.
 
-        The game starts as soon as the specified number of players has joined
-        the game. The function then returns the player ID. The server assigns
-        IDs in the range 0...n-1 to all players that join the game.
-
-        Parameters:
-        players (int): total number of players
+        The game starts as soon as the required number of clients has joined the
+        game. The function then returns the player ID. The server assigns IDs in
+        the range 0...n-1 to all players that join the game.
 
         Returns:
         tuple(int, str):
-            int: player ID, if the game was successfully started, else None
-            str: error message, if a problem occurred, None otherwise
-
-        Raises:
-        AssertionError: for invalid arguments
-        """
-        assert type(players) == int and players > 0, self._msg('players')
-
-        response, err = self._send({'type':'start_game', 'game':self._game, 'token':self._token, 'players':players, 'name':self._name})
-
-        if err: return None, err
-        self._player_id = response['player_id']
-        self._password = response['password']
-        self._request_size_max = response['request_size_max']
-
-        return self._player_id, None
-
-    def join_game(self):
-        """
-        Join a game.
-
-        This function lets a client join a game that another client has started
-        by calling the start function. To be able to join, the correct token
-        must be passed to the constructor. The token is used to identify a
-        specific game session.
-
-        The game starts as soon as all clients have joined the game. The
-        function then returns the player ID. The server assigns IDs in the range
-        0...n-1 to all players that join the game.
-
-        Returns:
-        tuple(int, str):
-            int: player ID, if the game could be joined, else None
+            int: player ID, if the game could be started or joined, else None
             str: error message, if a problem occurred, None otherwise
         """
-        response, err = self._send({'type':'join_game', 'game':self._game, 'token':self._token, 'name':self._name})
+        response, err = self._send({'type':'join', 'game':self._game, 'token':self._token, 'players':self._players, 'name':self._name})
 
         if err: return None, err
+
         self._player_id = response['player_id']
         self._password = response['password']
         self._request_size_max = response['request_size_max']
@@ -150,8 +125,8 @@ class GameServerAPI:
         Returns:
         str: error message, if a problem occurred, None otherwise
         """
-        if self._player_id is None: return self._api_error('start or join a game first')[1]
-        if self._watch_mode: return self._api_error('cannot submit moves in watch mode')[1]
+        if self._player_id is None: return self._api_error('join a game first')[1]
+        if self._observer: return self._api_error('cannot submit moves as observer')[1]
 
         _, err = self._send({'type':'move', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'password':self._password, 'move':kwargs})
 
@@ -188,15 +163,15 @@ class GameServerAPI:
             dict: game state if state could be retrieved, else None
             str: error message, if a problem occurred, None otherwise
         """
-        if self._player_id is None: return self._api_error('start or join a game first')
+        if self._player_id is None: return self._api_error('join a game first')
 
-        state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'password':self._password, 'observer':self._watch_mode})
+        state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'password':self._password, 'observer':self._observer})
 
         if err: return None, err
 
         return state, None
 
-    def watch(self, name):
+    def observe(self, name):
         """
         Observe another player.
 
@@ -219,18 +194,19 @@ class GameServerAPI:
         Raises:
         AssertionError: for invalid arguments
         """
-        assert type(name) == str and len(name) > 0, self._msg('name')
+        assert type(name) == str and len(name) > 0, self._error('name')
 
-        response, err = self._send({'type':'watch', 'game':self._game, 'token':self._token, 'name':name})
+        response, err = self._send({'type':'observe', 'game':self._game, 'token':self._token, 'name':name})
 
         if err: return None, err
+
         self._player_id = response['player_id']
         self._password = response['password']
-        self._watch_mode = True
+        self._observer = True
 
         return self._player_id, None
 
-    def reset_game(self):
+    def reset(self):
         """
         Reset a game.
 
@@ -244,7 +220,7 @@ class GameServerAPI:
         """
         if self._player_id != 0: return self._api_error('game can only be reset by starter')[1]
 
-        _, err = self._send({'type':'reset_game', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'password':self._password})
+        _, err = self._send({'type':'reset', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'password':self._password})
 
         if err: return err
 
@@ -325,8 +301,8 @@ class GameServerAPI:
         return None, 'api: ' + message
 
     @staticmethod
-    def _msg(msg):
-        return 'Invalid argument: ' + msg
+    def _error(message):
+        return 'Invalid argument: ' + message
 
     class _NoResponse(Exception):
         pass

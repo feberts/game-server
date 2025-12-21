@@ -9,6 +9,8 @@ in separate shells.
 
 from game_server_api import GameServerAPI
 
+game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
+
 symbols = ('x', 'o')
 
 def print_board(board):
@@ -32,13 +34,8 @@ def fatal(msg):
     print(msg)
     exit()
 
-game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
-
-my_id, err = game.join_game()
-
-if err: # no game started yet
-    my_id, err = game.start_game(players=2)
-    if err: fatal(err)
+my_id, err = game.join()
+if err: fatal(err)
 
 state, err = game.state()
 if err: fatal(err)

@@ -9,7 +9,8 @@ from abstract_game import AbstractGame
 class Echo(AbstractGame):
     """
     An unmodified copy of the data received is sent back to the client. The game
-    is over as soon as the message 'quit' is received.
+    ends as soon as the message 'quit' is received. Receiving 'error' causes the
+    server to respond with an error message.
     """
 
     def __init__(self, players):
@@ -30,9 +31,14 @@ class Echo(AbstractGame):
     def move(self, args, player_id):
         if 'msg' not in args:
             return "keyword argument 'msg' missing"
+
         self._message = args['msg']
+
         if self._message == 'quit':
             self._gameover = True
+        elif self._message == 'error':
+            return 'this is an error message from the server'
+
         return None
 
     def game_over(self):

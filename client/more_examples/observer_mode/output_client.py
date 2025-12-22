@@ -2,16 +2,17 @@
 """
 Tic-tac-toe output client.
 
-This program connects to a game session as a passive observer. It can be used in
-combination with the input client. The input client joins a game as an active
-player and submits moves. This way, the implementation of input and output can
-be divided between two programs. Both programs need to pass the same value for
-the name parameter when connecting to a game session.
+This program joins a game session as a passive observer. It can be used in
+combination with the input client (but with a regular client, too). The input
+client joins a session as an active player and submits moves. This way, the
+implementation of input and output can be divided between two programs. Both
+programs need to pass the same value for the name parameter when joining a game
+session.
 """
 
 from game_server_api import GameServerAPI, GameError
 
-game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame')
+game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', name='bob')
 
 symbols = ('x', 'o')
 
@@ -22,9 +23,7 @@ def print_board(board):
           f' {board[3]} | {board[4]} | {board[5]}', '---+---+---',
           f' {board[6]} | {board[7]} | {board[8]}', sep='\n')
 
-# observe player:
-observed_id = game.observe(name='bob')
-
+observed_id = game.observe()
 state = game.state()
 
 while not state['gameover']:

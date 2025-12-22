@@ -174,31 +174,28 @@ class GameServerAPI:
 
         return state
 
-    def observe(self, name):
+    def observe(self):
         """
         Observe another player.
 
-        This function lets one client observe another client. By providing the
-        name of the player to be observed, you will receive the same data
-        calling the state function as that player does. This function will
-        return the player ID of the observed player.
+        This function lets one client observe another client. The name of the
+        player to be observed must be passed to the constructor. You will then
+        receive the same data calling the state function as that player does.
+        This function will return the player ID of the observed player.
 
         This function can only be called, after the specified game session has
         already been started.
-
-        Parameters:
-        name (str): name of player to observe
 
         Returns:
         int: ID of the observed player
 
         Raises:
-        AssertionError: for invalid arguments
-        GameError: in case session could not be joined as observer
+        GameError: in case the session could not be joined as observer
         """
-        assert type(name) == str and len(name) > 0, self._error('name')
+        if type(self._name) != str or len(self._name) == 0:
+            raise GameError('a valid name must be passed to the constructor')
 
-        response, err = self._send({'type':'observe', 'game':self._game, 'token':self._token, 'name':name})
+        response, err = self._send({'type':'observe', 'game':self._game, 'token':self._token, 'name':self._name})
 
         if err: raise GameError(err)
 

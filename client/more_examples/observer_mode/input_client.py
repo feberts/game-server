@@ -2,11 +2,11 @@
 """
 Tic-tac-toe input client.
 
-This program joins a game as an active player and submits moves. It must be used
-in combination with the output client. The output client connects to a game
+This program joins a game session as an active player and submits moves. It must
+be used in combination with the output client. The output client joins a game
 session as a passive observer. This way, the implementation of input and output
 can be divided between two programs. Both programs need to pass the same value
-for the name parameter when connecting to a game session.
+for the name parameter when joining a game session.
 """
 
 from game_server_api import GameServerAPI, GameError

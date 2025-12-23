@@ -327,8 +327,7 @@ class GameFramework:
         This function restarts a game. The game class object is replaced with a
         new one, the game session itself stays untouched. There is no need to
         rejoin the game, and all players will keep their IDs. This is useful
-        when simulating many games to collect data for AI training. Only the
-        client who started the session (ID = 0) can restart the game.
+        when simulating many games to collect data for AI training.
 
         Parameters:
         request (dict): containing information about the game session
@@ -342,8 +341,6 @@ class GameFramework:
 
         game_name, token, player_id, key = request['game'], request['token'], request['player_id'], request['key']
 
-        if player_id != 0: return utility.framework_error('game can only be restarted by starter')
-
         # retrieve the game session:
         session, err = self._retrieve_session(game_name, token)
         if err: # no such game or game session
@@ -354,7 +351,7 @@ class GameFramework:
             return utility.framework_error('invalid key')
 
         # restart game:
-        session.restart_game()
+        session.restart_game(player_id)
 
         return self._return_data(None)
 

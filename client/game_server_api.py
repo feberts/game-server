@@ -211,14 +211,11 @@ class GameServerAPI:
 
         This function restarts the current game. There is no need to rejoin the
         session, and all players will keep their IDs. This is useful when
-        simulating many games to collect data for AI training. Only the client
-        who started the game can restart it.
+        simulating many games to collect data for AI training.
 
         Raises:
         GameError: in case the game could not be restarted
         """
-        if self._player_id != 0: raise GameError('game can only be restarted by starter')
-
         _, err = self._send({'type':'restart', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'key':self._key})
 
         if err: raise GameError(err)

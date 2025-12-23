@@ -255,7 +255,7 @@ class GameSession:
         self._game = self._game_class(self._n_players)
         self._no_delay = list(range(self._n_players * 2))
 
-    def restart_game(self):
+    def restart_game(self, player_id):
         """
         Restart the game.
 
@@ -268,11 +268,13 @@ class GameSession:
         time, and the client's ID is removed from the list. From then on, the
         client will receive the game state of the new game instance.
 
-        Only the client who started the game can restart it.
+        Parameters:
+        player_id (int): player ID
         """
         # store old game instance and a list of player IDs:
         if self._game.game_over():
-            self._in_previous_game = list(range(1, self._n_players * 2))
+            self._in_previous_game = list(range(self._n_players * 2))
+            self._in_previous_game.remove(player_id) # exclude client that restarted the game
             self._previous_game = copy.deepcopy(self._game)
 
         # create new game instance:

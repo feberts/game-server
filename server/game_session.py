@@ -151,7 +151,7 @@ class GameSession:
         player_id (int): ID of the player submitting the move
 
         Returns:
-        str: error message in case the move was illegal, None otherwise (see AbstractGame.move)
+        error message in case the move was illegal, None otherwise (see AbstractGame.move)
         """
         with self._lock:
             ret = self._game.move(move, player_id)

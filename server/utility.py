@@ -20,7 +20,7 @@ def _generic_error(sender, message):
 
     Parameters:
     sender (str): let client know where the error was detected
-    message (str): error message (see above for details)
+    message: error message (see above for details)
 
     Returns:
     dict: contains the message

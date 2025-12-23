@@ -119,9 +119,11 @@ class GameServerAPI:
         This function is used to submit a move to the game server. The move must
         be passed as keyword arguments. Refer to the documentation of a specific
         game to find out about the required or available arguments. If it is not
-        your turn to submit a move or if the move is invalid, the server replies
-        with an error message. Refer to the documentation of a specific game for
-        more information about error handling.
+        your turn to submit a move or if the move is illegal, the server replies
+        with an error message, and an exception containing the message is
+        raised. The message can be any object compatible with JSON. Refer to the
+        documentation of a specific game for more information about error
+        handling.
 
         Parameters:
         kwargs (keyword arguments): a player's move
@@ -134,7 +136,11 @@ class GameServerAPI:
 
         _, err = self._send({'type':'move', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'key':self._key, 'move':kwargs})
 
-        if err: raise GameError(err)
+        if err:
+            if type(err) == list:
+                raise GameError(*err) # game class returned an iterable
+            else:
+                raise GameError(err)
 
     def state(self):
         """

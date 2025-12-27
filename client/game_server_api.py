@@ -102,7 +102,12 @@ class GameServerAPI:
         Raises:
         GameError: in case no session could be started or joined
         """
-        response, err = self._send({'type':'join', 'game':self._game, 'token':self._token, 'players':self._players, 'name':self._name})
+        response, err = self._send({
+            'type':'join',
+            'game':self._game,
+            'token':self._token,
+            'players':self._players,
+            'name':self._name})
 
         if err: raise GameError(err)
 
@@ -134,11 +139,17 @@ class GameServerAPI:
         if self._player_id is None: raise GameError('join a game first')
         if self._observer: raise GameError('cannot submit moves as observer')
 
-        _, err = self._send({'type':'move', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'key':self._key, 'move':kwargs})
+        _, err = self._send({
+            'type':'move',
+            'game':self._game,
+            'token':self._token,
+            'player_id':self._player_id,
+            'key':self._key,
+            'move':kwargs})
 
         if err:
             if type(err) == list:
-                raise GameError(*err) # game class returned an iterable
+                raise GameError(*err)
             else:
                 raise GameError(err)
 
@@ -174,7 +185,13 @@ class GameServerAPI:
         """
         if self._player_id is None: raise GameError('join a game first')
 
-        state, err = self._send({'type':'state', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'key':self._key, 'observer':self._observer})
+        state, err = self._send({
+            'type':'state',
+            'game':self._game,
+            'token':self._token,
+            'player_id':self._player_id,
+            'key':self._key,
+            'observer':self._observer})
 
         if err: raise GameError(err)
 
@@ -201,7 +218,11 @@ class GameServerAPI:
         if type(self._name) != str or len(self._name) == 0:
             raise GameError('a valid name must be passed to the constructor')
 
-        response, err = self._send({'type':'observe', 'game':self._game, 'token':self._token, 'name':self._name})
+        response, err = self._send({
+            'type':'observe',
+            'game':self._game,
+            'token':self._token,
+            'name':self._name})
 
         if err: raise GameError(err)
 
@@ -222,7 +243,12 @@ class GameServerAPI:
         Raises:
         GameError: in case the game could not be restarted
         """
-        _, err = self._send({'type':'restart', 'game':self._game, 'token':self._token, 'player_id':self._player_id, 'key':self._key})
+        _, err = self._send({
+            'type':'restart',
+            'game':self._game,
+            'token':self._token,
+            'player_id':self._player_id,
+            'key':self._key})
 
         if err: raise GameError(err)
 

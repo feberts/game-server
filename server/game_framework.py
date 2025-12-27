@@ -99,7 +99,10 @@ class GameFramework:
         err = utility.check_dict(request, {'game':str, 'token':str, 'players':(int, type(None)), 'name':str})
         if err: return utility.framework_error(err)
 
-        game_name, token, players, name = request['game'], request['token'], request['players'], request['name']
+        game_name = request['game']
+        token = request['token']
+        players = request['players']
+        name = request['name']
 
         if game_name not in self._game_classes:
             return utility.framework_error('no such game')
@@ -168,7 +171,10 @@ class GameFramework:
 
         log.info(f'Starting session {game_name}:{token}')
 
-        return self._return_data({'player_id':player_id, 'key':key, 'request_size_max':config.request_size_max})
+        return self._return_data({
+            'player_id':player_id,
+            'key':key,
+            'request_size_max':config.request_size_max})
 
     def _join_session(self, session, name):
         """
@@ -202,7 +208,10 @@ class GameFramework:
         if not session.full(): # timeout reached
             return utility.framework_error('timeout while waiting for others to join')
 
-        return self._return_data({'player_id':player_id, 'key':key, 'request_size_max':config.request_size_max})
+        return self._return_data({
+            'player_id':player_id,
+            'key':key,
+            'request_size_max':config.request_size_max})
 
     def _move(self, request):
         """
@@ -223,7 +232,11 @@ class GameFramework:
         err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'key':str, 'move':dict})
         if err: return utility.framework_error(err)
 
-        game_name, token, player_id, key, move = request['game'], request['token'], request['player_id'], request['key'], request['move']
+        game_name = request['game']
+        token = request['token']
+        player_id = request['player_id']
+        key = request['key']
+        move = request['move']
 
         # retrieve the game session:
         session, err = self._retrieve_session(game_name, token)
@@ -265,7 +278,11 @@ class GameFramework:
         err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'key':str, 'observer':bool})
         if err: return utility.framework_error(err)
 
-        game_name, token, player_id, key, observer = request['game'], request['token'], request['player_id'], request['key'], request['observer']
+        game_name = request['game']
+        token = request['token']
+        player_id = request['player_id']
+        key = request['key']
+        observer = request['observer']
 
         # retrieve the game session:
         session, err = self._retrieve_session(game_name, token)
@@ -305,7 +322,9 @@ class GameFramework:
         err = utility.check_dict(request, {'game':str, 'token':str, 'name':str})
         if err: return utility.framework_error(err)
 
-        game_name, token, player_name = request['game'], request['token'], request['name']
+        game_name = request['game']
+        token = request['token']
+        player_name = request['name']
 
         # retrieve game session:
         session, err = self._retrieve_session(game_name, token)
@@ -339,7 +358,10 @@ class GameFramework:
         err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'key':str})
         if err: return utility.framework_error(err)
 
-        game_name, token, player_id, key = request['game'], request['token'], request['player_id'], request['key']
+        game_name = request['game']
+        token = request['token']
+        player_id = request['player_id']
+        key = request['key']
 
         # retrieve the game session:
         session, err = self._retrieve_session(game_name, token)

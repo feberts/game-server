@@ -38,7 +38,7 @@ while not state.gameover:
 
     if state.my_turn:
         while True:
-            pos = user_input(f'\nYour ({symbols[my_id]}) turn: ')
+            pos = user_input(f'\nPlayer {symbols[my_id]}, your turn: ')
 
             try:
                 game.put_mark(pos)
@@ -55,6 +55,6 @@ print_board(state.board)
 if state.winner is None:
     print('No winner...')
 elif state.winner:
-    print(f'You ({symbols[my_id]}) win!')
+    print(f'You win!')
 else:
-    print(f'You ({symbols[my_id]}) lose...')
+    print(f'You lose...')

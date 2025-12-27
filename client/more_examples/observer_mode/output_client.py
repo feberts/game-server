@@ -30,7 +30,7 @@ while not state['gameover']:
     print_board(state['board'])
 
     if observed_id in state['current']: # my turn
-        print(f'Your ({symbols[observed_id]}) turn')
+        print(f'Player {symbols[observed_id]}, your turn!')
     else:
         print("Opponent's turn ...")
 
@@ -42,6 +42,6 @@ winner = state['winner']
 if winner is None:
     print('No winner...')
 elif winner == observed_id:
-    print(f'You ({symbols[observed_id]}) win!')
+    print(f'You win!')
 else:
-    print(f'You ({symbols[observed_id]}) lose...')
+    print(f'You lose...')

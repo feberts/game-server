@@ -152,11 +152,16 @@ class GameFramework:
         if players > game_class.max_players() or players < game_class.min_players():
             return utility.framework_error('invalid number of players')
 
-        # create game session and add it to dictionary of active sessions:
+        # retrieve old game session, if it exists, and notify clients:
         old_session, _ = self._retrieve_session(game_name, token)
+
+        if old_session:
+            old_session.mark_overwritten()
+            old_session.wake_up_threads()
+
+        # create game session and add it to dictionary of active sessions:
         session = game_session.GameSession(game_class, players)
         self._game_sessions[(game_name, token)] = session
-        if old_session: old_session.wake_up_threads()
 
         # get player ID and key:
         player_id, key, _ = session.next_id(name)
@@ -296,7 +301,11 @@ class GameFramework:
         # retrieve the game state:
         state = session.game_state(player_id, observer)
 
-        # check if session has timed out while waiting for state change:
+        # check if session was overwritten while clients are waiting for state change:
+        if session.overwritten():
+            return utility.framework_error('game session was overwritten')
+
+        # check if session has timed out while clients are waiting for state change:
         if session.timed_out():
             return utility.framework_error('game session has timed out')
 

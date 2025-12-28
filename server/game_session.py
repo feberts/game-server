@@ -42,6 +42,7 @@ class GameSession:
         self._previous_game = None # previous game instance stored upon restart
         self._new_game()
         self._timed_out = False
+        self._overwritten = False
 
     def next_id(self, player_name):
         """
@@ -329,3 +330,18 @@ class GameSession:
         bool: True, if game session has timed out
         """
         return self._timed_out
+
+    def mark_overwritten(self):
+        """
+        Mark game session as overwritten.
+        """
+        self._overwritten = True
+
+    def overwritten(self):
+        """
+        Check if game session is overwritten.
+
+        Returns:
+        bool: True, if game session is overwritten
+        """
+        return self._overwritten

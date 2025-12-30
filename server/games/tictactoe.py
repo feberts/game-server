@@ -103,6 +103,7 @@ class TicTacToe(AbstractGame):
             if b[i] == b[j] == b[k] == self._state.current:
                 self._state.winner = self._state.current
                 self._state.gameover = True
+                return
 
     def _check_board_full(self):
         """

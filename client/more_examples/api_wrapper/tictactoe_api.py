@@ -6,7 +6,7 @@ for a specific game. Doing this is not necessary, because the game server API is
 generic and works with every game, but it can simplify the API usage.
 """
 
-from game_server_api import GameServerAPI, GameError
+from game_server_api import GameServerAPI, GameServerError, IllegalMove
 
 class TicTacToeAPI:
     """

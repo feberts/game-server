@@ -10,7 +10,7 @@ programs need to pass the same value for the name parameter when joining a game
 session.
 """
 
-from game_server_api import GameServerAPI, GameError
+from game_server_api import GameServerAPI, GameServerError, IllegalMove
 
 game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', name='bob')
 

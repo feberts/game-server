@@ -7,7 +7,7 @@ Implementing wrapper functions is not necessary because the game server API is
 generic and works with every game, but it can simplify the API usage.
 """
 
-from yahtzee_api import YahtzeeAPI, GameError
+from yahtzee_api import YahtzeeAPI, GameServerError, IllegalMove
 
 game = YahtzeeAPI(token='mygame', players=1)
 
@@ -61,7 +61,7 @@ while True:
     try:
         game.submit_name(input('Enter name: '))
         break
-    except GameError as e:
+    except IllegalMove as e:
         print(e)
 
 categories = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes', 'Chance', 'Three of a Kind', 'Four of a Kind', 'Full House', 'Small Straight', 'Large Straight', 'Yahtzee']
@@ -87,7 +87,7 @@ while not state.gameover:
             elif option == 3:
                 cat = menu(categories)
                 game.cross_out_category(categories[cat])
-        except GameError as e:
+        except IllegalMove as e:
             print(e)
             input('\n<press enter>')
     else:

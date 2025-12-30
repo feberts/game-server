@@ -34,7 +34,7 @@ import pygame
 from pygame.locals import *
 import threading
 
-from game_server_api import GameServerAPI, GameError
+from game_server_api import GameServerAPI, GameServerError, IllegalMove
 
 game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
 
@@ -86,7 +86,7 @@ class TicTacToe():
         try:
             x, y = pos[0] // self.cell_size, pos[1] // self.cell_size
             game.move(position=y * 3 + x)
-        except GameError as e:
+        except IllegalMove as e:
             print(e)
         except:
             print("Click inside the table only")

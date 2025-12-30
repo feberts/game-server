@@ -6,7 +6,7 @@ This program connects to the game server to play Yahtzee, alone, or against
 other clients.
 """
 
-from game_server_api import GameServerAPI, GameError
+from game_server_api import GameServerAPI, GameServerError, IllegalMove
 
 game = GameServerAPI(server='127.0.0.1', port=4711, game='Yahtzee', token='mygame', players=1)
 
@@ -60,7 +60,7 @@ while True:
     try:
         game.move(name=input('Enter name: '))
         break
-    except GameError as e:
+    except IllegalMove as e:
         print(e)
 
 categories = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes', 'Chance', 'Three of a Kind', 'Four of a Kind', 'Full House', 'Small Straight', 'Large Straight', 'Yahtzee']
@@ -86,7 +86,7 @@ while not state['gameover']:
             elif option == 3:
                 cat = menu(categories)
                 game.move(score='cross out', category=categories[cat])
-        except GameError as e:
+        except IllegalMove as e:
             print(e)
             input('\n<press enter>')
     else:

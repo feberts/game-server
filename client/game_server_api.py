@@ -15,7 +15,10 @@ import json
 import socket
 import traceback
 
-class GameError(Exception):
+class GameServerError(Exception):
+    pass
+
+class IllegalMove(Exception):
     pass
 
 class GameServerAPI:
@@ -100,16 +103,16 @@ class GameServerAPI:
         int: player ID
 
         Raises:
-        GameError: in case no session could be started or joined
+        GameServerError: in case no session could be started or joined
         """
-        response, err = self._send({
+        response, err, _ = self._send({
             'type':'join',
             'game':self._game,
             'token':self._token,
             'players':self._players,
             'name':self._name})
 
-        if err: raise GameError(err)
+        if err: raise GameServerError(err)
 
         self._player_id = response['player_id']
         self._key = response['key']
@@ -134,12 +137,13 @@ class GameServerAPI:
         kwargs (keyword arguments): a player's move
 
         Raises:
-        GameError: in case of an illegal move
+        IllegalMove: in case of an illegal move
+        GameServerError: in case any other error occurred
         """
-        if self._player_id is None: raise GameError('join a game first')
-        if self._observer: raise GameError('cannot submit moves as observer')
+        if self._player_id is None: raise GameServerError('join a game first')
+        if self._observer: raise GameServerError('cannot submit moves as observer')
 
-        _, err = self._send({
+        _, err, status = self._send({
             'type':'move',
             'game':self._game,
             'token':self._token,
@@ -148,10 +152,13 @@ class GameServerAPI:
             'move':kwargs})
 
         if err:
-            if type(err) == list:
-                raise GameError(*err)
+            if status == 'illegalmove':
+                if type(err) == list:
+                    raise IllegalMove(*err)
+                else:
+                    raise IllegalMove(err)
             else:
-                raise GameError(err)
+                raise GameServerError(err)
 
     def state(self):
         """
@@ -181,11 +188,11 @@ class GameServerAPI:
         dict: game state
 
         Raises:
-        GameError: in case the state could not be retrieved
+        GameServerError: in case the state could not be retrieved
         """
-        if self._player_id is None: raise GameError('join a game first')
+        if self._player_id is None: raise GameServerError('join a game first')
 
-        state, err = self._send({
+        state, err, _ = self._send({
             'type':'state',
             'game':self._game,
             'token':self._token,
@@ -193,7 +200,7 @@ class GameServerAPI:
             'key':self._key,
             'observer':self._observer})
 
-        if err: raise GameError(err)
+        if err: raise GameServerError(err)
 
         return state
 
@@ -213,18 +220,18 @@ class GameServerAPI:
         int: ID of the observed player
 
         Raises:
-        GameError: in case the session could not be joined as observer
+        GameServerError: in case the session could not be joined as observer
         """
         if type(self._name) != str or len(self._name) == 0:
-            raise GameError('a valid name must be passed to the constructor')
+            raise GameServerError('a valid name must be passed to the constructor')
 
-        response, err = self._send({
+        response, err, _ = self._send({
             'type':'observe',
             'game':self._game,
             'token':self._token,
             'name':self._name})
 
-        if err: raise GameError(err)
+        if err: raise GameServerError(err)
 
         self._player_id = response['player_id']
         self._key = response['key']
@@ -241,16 +248,16 @@ class GameServerAPI:
         simulating many games to collect data for AI training.
 
         Raises:
-        GameError: in case the game could not be restarted
+        GameServerError: in case the game could not be restarted
         """
-        _, err = self._send({
+        _, err, _ = self._send({
             'type':'restart',
             'game':self._game,
             'token':self._token,
             'player_id':self._player_id,
             'key':self._key})
 
-        if err: raise GameError(err)
+        if err: raise GameServerError(err)
 
     def _send(self, data):
         """
@@ -264,9 +271,10 @@ class GameServerAPI:
         data (dict): data to be sent to the server
 
         Returns:
-        tuple(dict, str):
+        tuple(dict, str, str):
             dict: data returned by server, None in case of an error
             str: error message if a problem occurred, None otherwise
+            str: status (okay or error type)
         """
         # prepare data:
         try:
@@ -301,10 +309,10 @@ class GameServerAPI:
                 response = json.loads(response.decode())
 
                 # return data:
-                if response['status'] == 'error': # server responded with error
-                    return None, response['message']
+                if response['status'] != 'ok': # server responded with an error
+                    return None, response['message'], response['status']
 
-                return response['data'], None
+                return response['data'], None, None
 
             except socket.timeout:
                 return self._api_error('connection timed out')
@@ -324,7 +332,7 @@ class GameServerAPI:
         """
         Return an error message.
         """
-        return None, 'api: ' + message
+        return None, 'api: ' + message, None
 
     @staticmethod
     def _error(message):

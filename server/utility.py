@@ -9,7 +9,7 @@ from datetime import datetime
 
 import config
 
-def _generic_error(sender, message):
+def _generic_error(sender, message, status='error'):
     """
     Create an error message.
 
@@ -21,6 +21,7 @@ def _generic_error(sender, message):
     Parameters:
     sender (str): let client know where the error was detected
     message: error message (see above for details)
+    status (str): error status
 
     Returns:
     dict: contains the message
@@ -28,7 +29,7 @@ def _generic_error(sender, message):
     if type(message) == str:
         message = sender + ': ' + message
 
-    return {'status':'error', 'message':message}
+    return {'status':status, 'message':message}
 
 def server_error(message):
     """
@@ -46,7 +47,7 @@ def game_error(message):
     """
     Game error. See function _generic_error for details.
     """
-    return _generic_error('game', message)
+    return _generic_error('game', message, 'illegalmove')
 
 class ServerLogger:
     """

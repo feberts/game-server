@@ -7,7 +7,7 @@ Implementing wrapper functions is not necessary because the game server API is
 generic and works with every game, but it can simplify the API usage.
 """
 
-from tictactoe_api import TicTacToeAPI, GameError
+from tictactoe_api import TicTacToeAPI, GameServerError, IllegalMove
 
 game = TicTacToeAPI(token='mygame')
 
@@ -43,7 +43,7 @@ while not state.gameover:
             try:
                 game.put_mark(pos)
                 break
-            except GameError as e:
+            except IllegalMove as e:
                 print(e)
     else:
         print("Opponent's turn ...")

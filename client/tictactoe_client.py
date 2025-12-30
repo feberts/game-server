@@ -7,7 +7,7 @@ client. If you want to test it on a single machine, just run this program twice
 in separate shells.
 """
 
-from game_server_api import GameServerAPI, GameError
+from game_server_api import GameServerAPI, GameServerError, IllegalMove
 
 game = GameServerAPI(server='127.0.0.1', port=4711, game='TicTacToe', token='mygame', players=2)
 
@@ -43,7 +43,7 @@ while not state['gameover']:
             try:
                 game.move(position=pos)
                 break
-            except GameError as e:
+            except IllegalMove as e:
                 print(e)
     else:
         print("Opponent's turn ...")

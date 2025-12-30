@@ -96,7 +96,8 @@ class GameFramework:
         dict: containing the player's ID and key
         """
         # check and parse request:
-        err = utility.check_dict(request, {'game':str, 'token':str, 'players':(int, type(None)), 'name':str})
+        err = utility.check_dict(request, {
+            'game':str, 'token':str, 'players':(int, type(None)), 'name':str})
         if err: return utility.framework_error(err)
 
         game_name = request['game']
@@ -234,7 +235,8 @@ class GameFramework:
         dict: containing information in case of an invalid move
         """
         # check and parse request:
-        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'key':str, 'move':dict})
+        err = utility.check_dict(request, {
+            'game':str, 'token':str, 'player_id':int, 'key':str, 'move':dict})
         if err: return utility.framework_error(err)
 
         game_name = request['game']
@@ -280,7 +282,8 @@ class GameFramework:
         dict: containing the game state
         """
         # check and parse request:
-        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'key':str, 'observer':bool})
+        err = utility.check_dict(request, {
+            'game':str, 'token':str, 'player_id':int, 'key':str, 'observer':bool})
         if err: return utility.framework_error(err)
 
         game_name = request['game']
@@ -364,7 +367,8 @@ class GameFramework:
         dict: containing an error message, if the request is invalid
         """
         # check and parse request:
-        err = utility.check_dict(request, {'game':str, 'token':str, 'player_id':int, 'key':str})
+        err = utility.check_dict(request, {
+            'game':str, 'token':str, 'player_id':int, 'key':str})
         if err: return utility.framework_error(err)
 
         game_name = request['game']

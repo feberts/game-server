@@ -67,8 +67,8 @@ class TicTacToe(AbstractGame):
             return "type of argument 'position' must be int"
 
         pos = int(args['position'])
-        valid, msg = self._check_move(pos)
-        if not valid: return msg
+        err = self._check_move(pos)
+        if err: return err
 
         self._update_board(pos)
         self._check_win()
@@ -82,11 +82,11 @@ class TicTacToe(AbstractGame):
         Check if a move is legal.
         """
         if pos < 0 or pos > 8:
-            return False, 'invalid position'
+            return 'invalid position'
         if self._state.board[pos] != -1:
-            return False, 'position already occupied'
+            return 'position already occupied'
 
-        return True, ''
+        return None
 
     def _update_board(self, pos):
         """

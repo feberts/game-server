@@ -159,7 +159,7 @@ class GameSession:
             self._update_last_access()
 
             if self._game.game_over():
-                self._no_delay = list(range(self._n_players * 2))
+                self._no_delay = self._all_ids()
             if player_id not in self._no_delay:
                 self._no_delay.append(player_id)
 
@@ -258,7 +258,7 @@ class GameSession:
         game_state for details.
         """
         self._game = self._game_class(self._n_players)
-        self._no_delay = list(range(self._n_players * 2))
+        self._no_delay = self._all_ids()
 
     def restart_game(self, player_id):
         """
@@ -278,7 +278,7 @@ class GameSession:
         """
         # store old game instance and a list of player IDs:
         if self._game.game_over():
-            self._in_previous_game = list(range(self._n_players * 2))
+            self._in_previous_game = self._all_ids()
             self._in_previous_game.remove(player_id) # exclude client that restarted the game
             self._previous_game = copy.deepcopy(self._game)
 
@@ -349,3 +349,12 @@ class GameSession:
         bool: True, if game session is overwritten
         """
         return self._overwritten
+
+    def _all_ids(self):
+        """
+        Return a list of all player IDs, including observer IDs.
+
+        Returns:
+        list: all player IDs
+        """
+        return list(range(self._n_players * 2))

@@ -157,9 +157,14 @@ class GameSession:
         with self._lock:
             ret = self._game.move(move, player_id)
             self._update_last_access()
-            self.wake_up_threads()
+
+            if self._game.game_over():
+                self._no_delay = list(range(self._n_players * 2))
             if player_id not in self._no_delay:
                 self._no_delay.append(player_id)
+
+            self.wake_up_threads()
+
             return ret
 
     def game_state(self, player_id, observer):
@@ -209,8 +214,7 @@ class GameSession:
             p_id += self._n_players # convert observer IDs
 
         # wait for game state to change:
-        if (not self._game.game_over()
-            and not p_id in self._game.current_player()
+        if (not p_id in self._game.current_player()
             and not p_id in self._in_previous_game
             and not p_id in self._no_delay):
             self._state_change.clear()

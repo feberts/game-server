@@ -119,14 +119,23 @@ class GameSession:
         """
         return self._game.game_over()
 
-    def current_player(self):
+    def current_player(self, game=None):
         """
-        Retrieve current player(s) from the game instance.
+        Retrieve current player(s) from the game instance. Returns an empty list
+        when the game has ended.
+
+        Parameters:
+        game (AbstractGame): game instance (optional, default: current game)
 
         Returns:
         list: player IDs
         """
-        return self._game.current_player()
+        if not game: game = self._game
+
+        if game.game_over():
+            return []
+        else:
+            return game.current_player()
 
     def last_access(self):
         """
@@ -214,7 +223,7 @@ class GameSession:
             p_id += self._n_players # convert observer IDs
 
         # wait for game state to change:
-        if (not p_id in self._game.current_player()
+        if (not p_id in self.current_player()
             and not p_id in self._in_previous_game
             and not p_id in self._no_delay):
             self._state_change.clear()
@@ -246,7 +255,7 @@ class GameSession:
         dict: game state
         """
         state = game.state(player_id)
-        state['current'] = game.current_player()
+        state['current'] = self.current_player(game)
         state['gameover'] = game.game_over()
         return state
 

@@ -4,7 +4,9 @@ Echo!
 
 Not really a game, but occasionally useful for debugging and testing.
 
-An unmodified copy of the data sent to the server is sent back to the client. The game ends as soon as the message 'quit' is sent. Sending 'error' causes the server to respond with an error message.
+An unmodified copy of the data sent to the server is sent back to the client.
+The game ends as soon as the message 'quit' is sent. Sending 'error' causes the
+server to respond with an error message.
 """
 
 from game_server_api import GameServerAPI, GameServerError, IllegalMove

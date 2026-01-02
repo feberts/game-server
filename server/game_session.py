@@ -166,12 +166,7 @@ class GameSession:
         with self._lock:
             ret = self._game.move(move, player_id)
             self._update_last_access()
-
-            if self._game.game_over():
-                self._no_delay = self._all_ids()
-            if player_id not in self._no_delay:
-                self._no_delay.append(player_id)
-
+            self._no_delay = self._all_ids()
             self.wake_up_threads()
 
             return ret
@@ -186,13 +181,11 @@ class GameSession:
 
         This function will block until the game state changes. Only then will
         the updated state be sent back to the client. This is more efficient
-        than polling. To avoid deadlocks, the function never blocks in certain
+        than polling. To avoid deadlocks, the function never blocks in these
         situations:
 
-        - when the game has just started and no move has been performed yet
-        - when it is the client's turn to submit a move
-        - when the client just performed a move and wants to get the new state
-        - when the game has ended and moves are no longer possible
+        - when the game has just started to allow clients to get the initial state
+        - after a move was performed to allow clients to get the new state
         - when the game was restarted and a client still has to get the old game's state
 
         To achieve this, the thread that changes the state triggers an event to
@@ -223,9 +216,7 @@ class GameSession:
             p_id += self._n_players # convert observer IDs
 
         # wait for game state to change:
-        if (not p_id in self.current_player()
-            and not p_id in self._in_previous_game
-            and not p_id in self._no_delay):
+        if not p_id in self._no_delay and not p_id in self._in_previous_game:
             self._state_change.clear()
             self._state_change.wait()
 
@@ -238,8 +229,7 @@ class GameSession:
         # return current game's state:
         with self._lock:
             self._update_last_access()
-            if p_id in self._no_delay:
-                self._no_delay.remove(p_id)
+            self._no_delay.remove(p_id)
             return self._assemble_state(self._game, player_id)
 
     def _assemble_state(self, game, player_id):
@@ -291,10 +281,8 @@ class GameSession:
             self._in_previous_game.remove(player_id) # exclude client that restarted the game
             self._previous_game = copy.deepcopy(self._game)
 
-        # create new game instance:
+        # create new game instance and wake up waiting threads:
         self._new_game()
-
-        # wake up other threads waiting for the game state to change:
         self.wake_up_threads()
 
     def _key(self, length=5):

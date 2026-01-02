@@ -173,15 +173,13 @@ class GameServerAPI:
         'current': a list of player IDs, indicating whose player's turn it is
         'gameover': a boolean value indicating whether the game is over or still active
 
-        This function will block until the game state changes. Only then the
-        server will respond with the updated state. This is more efficient than
-        polling. To avoid deadlocks, the function never blocks in certain
+        This function will block until the game state changes. Only then does
+        the server respond with the updated state. This is more efficient than
+        polling. To avoid deadlocks, the function never blocks in these
         situations:
 
-        - when the game has just started and no move has been performed yet
-        - when it is the client's turn to submit a move
-        - when the client just performed a move and wants to get the new state
-        - when the game has ended and moves are no longer possible
+        - when the game has just started to allow clients to get the initial state
+        - after a move was performed to allow clients to get the new state
         - when the game was restarted and a client still has to get the old game's state
 
         Returns:

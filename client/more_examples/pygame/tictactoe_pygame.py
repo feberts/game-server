@@ -49,11 +49,7 @@ pygame.display.set_caption("Tic Tac Toe")
 class TicTacToe():
     def __init__(self, table_size):
         self.my_id = game.join()
-
         self.state = game.state()
-
-        self.marks = ('X', 'O')
-        self._sending_move = threading.Event()
 
         self.table_size = table_size
         self.cell_size = table_size // 3
@@ -88,6 +84,8 @@ class TicTacToe():
             game.move(position=y * 3 + x)
         except IllegalMove as e:
             print(e)
+        except GameServerError as e:
+            exit(e)
         except:
             print("Click inside the table only")
 
@@ -100,23 +98,23 @@ class TicTacToe():
         if self.state['gameover']:
             screen.fill(self.background_color, (135, 445, 188, 35))
             if self.state['winner'] == self.my_id:
-                msg = f'You ({self.marks[self.my_id]}) win! '
+                msg = '  You win! '
             elif self.state['winner'] is None:
                 msg = 'No winner ...'
             else:
-                msg = f'You ({self.marks[self.my_id]}) lose...'
+                msg = 'You lose ...'
             msg = self.font.render(msg, True, self.instructions_color,self.background_color)
-            screen.blit(msg,(75,445))
+            screen.blit(msg,(110,445))
             self._strike()
         else:
             screen.fill(self.background_color, (135, 445, 188, 35))
 
             if self.my_id in self.state['current']:
-                instr = f'Your ({self.marks[self.my_id]}) turn'
+                instr = 'Your turn!   '
             else:
                 instr = 'Opponent ... '
             instructions = self.font.render(instr, True, self.instructions_color,self.background_color)
-            screen.blit(instructions,(75,445))
+            screen.blit(instructions,(110,445))
 
     def _strike(self):
         if self.state['gameover'] and self.state['winner'] is not None:
@@ -177,9 +175,7 @@ class TicTacToe():
         while True:
             self.state = game.state()
             self._draw_marks()
-            if self.my_id in self.state['current']:
-                self._sending_move.clear()
-                self._sending_move.wait()
+
             if self.state['gameover']:
                 return
 
@@ -198,7 +194,6 @@ class TicTacToe():
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self._move(event.pos)
-                    self._sending_move.set()
 
             pygame.display.flip()
             self.FPS.tick(30)

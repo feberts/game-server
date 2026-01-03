@@ -85,7 +85,7 @@ class TicTacToe():
         except IllegalMove as e:
             print(e)
         except GameServerError as e:
-            exit(e)
+            print(e)
         except:
             print("Click inside the table only")
 

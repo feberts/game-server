@@ -166,7 +166,6 @@ class GameSession:
         with self._lock:
             ret = self._game.move(move, player_id)
             self._update_last_access()
-            self._no_delay = self._all_ids()
             self.wake_up_threads()
 
             return ret
@@ -216,7 +215,7 @@ class GameSession:
             p_id += self._n_players # convert observer IDs
 
         # wait for game state to change:
-        if not p_id in self._no_delay and not p_id in self._in_previous_game:
+        if p_id not in self._no_delay and p_id not in self._in_previous_game:
             self._state_change.clear()
             self._state_change.wait()
 
@@ -315,6 +314,7 @@ class GameSession:
         """
         Wake up other threads waiting for the game state to change.
         """
+        self._no_delay = self._all_ids()
         self._state_change.set()
 
     def mark_timed_out(self):

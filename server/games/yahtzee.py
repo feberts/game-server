@@ -145,7 +145,7 @@ class Yahtzee(AbstractGame):
                 return self._cross_out(args['category'])
             return 'no such score operation'
         if 'name' in args:
-            return self._set_name(args['name'], player_id)
+            return self._set_name(args['name'].strip(), player_id)
         return 'no such move'
 
     def _roll_dice(self, dice=None):

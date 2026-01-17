@@ -135,7 +135,10 @@ class GameSession:
         if game.game_over():
             return []
         else:
-            return game.current_player()
+            current = game.current_player()
+            if type(current) == int:
+                return [current]
+            return current
 
     def last_access(self):
         """

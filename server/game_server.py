@@ -3,7 +3,7 @@
 Game server.
 
 A lightweight server and framework for turn-based multiplayer games.
-Copyright (C) 2025 Fabian Eberts
+Copyright (C) 2025, 2026 Fabian Eberts
 Licensed under the GPL v3.0 (see LICENSE)
 
 This server program opens a port and handles client connections in separate
